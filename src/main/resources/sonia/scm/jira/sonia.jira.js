@@ -34,10 +34,8 @@ Sonia.jira.ConfigPanel = Ext.extend(Sonia.repository.PropertiesFormPanel, {
   
   formTitleText: 'Jira',
   urlText: 'Url',
-  projectKeysText: 'Project Keys',
   
   urlHelpText: 'Url of Jira installation (with contextpath).',
-  projectKeysHelpText: 'Comma separated project keys e.g.: SCM, JENKINS.',
   
   autoCloseText: 'Enable Auto-Close',
   autoCloseHelpText: 'Enables the auto close function. SCM-Manager searches for \n\
@@ -67,11 +65,6 @@ Sonia.jira.ConfigPanel = Ext.extend(Sonia.repository.PropertiesFormPanel, {
         property: 'jira.url',
         vtype: 'url',
         helpText: this.urlHelpText
-      },{
-        name: 'jiraProjectKeys',
-        fieldLabel: this.projectKeysText,
-        property: 'jira.project-keys',
-        helpText: this.projectKeysHelpText
       },{
         id: 'jiraUpdateIssues',
         name: 'jiraUpdateIssues',

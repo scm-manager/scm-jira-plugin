@@ -35,13 +35,13 @@ package sonia.scm.jira;
 
 //~--- non-JDK imports --------------------------------------------------------
 
+import com.google.common.base.Strings;
+
 import sonia.scm.repository.Changeset;
 import sonia.scm.repository.ChangesetPreProcessor;
-import sonia.scm.util.Util;
 
 //~--- JDK imports ------------------------------------------------------------
 
-import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -52,6 +52,12 @@ import java.util.regex.Pattern;
 public class JiraChangesetPreProcessor implements ChangesetPreProcessor
 {
 
+  /** Field description */
+  private static final Pattern KEY_PATTERN =
+    Pattern.compile("\\b([a-zA-Z\\-]+-\\d+)");
+
+  //~--- constructors ---------------------------------------------------------
+
   /**
    * Constructs ...
    *
@@ -60,11 +66,9 @@ public class JiraChangesetPreProcessor implements ChangesetPreProcessor
    * @param keyReplacementPattern
    * @param projectKeys
    */
-  public JiraChangesetPreProcessor(String keyReplacementPattern,
-    Collection<Pattern> projectKeys)
+  public JiraChangesetPreProcessor(String keyReplacementPattern)
   {
     this.keyReplacementPattern = keyReplacementPattern;
-    this.projectKeys = projectKeys;
   }
 
   //~--- methods --------------------------------------------------------------
@@ -80,26 +84,23 @@ public class JiraChangesetPreProcessor implements ChangesetPreProcessor
   {
     String description = changeset.getDescription();
 
-    if (Util.isNotEmpty(description))
+    if (!Strings.isNullOrEmpty(description))
     {
-      for (Pattern p : projectKeys)
+      StringBuffer sb = new StringBuffer();
+      Matcher m = KEY_PATTERN.matcher(description);
+
+      while (m.find())
       {
-        StringBuffer sb = new StringBuffer();
-        Matcher m = p.matcher(description);
+        m.appendReplacement(sb, keyReplacementPattern);
 
-        while (m.find())
+        if (issueHandler != null)
         {
-          m.appendReplacement(sb, keyReplacementPattern);
-
-          if (issueHandler != null)
-          {
-            issueHandler.handleIssue(m.group(), changeset);
-          }
+          issueHandler.handleIssue(m.group(), changeset);
         }
-
-        m.appendTail(sb);
-        description = sb.toString();
       }
+
+      m.appendTail(sb);
+      description = sb.toString();
     }
 
     changeset.setDescription(description);
@@ -125,7 +126,4 @@ public class JiraChangesetPreProcessor implements ChangesetPreProcessor
 
   /** Field description */
   private String keyReplacementPattern;
-
-  /** Field description */
-  private Collection<Pattern> projectKeys;
 }

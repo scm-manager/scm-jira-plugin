@@ -45,10 +45,6 @@ import sonia.scm.util.Util;
 
 import java.text.MessageFormat;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Pattern;
-
 /**
  *
  * @author Sebastian Sdorra
@@ -57,12 +53,6 @@ import java.util.regex.Pattern;
 public class JiraChangesetPreProcessorFactory
   implements ChangesetPreProcessorFactory
 {
-
-  /** Field description */
-  public static final String KEY_PATTERN = "({0}-[0-9]+)";
-
-  /** Field description */
-  public static final String PROPERTY_JIRA_PROJECTKEYS = "jira.project-keys";
 
   /** Field description */
   public static final String PROPERTY_JIRA_URL = "jira.url";
@@ -86,29 +76,15 @@ public class JiraChangesetPreProcessorFactory
   {
     JiraChangesetPreProcessor cpp = null;
     String jiraUrl = repository.getProperty(PROPERTY_JIRA_URL);
-    String projectKeys = repository.getProperty(PROPERTY_JIRA_PROJECTKEYS);
 
-    if (Util.isNotEmpty(jiraUrl) && Util.isNotEmpty(projectKeys))
+    if (Util.isNotEmpty(jiraUrl))
     {
       jiraUrl = HttpUtil.getUriWithoutEndSeperator(jiraUrl);
 
       String replacementPattern = MessageFormat.format(REPLACEMENT_LINK,
                                     jiraUrl);
-      List<Pattern> patternList = new ArrayList<Pattern>();
 
-      for (String key : projectKeys.split(","))
-      {
-        key = key.trim().toUpperCase();
-
-        if (Util.isNotEmpty(key))
-        {
-          String p = MessageFormat.format(KEY_PATTERN, key);
-
-          patternList.add(Pattern.compile(p));
-        }
-      }
-
-      cpp = new JiraChangesetPreProcessor(replacementPattern, patternList);
+      cpp = new JiraChangesetPreProcessor(replacementPattern);
     }
 
     return cpp;
