@@ -45,16 +45,8 @@ public class Template
     new Template("update-simple", "/sonia/scm/jira/update/simple.ftl");
 
   /** Field description */
-  public static final Template UPDATE_EXTENDED =
-    new Template("update-extended", "/sonia/scm/jira/update/extended.ftl");
-
-  /** Field description */
   public static final Template CLOSE_SIMPLE =
     new Template("close-simple", "/sonia/scm/jira/autoclose/simple.ftl");
-
-  /** Field description */
-  public static final Template CLOSE_EXTENDED =
-    new Template("close-extended", "/sonia/scm/jira/autoclose/extended.ftl");
 
   //~--- constructors ---------------------------------------------------------
 
