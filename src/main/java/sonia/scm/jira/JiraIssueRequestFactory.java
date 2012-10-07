@@ -47,12 +47,9 @@ import sonia.scm.security.CipherUtil;
 import sonia.scm.user.User;
 import sonia.scm.util.AssertUtil;
 import sonia.scm.util.SecurityUtil;
-import sonia.scm.util.Util;
 import sonia.scm.web.security.WebSecurityContext;
 
 //~--- JDK imports ------------------------------------------------------------
-
-import java.text.MessageFormat;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -108,7 +105,7 @@ public class JiraIssueRequestFactory
   public JiraIssueRequest createRequest(JiraConfiguration configuration,
     Repository repository)
   {
-    String username = getUsername(configuration);
+    String username = getUsername();
     String password = getPassword();
 
     return new JiraIssueRequest(handlerFactory, username, password,
@@ -153,24 +150,14 @@ public class JiraIssueRequestFactory
    * @param configuration
    * @return
    */
-  private String getUsername(JiraConfiguration configuration)
+  private String getUsername()
   {
     String username = null;
     User user = SecurityUtil.getCurrentUser(securityContextProvider);
 
     if (user != null)
     {
-      String transformPattern = configuration.getUsernameTransformPattern();
-
-      if (Util.isEmpty(transformPattern))
-      {
-        username = user.getName();
-      }
-      else
-      {
-        username = MessageFormat.format(transformPattern, user.getName(),
-          user.getMail(), user.getDisplayName());
-      }
+      username = user.getName();
     }
     else if (logger.isErrorEnabled())
     {

@@ -68,10 +68,6 @@ public class JiraConfiguration implements Validateable
   public static final String PROPERTY_UPDATEISSUES = "jira.update-issues";
 
   /** Field description */
-  public static final String PROPERTY_USERNAMETRANSFORMER =
-    "jira.auto-close-username-transformer";
-
-  /** Field description */
   public static final String SEPARATOR = ",";
 
   //~--- constructors ---------------------------------------------------------
@@ -89,8 +85,6 @@ public class JiraConfiguration implements Validateable
     updateIssues = getBooleanProperty(repository, PROPERTY_UPDATEISSUES);
     autoClose = getBooleanProperty(repository, PROPERTY_AUTOCLOSE);
     autoCloseWords = getListProperty(repository, PROPERTY_AUTOCLOSEWORDS);
-    usernameTransformPattern =
-      repository.getProperty(PROPERTY_USERNAMETRANSFORMER);
   }
 
   //~--- get methods ----------------------------------------------------------
@@ -126,17 +120,6 @@ public class JiraConfiguration implements Validateable
   public String getUrl()
   {
     return url;
-  }
-
-  /**
-   * Method description
-   *
-   *
-   * @return
-   */
-  public String getUsernameTransformPattern()
-  {
-    return usernameTransformPattern;
   }
 
   /**
@@ -238,7 +221,4 @@ public class JiraConfiguration implements Validateable
 
   /** Field description */
   private String url;
-
-  /** Field description */
-  private String usernameTransformPattern;
 }
