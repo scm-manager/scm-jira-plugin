@@ -40,6 +40,11 @@ package sonia.scm.jira;
 public class TemplateException extends Exception
 {
 
+  /** Field description */
+  private static final long serialVersionUID = 4988015496692453743L;
+
+  //~--- constructors ---------------------------------------------------------
+
   /**
    * Constructs ...
    *

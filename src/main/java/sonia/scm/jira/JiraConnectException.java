@@ -40,6 +40,11 @@ package sonia.scm.jira;
 public class JiraConnectException extends JiraException
 {
 
+  /** Field description */
+  private static final long serialVersionUID = 7364391949612715129L;
+
+  //~--- constructors ---------------------------------------------------------
+
   /**
    * Constructs ...
    *
