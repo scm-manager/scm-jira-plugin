@@ -40,6 +40,10 @@ import org.slf4j.LoggerFactory;
 
 import sonia.scm.repository.Changeset;
 
+//~--- JDK imports ------------------------------------------------------------
+
+import java.io.IOException;
+
 /**
  *
  * @author Sebastian Sdorra
@@ -60,8 +64,8 @@ public class JiraIssueHandler
    * @param templateHandler
    * @param request
    */
-  public JiraIssueHandler(TemplateHandler templateHandler,
-                          JiraIssueRequest request)
+  public JiraIssueHandler(CommentTemplateHandler templateHandler,
+    JiraIssueRequest request)
   {
     this.templateHandler = templateHandler;
     this.request = request;
@@ -83,7 +87,7 @@ public class JiraIssueHandler
       if (logger.isTraceEnabled())
       {
         logger.trace("check changeset {} for auto-close of issue",
-                     changeset.getId(), issueId);
+          changeset.getId(), issueId);
       }
 
       String autoCloseWord = searchAutoCloseWord(changeset);
@@ -93,7 +97,7 @@ public class JiraIssueHandler
         if (logger.isDebugEnabled())
         {
           logger.debug("found auto close word {} for issue {}", autoCloseWord,
-                       issueId);
+            issueId);
         }
 
         closeIssue(changeset, issueId, autoCloseWord);
@@ -123,24 +127,24 @@ public class JiraIssueHandler
    * @param autoCloseWord
    */
   private void closeIssue(Changeset changeset, String issueId,
-                          String autoCloseWord)
+    String autoCloseWord)
   {
     if (logger.isDebugEnabled())
     {
       logger.debug("try to close issue {} because of changeset {}", issueId,
-                   changeset.getId());
+        changeset.getId());
     }
 
     try
     {
       JiraHandler handler = request.createJiraHandler();
-      String comment = templateHandler.render(Template.CLOSE_SIMPLE, request,
-                         changeset, autoCloseWord);
+      String comment = templateHandler.render(CommentTemplate.AUTOCLOSE,
+                         request, changeset, autoCloseWord);
 
       handler.close(issueId, autoCloseWord);
       handler.addComment(issueId, comment);
     }
-    catch (TemplateException ex)
+    catch (IOException ex)
     {
       logger.error("could render template", ex);
     }
@@ -199,18 +203,18 @@ public class JiraIssueHandler
     if (logger.isDebugEnabled())
     {
       logger.debug("try to update issue {} because of changeset {}", issueId,
-                   changeset.getId());
+        changeset.getId());
     }
 
     try
     {
       JiraHandler handler = request.createJiraHandler();
-      String comment = templateHandler.render(Template.UPDATE_SIMPLE, request,
+      String comment = templateHandler.render(CommentTemplate.UPADTE, request,
                          changeset);
 
       handler.addComment(issueId, comment);
     }
-    catch (TemplateException ex)
+    catch (IOException ex)
     {
       logger.error("could render template", ex);
     }
@@ -226,5 +230,5 @@ public class JiraIssueHandler
   private JiraIssueRequest request;
 
   /** Field description */
-  private TemplateHandler templateHandler;
+  private CommentTemplateHandler templateHandler;
 }

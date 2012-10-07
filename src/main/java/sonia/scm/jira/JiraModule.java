@@ -56,7 +56,6 @@ public class JiraModule extends AbstractModule
   {
     bind(JiraIssueRequestFactory.class);
     bind(JiraHandlerFactory.class).to(SoapJiraHandlerFactory.class);
-    bind(TemplateHandler.class).to(
-        FreemarkerTemplateHandler.class);
+    bind(CommentTemplateHandler.class).to(DefaultCommentTemplateHandler.class);
   }
 }

@@ -36,6 +36,7 @@ package sonia.scm.jira;
 //~--- non-JDK imports --------------------------------------------------------
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,13 +80,14 @@ public class JiraIssuePostReceiveHook implements RepositoryHook
    *
    * @param requestFactory
    * @param templateHandler
+   * @param templateHandlerProvider
    */
   @Inject
   public JiraIssuePostReceiveHook(JiraIssueRequestFactory requestFactory,
-                                  TemplateHandler templateHandler)
+    Provider<CommentTemplateHandler> templateHandlerProvider)
   {
     this.requestFactory = requestFactory;
-    this.templateHandler = templateHandler;
+    this.templateHandlerProvider = templateHandlerProvider;
     this.changesetPreProcessorFactory = new JiraChangesetPreProcessorFactory();
   }
 
@@ -158,8 +160,7 @@ public class JiraIssuePostReceiveHook implements RepositoryHook
    * @param configuration
    */
   private void handleIssueEvent(RepositoryHookEvent event,
-                                    Repository repository,
-                                    JiraConfiguration configuration)
+    Repository repository, JiraConfiguration configuration)
   {
     Collection<Changeset> changesets = event.getChangesets();
 
@@ -172,8 +173,8 @@ public class JiraIssuePostReceiveHook implements RepositoryHook
       try
       {
         request = requestFactory.createRequest(configuration, repository);
-        jcpp.setJiraIssueHandler(new JiraIssueHandler(templateHandler,
-                request));
+        jcpp.setJiraIssueHandler(
+          new JiraIssueHandler(templateHandlerProvider.get(), request));
 
         for (Changeset c : changesets)
         {
@@ -200,5 +201,5 @@ public class JiraIssuePostReceiveHook implements RepositoryHook
   private JiraIssueRequestFactory requestFactory;
 
   /** Field description */
-  private TemplateHandler templateHandler;
+  private Provider<CommentTemplateHandler> templateHandlerProvider;
 }
