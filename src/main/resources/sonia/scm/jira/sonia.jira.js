@@ -42,13 +42,13 @@ Sonia.jira.ConfigPanel = Ext.extend(Sonia.repository.PropertiesFormPanel, {
                       issue keys and auto close words in commit messages. If \n\
                       both found in a message SCM-Manager closes the issue in \n\
                       the jira server. <strong>Note:</strong> It is necessary \n\
-                      that users have the same password in SCM-Manager and Jira.',
+                      that users have the same name and password in SCM-Manager and Jira.',
   
   updateIssuesText: 'Update Jira Issues',
   updateIssuesHelpText: 'Enable the automatic update function. SCM-Manager searches for\n\
                          issue keys in commit messages. If a issue id is found SCM-Manager\n\
                          updates the issue with a comment. <strong>Note:</strong> It \n\
-                         is necessary that users have the same password in SCM-Manager \n\
+                         is necessary that users have the same name and password in SCM-Manager \n\
                          and Jira.',
   
   autoCloseWordsText: 'Auto-Close Words',
