@@ -77,8 +77,8 @@ public class SoapJiraHandlerFactory implements JiraHandlerFactory
    */
   @Override
   public JiraHandler createJiraHandler(String urlString, String username,
-          String password)
-          throws JiraConnectException
+    String password)
+    throws JiraConnectException
   {
     JiraHandler handler = null;
 
@@ -100,7 +100,7 @@ public class SoapJiraHandlerFactory implements JiraHandlerFactory
     catch (Exception ex)
     {
       throw new JiraConnectException(
-          "could not connect to jira instance at ".concat(urlString), ex);
+        "could not connect to jira instance at ".concat(urlString), ex);
     }
 
     return handler;

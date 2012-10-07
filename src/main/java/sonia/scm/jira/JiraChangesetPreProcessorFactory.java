@@ -55,7 +55,7 @@ import java.util.regex.Pattern;
  */
 @Extension
 public class JiraChangesetPreProcessorFactory
-        implements ChangesetPreProcessorFactory
+  implements ChangesetPreProcessorFactory
 {
 
   /** Field description */

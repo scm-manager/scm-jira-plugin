@@ -84,10 +84,9 @@ public class JiraIssueRequestFactory
    * @param securityContextProvider
    */
   @Inject
-  public JiraIssueRequestFactory(
-          JiraHandlerFactory handlerFactory,
-          Provider<HttpServletRequest> requestProvider,
-          Provider<WebSecurityContext> securityContextProvider)
+  public JiraIssueRequestFactory(JiraHandlerFactory handlerFactory,
+    Provider<HttpServletRequest> requestProvider,
+    Provider<WebSecurityContext> securityContextProvider)
   {
     this.handlerFactory = handlerFactory;
     this.requestProvider = requestProvider;
@@ -107,13 +106,13 @@ public class JiraIssueRequestFactory
    * @return
    */
   public JiraIssueRequest createRequest(JiraConfiguration configuration,
-          Repository repository)
+    Repository repository)
   {
     String username = getUsername(configuration);
     String password = getPassword();
 
     return new JiraIssueRequest(handlerFactory, username, password,
-                                    configuration, repository);
+      configuration, repository);
   }
 
   //~--- get methods ----------------------------------------------------------
@@ -170,7 +169,7 @@ public class JiraIssueRequestFactory
       else
       {
         username = MessageFormat.format(transformPattern, user.getName(),
-                                        user.getMail(), user.getDisplayName());
+          user.getMail(), user.getDisplayName());
       }
     }
     else if (logger.isErrorEnabled())

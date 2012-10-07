@@ -61,7 +61,7 @@ public class JiraChangesetPreProcessor implements ChangesetPreProcessor
    * @param projectKeys
    */
   public JiraChangesetPreProcessor(String keyReplacementPattern,
-                                   Collection<Pattern> projectKeys)
+    Collection<Pattern> projectKeys)
   {
     this.keyReplacementPattern = keyReplacementPattern;
     this.projectKeys = projectKeys;

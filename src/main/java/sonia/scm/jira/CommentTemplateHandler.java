@@ -30,12 +30,16 @@
  */
 
 
+
 package sonia.scm.jira;
 
 //~--- non-JDK imports --------------------------------------------------------
 
-import java.io.IOException;
 import sonia.scm.repository.Changeset;
+
+//~--- JDK imports ------------------------------------------------------------
+
+import java.io.IOException;
 
 /**
  *
@@ -57,9 +61,12 @@ public interface CommentTemplateHandler
    * @return
    *
    * @throws TemplateException
+   *
+   * @throws IOException
    */
   public String render(CommentTemplate template, JiraIssueRequest request,
-    Changeset changeset) throws IOException;
+    Changeset changeset)
+    throws IOException;
 
   /**
    * Method description
@@ -77,7 +84,10 @@ public interface CommentTemplateHandler
    *
    *
    * @throws TemplateException
+   *
+   * @throws IOException
    */
   public String render(CommentTemplate template, JiraIssueRequest request,
-    Changeset changeset, String autoCloseWord) throws IOException;
+    Changeset changeset, String autoCloseWord)
+    throws IOException;
 }

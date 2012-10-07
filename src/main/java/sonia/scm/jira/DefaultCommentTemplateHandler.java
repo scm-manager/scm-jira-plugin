@@ -30,10 +30,12 @@
  */
 
 
+
 package sonia.scm.jira;
 
 //~--- non-JDK imports --------------------------------------------------------
 
+import com.google.common.collect.Maps;
 import com.google.inject.name.Named;
 
 import sonia.scm.repository.Changeset;
@@ -50,7 +52,6 @@ import sonia.scm.util.Util;
 import java.io.IOException;
 import java.io.StringWriter;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -139,7 +140,7 @@ public class DefaultCommentTemplateHandler implements CommentTemplateHandler
     throws IOException
   {
     Repository repository = request.getRepository();
-    Map<String, Object> env = new HashMap<String, Object>();
+    Map<String, Object> env = Maps.newHashMap();
 
     env.put(ENV_REPOSITORY, repository);
     env.put(ENV_CHANGESET, changeset);

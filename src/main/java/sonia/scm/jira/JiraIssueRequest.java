@@ -60,10 +60,8 @@ public class JiraIssueRequest implements Closeable
    * @param configuration
    * @param repository
    */
-  public JiraIssueRequest(JiraHandlerFactory handlerFactory,
-                              String username, String password,
-                              JiraConfiguration configuration,
-                              Repository repository)
+  public JiraIssueRequest(JiraHandlerFactory handlerFactory, String username,
+    String password, JiraConfiguration configuration, Repository repository)
   {
     this.handlerFactory = handlerFactory;
     this.username = username;
@@ -109,7 +107,7 @@ public class JiraIssueRequest implements Closeable
     if (handler == null)
     {
       handler = handlerFactory.createJiraHandler(configuration.getUrl(),
-              username, password);
+        username, password);
     }
 
     return handler;

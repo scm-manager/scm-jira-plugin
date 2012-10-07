@@ -53,6 +53,6 @@ public interface JiraHandlerFactory
    * @throws JiraConnectException
    */
   public JiraHandler createJiraHandler(String url, String username,
-          String password)
-          throws JiraConnectException;
+    String password)
+    throws JiraConnectException;
 }

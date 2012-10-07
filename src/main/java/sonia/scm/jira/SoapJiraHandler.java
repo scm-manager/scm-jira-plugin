@@ -148,7 +148,7 @@ public class SoapJiraHandler implements JiraHandler
       }
 
       service.progressWorkflowAction(token, issueId, id,
-                                     new RemoteFieldValue[] {});
+        new RemoteFieldValue[] {});
     }
     catch (Exception ex)
     {
