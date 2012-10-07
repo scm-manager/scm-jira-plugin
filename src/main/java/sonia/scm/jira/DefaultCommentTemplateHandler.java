@@ -36,6 +36,7 @@ package sonia.scm.jira;
 //~--- non-JDK imports --------------------------------------------------------
 
 import com.google.common.collect.Maps;
+import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
 import sonia.scm.repository.Changeset;
@@ -89,6 +90,7 @@ public class DefaultCommentTemplateHandler implements CommentTemplateHandler
    * @param wuiUrlProvider
    * @param restUrlProvider
    */
+  @Inject
   public DefaultCommentTemplateHandler(
     TemplateEngineFactory templateEngineFactory,
     @Named(UrlProviderFactory.TYPE_WUI) UrlProvider wuiUrlProvider,
