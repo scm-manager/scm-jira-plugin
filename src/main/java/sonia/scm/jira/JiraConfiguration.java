@@ -35,9 +35,6 @@ package sonia.scm.jira;
 
 //~--- non-JDK imports --------------------------------------------------------
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import sonia.scm.Validateable;
 import sonia.scm.repository.Repository;
 import sonia.scm.util.Util;
@@ -76,10 +73,6 @@ public class JiraConfiguration implements Validateable
 
   /** Field description */
   public static final String SEPARATOR = ",";
-
-  /** the logger for JiraConfiguration */
-  private static final Logger logger =
-    LoggerFactory.getLogger(JiraConfiguration.class);
 
   //~--- constructors ---------------------------------------------------------
 
@@ -155,7 +148,7 @@ public class JiraConfiguration implements Validateable
   public boolean isAutoCloseEnabled()
   {
     return isUpdateIssuesEnabled() && autoClose
-           && Util.isNotEmpty(autoCloseWords);
+      && Util.isNotEmpty(autoCloseWords);
   }
 
   /**
