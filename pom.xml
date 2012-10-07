@@ -6,7 +6,7 @@
   <parent>
     <artifactId>scm-plugins</artifactId>
     <groupId>sonia.scm.plugins</groupId>
-    <version>1.9</version>
+    <version>1.19</version>
   </parent>
 
   <groupId>sonia.scm.plugins</groupId>
@@ -47,8 +47,8 @@
   
   <build>
     <plugins>
-    
-      <plugin>
+		
+        <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>axistools-maven-plugin</artifactId>
         <version>1.4</version>
