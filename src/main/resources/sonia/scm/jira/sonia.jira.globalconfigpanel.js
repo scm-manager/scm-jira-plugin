@@ -53,6 +53,7 @@ Sonia.jira.GlobalConfigPanel = Ext.extend(Sonia.config.ConfigForm, {
       },{
         name: 'update-issues',
         xtype: 'checkbox',
+        inputValue: 'true',
         fieldLabel: Sonia.jira.I18n.updateIssuesText,
         helpText: Sonia.jira.I18n.updateIssuesHelpText,
         listeners: {
@@ -62,6 +63,7 @@ Sonia.jira.GlobalConfigPanel = Ext.extend(Sonia.config.ConfigForm, {
         id: 'autoClose',
         name: 'auto-close',
         xtype: 'checkbox',
+        inputValue: 'true',
         fieldLabel: Sonia.jira.I18n.autoCloseText,
         helpText: Sonia.jira.I18n.autoCloseHelpText
       },{
