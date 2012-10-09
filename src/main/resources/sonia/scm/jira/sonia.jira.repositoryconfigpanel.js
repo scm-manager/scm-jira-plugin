@@ -95,7 +95,7 @@ Ext.reg("jiraRepositoryConfigPanel", Sonia.jira.RepositoryConfigPanel);
 Sonia.repository.openListeners.push(function(repository, panels){
   if (Sonia.repository.isOwner(repository)){
     panels.push({
-      xtype: 'jiraConfigPanel',
+      xtype: 'jiraRepositoryConfigPanel',
       item: repository
     });
   }
