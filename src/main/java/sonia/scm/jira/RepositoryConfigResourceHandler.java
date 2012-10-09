@@ -54,7 +54,7 @@ public class RepositoryConfigResourceHandler implements ResourceHandler
 
   /** Field description */
   public static final String PATH =
-    "/sonia/scm/jira/sonia.jira.repositoryconfigpanel";
+    "/sonia/scm/jira/sonia.jira.repositoryconfigpanel.js";
 
   //~--- constructors ---------------------------------------------------------
 
