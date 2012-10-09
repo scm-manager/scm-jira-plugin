@@ -46,7 +46,7 @@ import javax.ws.rs.core.Response;
  * @author Sebastian Sdorra
  */
 @Path("/plugins/jira/global-config")
-public class GlobalJiraConfigurationResource
+public class JiraGlobalConfigurationResource
 {
 
   /**
@@ -55,7 +55,7 @@ public class GlobalJiraConfigurationResource
    *
    * @param context
    */
-  public GlobalJiraConfigurationResource(JiraGlobalContext context)
+  public JiraGlobalConfigurationResource(JiraGlobalContext context)
   {
     this.context = context;
   }
