@@ -30,7 +30,7 @@
  */
 Ext.ns('Sonia.jira');
 
-Sonia.jira.ConfigPanel = Ext.extend(Sonia.repository.PropertiesFormPanel, {
+Sonia.jira.RepositoryConfigPanel = Ext.extend(Sonia.repository.PropertiesFormPanel, {
   
   formTitleText: 'Jira',
   urlText: 'Url',
@@ -93,7 +93,7 @@ Sonia.jira.ConfigPanel = Ext.extend(Sonia.repository.PropertiesFormPanel, {
     }
     
     Ext.apply(this, Ext.apply(this.initialConfig, config));
-    Sonia.jira.ConfigPanel.superclass.initComponent.apply(this, arguments);
+    Sonia.jira.RepositoryConfigPanel.superclass.initComponent.apply(this, arguments);
   },
   
   loadExtraProperties: function(item){
@@ -121,7 +121,7 @@ Sonia.jira.ConfigPanel = Ext.extend(Sonia.repository.PropertiesFormPanel, {
 });
 
 // register xtype
-Ext.reg("jiraConfigPanel", Sonia.jira.ConfigPanel);
+Ext.reg("jiraRepositoryConfigPanel", Sonia.jira.RepositoryConfigPanel);
 
 // register panel
 Sonia.repository.openListeners.push(function(repository, panels){

@@ -34,21 +34,27 @@ package sonia.scm.jira;
 //~--- non-JDK imports --------------------------------------------------------
 
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
 
-import sonia.scm.store.Store;
-import sonia.scm.store.StoreFactory;
+import sonia.scm.plugin.ext.Extension;
+import sonia.scm.resources.ResourceHandler;
+import sonia.scm.resources.ResourceType;
+
+//~--- JDK imports ------------------------------------------------------------
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 
 /**
  *
  * @author Sebastian Sdorra
  */
-@Singleton
-public class JiraGlobalContext
+@Extension
+public class RepositoryConfigResourceHandler implements ResourceHandler
 {
 
   /** Field description */
-  private static final String NAME = "jira";
+  public static final String PATH =
+    "/sonia/scm/jira/sonia.jira.repositoryconfigpanel";
 
   //~--- constructors ---------------------------------------------------------
 
@@ -56,18 +62,13 @@ public class JiraGlobalContext
    * Constructs ...
    *
    *
-   * @param storeFactory
+   *
+   * @param context
    */
   @Inject
-  public JiraGlobalContext(StoreFactory storeFactory)
+  public RepositoryConfigResourceHandler(JiraGlobalContext context)
   {
-    store = storeFactory.getStore(JiraGlobalConfiguration.class, NAME);
-    configuration = store.get();
-
-    if (configuration == null)
-    {
-      configuration = new JiraGlobalConfiguration();
-    }
+    this.context = context;
   }
 
   //~--- get methods ----------------------------------------------------------
@@ -78,30 +79,51 @@ public class JiraGlobalContext
    *
    * @return
    */
-  public JiraGlobalConfiguration getConfiguration()
+  @Override
+  public String getName()
   {
-    return configuration;
+    return PATH;
   }
-
-  //~--- set methods ----------------------------------------------------------
 
   /**
    * Method description
    *
    *
-   * @param configuration
+   * @return
    */
-  public void setConfiguration(JiraGlobalConfiguration configuration)
+  @Override
+  public InputStream getResource()
   {
-    this.configuration = configuration;
-    this.store.set(configuration);
+    InputStream content;
+
+    if (!context.getConfiguration().isDisableRepositoryConfiguration())
+    {
+      content = RepositoryConfigResourceHandler.class.getResourceAsStream(PATH);
+    }
+    else
+    {
+
+      // create dummy stream
+      content = new ByteArrayInputStream(new byte[0]);
+    }
+
+    return content;
+  }
+
+  /**
+   * Method description
+   *
+   *
+   * @return
+   */
+  @Override
+  public ResourceType getType()
+  {
+    return ResourceType.SCRIPT;
   }
 
   //~--- fields ---------------------------------------------------------------
 
   /** Field description */
-  private JiraGlobalConfiguration configuration;
-
-  /** Field description */
-  private Store<JiraGlobalConfiguration> store;
+  private JiraGlobalContext context;
 }
