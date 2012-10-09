@@ -50,6 +50,7 @@
 
   <resources>
     <script>/sonia/scm/jira/sonia.jira.js</script>
+    <script>/sonia/scm/jira/sonia.jira.globalconfigpanel.js</script>
   </resources>
 
 </plugin>
