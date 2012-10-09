@@ -54,6 +54,7 @@ public class JiraModule extends AbstractModule
   @Override
   protected void configure()
   {
+    bind(JiraGlobalContext.class);
     bind(JiraIssueRequestFactory.class);
     bind(JiraHandlerFactory.class).to(SoapJiraHandlerFactory.class);
     bind(CommentTemplateHandler.class).to(DefaultCommentTemplateHandler.class);
