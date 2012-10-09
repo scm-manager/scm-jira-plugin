@@ -54,7 +54,7 @@ public class JiraChangesetPreProcessor implements ChangesetPreProcessor
 
   /** Field description */
   private static final Pattern KEY_PATTERN =
-    Pattern.compile("\\b([a-zA-Z\\-]+-\\d+)");
+    Pattern.compile("\\b([A-Z]+-\\d+)");
 
   //~--- constructors ---------------------------------------------------------
 
