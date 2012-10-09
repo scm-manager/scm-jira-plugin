@@ -111,18 +111,8 @@ public class JiraIssuePostReceiveHook implements RepositoryHook
 
     if (repository != null)
     {
-      JiraConfiguration configuration = new JiraConfiguration(repository);
-
-      if (!configuration.isValid())
-      {
-        if (logger.isDebugEnabled())
-        {
-          logger.debug(
-            "repository configuration is not valid, try to use global configuration");
-        }
-
-        configuration = context.getConfiguration();
-      }
+      JiraConfiguration configuration =
+        JiraConfigurationResolver.resolve(context, repository);
 
       if (configuration.isValid())
       {

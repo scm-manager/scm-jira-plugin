@@ -42,7 +42,6 @@ import sonia.scm.plugin.ext.Extension;
 import sonia.scm.repository.ChangesetPreProcessorFactory;
 import sonia.scm.repository.Repository;
 import sonia.scm.util.HttpUtil;
-import sonia.scm.util.Util;
 
 //~--- JDK imports ------------------------------------------------------------
 
@@ -92,12 +91,11 @@ public class JiraChangesetPreProcessorFactory
   public JiraChangesetPreProcessor createPreProcessor(Repository repository)
   {
     JiraChangesetPreProcessor cpp = null;
-    String jiraUrl = repository.getProperty(PROPERTY_JIRA_URL);
 
-    if (Strings.isNullOrEmpty(jiraUrl))
-    {
-      jiraUrl = context.getConfiguration().getUrl();
-    }
+    JiraConfiguration configuration =
+      JiraConfigurationResolver.resolve(context, repository);
+
+    String jiraUrl = configuration.getUrl();
 
     if (!Strings.isNullOrEmpty(jiraUrl))
     {
