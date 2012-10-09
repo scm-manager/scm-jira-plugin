@@ -64,13 +64,13 @@ Sonia.jira.I18n = {
   
 }
 
-Sonia.jira.toggleFields = function(cmps){
+Sonia.jira.toggleFields = function(cmps, scope){
   Ext.each(cmps, function(cmp){
-    cmp.setReadOnly(!this.checked);
-    if ( ! this.checked ){
+      cmp.setReadOnly(!this.checked);
+    if (!this.checked ){
       cmp.addClass('x-item-disabled');
     } else {
       cmp.removeClass('x-item-disabled');
     }
-  }, this);
+  }, scope);
 }

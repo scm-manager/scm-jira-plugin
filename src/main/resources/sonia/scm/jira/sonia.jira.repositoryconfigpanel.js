@@ -77,13 +77,13 @@ Sonia.jira.RepositoryConfigPanel = Ext.extend(Sonia.repository.PropertiesFormPan
     this.toggleUpdateIssues.call(cmp);
   },
   
-  toggleUpdateIssues: function(){
+  toggleUpdateIssues: function(checkbox){
     var cmps = [
       Ext.getCmp( 'jiraAutoClose' ),
       Ext.getCmp( 'jiraAutoCloseWords' )
     ];
     
-    Sonia.jira.toggleFields(cmps);
+    Sonia.jira.toggleFields(cmps, checkbox);
   }
   
 });

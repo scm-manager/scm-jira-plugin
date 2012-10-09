@@ -51,6 +51,7 @@ Sonia.jira.GlobalConfigPanel = Ext.extend(Sonia.config.ConfigForm, {
         inputValue: 'true',
         helpText: Sonia.jira.I18n.repositoryConfigurationHelpText
       },{
+        id: 'updateIssues',
         name: 'update-issues',
         xtype: 'checkbox',
         inputValue: 'true',
@@ -69,7 +70,8 @@ Sonia.jira.GlobalConfigPanel = Ext.extend(Sonia.config.ConfigForm, {
       },{
         id: 'autoCloseWords',
         name: 'auto-close-words',
-        fieldLabel: this.autoCloseWordsText,
+        xtype: 'textfield',
+        fieldLabel: Sonia.jira.I18n.autoCloseWordsText,
         helpText: Sonia.jira.I18n.autoCloseWordsHelpText,
         value: Sonia.jira.I18n.autoCloseDefaultValues
       }]
@@ -79,13 +81,13 @@ Sonia.jira.GlobalConfigPanel = Ext.extend(Sonia.config.ConfigForm, {
     Sonia.jira.GlobalConfigPanel.superclass.initComponent.apply(this, arguments);
   },
   
-  toggleUpdateIssues: function(){
+  toggleUpdateIssues: function(checkbox){
     var cmps = [
       Ext.getCmp( 'autoClose' ),
       Ext.getCmp( 'autoCloseWords' )
     ];
     
-    Sonia.jira.toggleFields(cmps);
+    Sonia.jira.toggleFields(cmps, checkbox);
   },
 
   onSubmit: function(values){
@@ -117,6 +119,11 @@ Sonia.jira.GlobalConfigPanel = Ext.extend(Sonia.config.ConfigForm, {
       success: function(response){
         var obj = Ext.decode(response.responseText);
         this.load(obj);
+        
+        // toggle fields
+        var cmp = Ext.getCmp('updateIssues');
+        this.toggleUpdateIssues(cmp);
+        
         clearTimeout(tid);
         el.unmask();
       },
