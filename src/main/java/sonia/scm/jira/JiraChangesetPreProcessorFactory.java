@@ -35,6 +35,9 @@ package sonia.scm.jira;
 
 //~--- non-JDK imports --------------------------------------------------------
 
+import com.google.common.base.Strings;
+import com.google.inject.Inject;
+
 import sonia.scm.plugin.ext.Extension;
 import sonia.scm.repository.ChangesetPreProcessorFactory;
 import sonia.scm.repository.Repository;
@@ -61,6 +64,20 @@ public class JiraChangesetPreProcessorFactory
   public static final String REPLACEMENT_LINK =
     "<a target=\"_blank\" href=\"{0}/browse/$0\">$0</a>";
 
+  //~--- constructors ---------------------------------------------------------
+
+  /**
+   * Constructs ...
+   *
+   *
+   * @param context
+   */
+  @Inject
+  public JiraChangesetPreProcessorFactory(JiraGlobalContext context)
+  {
+    this.context = context;
+  }
+
   //~--- methods --------------------------------------------------------------
 
   /**
@@ -77,7 +94,12 @@ public class JiraChangesetPreProcessorFactory
     JiraChangesetPreProcessor cpp = null;
     String jiraUrl = repository.getProperty(PROPERTY_JIRA_URL);
 
-    if (Util.isNotEmpty(jiraUrl))
+    if (Strings.isNullOrEmpty(jiraUrl))
+    {
+      jiraUrl = context.getConfiguration().getUrl();
+    }
+
+    if (!Strings.isNullOrEmpty(jiraUrl))
     {
       jiraUrl = HttpUtil.getUriWithoutEndSeperator(jiraUrl);
 
@@ -89,4 +111,9 @@ public class JiraChangesetPreProcessorFactory
 
     return cpp;
   }
+
+  //~--- fields ---------------------------------------------------------------
+
+  /** Field description */
+  private JiraGlobalContext context;
 }

@@ -78,17 +78,22 @@ public class JiraIssuePostReceiveHook implements RepositoryHook
    *
    *
    *
+   *
+   * @param context
    * @param requestFactory
    * @param templateHandler
    * @param templateHandlerProvider
    */
   @Inject
-  public JiraIssuePostReceiveHook(JiraIssueRequestFactory requestFactory,
+  public JiraIssuePostReceiveHook(JiraGlobalContext context,
+    JiraIssueRequestFactory requestFactory,
     Provider<CommentTemplateHandler> templateHandlerProvider)
   {
+    this.context = context;
     this.requestFactory = requestFactory;
     this.templateHandlerProvider = templateHandlerProvider;
-    this.changesetPreProcessorFactory = new JiraChangesetPreProcessorFactory();
+    this.changesetPreProcessorFactory =
+      new JiraChangesetPreProcessorFactory(context);
   }
 
   //~--- methods --------------------------------------------------------------
@@ -106,15 +111,35 @@ public class JiraIssuePostReceiveHook implements RepositoryHook
 
     if (repository != null)
     {
-      JiraConfiguration configuraiton = new JiraConfiguration(repository);
+      JiraConfiguration configuration = new JiraConfiguration(repository);
 
-      if (configuraiton.isUpdateIssuesEnabled())
+      if (!configuration.isValid())
       {
-        handleIssueEvent(event, repository, configuraiton);
+        if (logger.isDebugEnabled())
+        {
+          logger.debug(
+            "repository configuration is not valid, try to use global configuration");
+        }
+
+        configuration = context.getConfiguration();
       }
-      else if (logger.isTraceEnabled())
+
+      if (configuration.isValid())
       {
-        logger.trace("jira auto-close is disabled");
+
+        if (configuration.isUpdateIssuesEnabled())
+        {
+          handleIssueEvent(event, repository, configuration);
+        }
+        else if (logger.isTraceEnabled())
+        {
+          logger.trace("jira update issues is disabled");
+        }
+
+      }
+      else if (logger.isDebugEnabled())
+      {
+        logger.debug("no valid jira configuration found");
       }
     }
     else if (logger.isErrorEnabled())
@@ -196,6 +221,9 @@ public class JiraIssuePostReceiveHook implements RepositoryHook
 
   /** Field description */
   private JiraChangesetPreProcessorFactory changesetPreProcessorFactory;
+
+  /** Field description */
+  private JiraGlobalContext context;
 
   /** Field description */
   private JiraIssueRequestFactory requestFactory;
