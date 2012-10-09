@@ -35,20 +35,30 @@ package sonia.scm.jira;
 
 //~--- non-JDK imports --------------------------------------------------------
 
+import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableSet;
+
 import sonia.scm.Validateable;
 import sonia.scm.repository.Repository;
 import sonia.scm.util.Util;
 
 //~--- JDK imports ------------------------------------------------------------
 
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
+import java.util.Set;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author Sebastian Sdorra
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "jira-configuration")
 public class JiraConfiguration implements Validateable
 {
 
@@ -70,6 +80,12 @@ public class JiraConfiguration implements Validateable
   //~--- constructors ---------------------------------------------------------
 
   /**
+   * This constructor should only be used by jaxb.
+   *
+   */
+  public JiraConfiguration() {}
+
+  /**
    * Constructs ...
    *
    *
@@ -80,7 +96,7 @@ public class JiraConfiguration implements Validateable
     url = repository.getProperty(PROPERTY_JIRA_URL);
     updateIssues = getBooleanProperty(repository, PROPERTY_UPDATEISSUES);
     autoClose = getBooleanProperty(repository, PROPERTY_AUTOCLOSE);
-    autoCloseWords = getListProperty(repository, PROPERTY_AUTOCLOSEWORDS);
+    autoCloseWords = getSetProperty(repository, PROPERTY_AUTOCLOSEWORDS);
   }
 
   //~--- get methods ----------------------------------------------------------
@@ -91,7 +107,7 @@ public class JiraConfiguration implements Validateable
    *
    * @return
    */
-  public List<String> getAutoCloseWords()
+  public Set<String> getAutoCloseWords()
   {
     return autoCloseWords;
   }
@@ -173,18 +189,22 @@ public class JiraConfiguration implements Validateable
    *
    * @return
    */
-  private List<String> getListProperty(Repository repository, String key)
+  private Set<String> getSetProperty(Repository repository, String key)
   {
-    List<String> values = null;
-    String valueString = repository.getProperty(key);
+    Set<String> values;
+    String value = repository.getProperty(key);
 
-    if (Util.isNotEmpty(valueString))
+    if (!Strings.isNullOrEmpty(value))
     {
-      values = Arrays.asList(valueString.split(SEPARATOR));
+      //J-
+      values = ImmutableSet.copyOf(
+        Splitter.on(SEPARATOR).trimResults().omitEmptyStrings().split(value)
+      );
+      //J+
     }
     else
     {
-      values = Collections.EMPTY_LIST;
+      values = Collections.EMPTY_SET;
     }
 
     return values;
@@ -193,12 +213,15 @@ public class JiraConfiguration implements Validateable
   //~--- fields ---------------------------------------------------------------
 
   /** Field description */
+  @XmlElement(name = "auto-close")
   private boolean autoClose;
 
   /** Field description */
-  private List<String> autoCloseWords;
+  @XmlElement(name = "auto-close-words")
+  private Set<String> autoCloseWords;
 
   /** Field description */
+  @XmlElement(name = "update-issues")
   private boolean updateIssues;
 
   /** Field description */
