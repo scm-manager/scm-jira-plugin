@@ -31,6 +31,10 @@
 
 package sonia.scm.jira;
 
+//~--- non-JDK imports --------------------------------------------------------
+
+import com.google.inject.Inject;
+
 //~--- JDK imports ------------------------------------------------------------
 
 import javax.ws.rs.Consumes;
@@ -55,6 +59,7 @@ public class JiraGlobalConfigurationResource
    *
    * @param context
    */
+  @Inject
   public JiraGlobalConfigurationResource(JiraGlobalContext context)
   {
     this.context = context;
