@@ -72,7 +72,7 @@ public class JiraGlobalConfigurationResource
    */
   @POST
   @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-  public Response updateConfiguration(JiraConfiguration updatedConfig)
+  public Response updateConfiguration(JiraGlobalConfiguration updatedConfig)
   {
     context.setConfiguration(updatedConfig);
 

@@ -31,46 +31,21 @@
 
 package sonia.scm.jira;
 
-//~--- non-JDK imports --------------------------------------------------------
+//~--- JDK imports ------------------------------------------------------------
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-
-import sonia.scm.store.Store;
-import sonia.scm.store.StoreFactory;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author Sebastian Sdorra
  */
-@Singleton
-public class JiraGlobalContext
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "jira-configuration")
+public class JiraGlobalConfiguration extends JiraConfiguration
 {
-
-  /** Field description */
-  private static final String NAME = "jira";
-
-  //~--- constructors ---------------------------------------------------------
-
-  /**
-   * Constructs ...
-   *
-   *
-   * @param storeFactory
-   */
-  @Inject
-  public JiraGlobalContext(StoreFactory storeFactory)
-  {
-    store = storeFactory.getStore(JiraGlobalConfiguration.class, NAME);
-    configuration = store.get();
-
-    if (configuration == null)
-    {
-      configuration = new JiraGlobalConfiguration();
-    }
-  }
-
-  //~--- get methods ----------------------------------------------------------
 
   /**
    * Method description
@@ -78,30 +53,14 @@ public class JiraGlobalContext
    *
    * @return
    */
-  public JiraConfiguration getConfiguration()
+  public boolean isDisableRepositoryConfiguration()
   {
-    return configuration;
-  }
-
-  //~--- set methods ----------------------------------------------------------
-
-  /**
-   * Method description
-   *
-   *
-   * @param configuration
-   */
-  public void setConfiguration(JiraGlobalConfiguration configuration)
-  {
-    this.configuration = configuration;
-    this.store.set(configuration);
+    return disableRepositoryConfiguration;
   }
 
   //~--- fields ---------------------------------------------------------------
 
   /** Field description */
-  private JiraGlobalConfiguration configuration;
-
-  /** Field description */
-  private Store<JiraGlobalConfiguration> store;
+  @XmlElement(name = "disable-repository-configuration")
+  private boolean disableRepositoryConfiguration = false;
 }
