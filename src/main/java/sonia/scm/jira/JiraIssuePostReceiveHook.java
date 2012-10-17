@@ -44,28 +44,22 @@ import org.slf4j.LoggerFactory;
 import sonia.scm.plugin.ext.Extension;
 import sonia.scm.repository.Changeset;
 import sonia.scm.repository.Repository;
-import sonia.scm.repository.RepositoryHook;
 import sonia.scm.repository.RepositoryHookEvent;
-import sonia.scm.repository.RepositoryHookType;
 import sonia.scm.util.IOUtil;
 import sonia.scm.util.Util;
 
 //~--- JDK imports ------------------------------------------------------------
 
-import java.util.Arrays;
 import java.util.Collection;
+import sonia.scm.repository.PostReceiveRepositoryHook;
 
 /**
  *
  * @author Sebastian Sdorra
  */
 @Extension
-public class JiraIssuePostReceiveHook implements RepositoryHook
+public class JiraIssuePostReceiveHook extends PostReceiveRepositoryHook
 {
-
-  /** Field description */
-  public static final Collection<RepositoryHookType> TYPES =
-    Arrays.asList(RepositoryHookType.POST_RECEIVE);
 
   /** the logger for JiraIssuePostReceiveHook */
   private static final Logger logger =
@@ -137,33 +131,6 @@ public class JiraIssuePostReceiveHook implements RepositoryHook
       logger.error("receive repository hook without repository");
     }
   }
-
-  //~--- get methods ----------------------------------------------------------
-
-  /**
-   * Method description
-   *
-   *
-   * @return
-   */
-  @Override
-  public Collection<RepositoryHookType> getTypes()
-  {
-    return TYPES;
-  }
-
-  /**
-   * Method description
-   *
-   *
-   * @return
-   */
-  @Override
-  public boolean isAsync()
-  {
-    return false;
-  }
-
   //~--- methods --------------------------------------------------------------
 
   /**

@@ -36,23 +36,15 @@ package sonia.scm.jira;
 //~--- non-JDK imports --------------------------------------------------------
 
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.subject.Subject;
 
 import sonia.scm.repository.Repository;
 import sonia.scm.security.CipherUtil;
-import sonia.scm.user.User;
 import sonia.scm.util.AssertUtil;
-import sonia.scm.util.SecurityUtil;
-import sonia.scm.web.security.WebSecurityContext;
-
-//~--- JDK imports ------------------------------------------------------------
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -64,10 +56,6 @@ public class JiraIssueRequestFactory
 
   /** Field description */
   public static final String SCM_CREDENTIALS = "SCM_CREDENTIALS";
-
-  /** the logger for JiraIssueRequestFactory */
-  private static final Logger logger =
-    LoggerFactory.getLogger(JiraIssueRequestFactory.class);
 
   //~--- constructors ---------------------------------------------------------
 
@@ -81,13 +69,9 @@ public class JiraIssueRequestFactory
    * @param securityContextProvider
    */
   @Inject
-  public JiraIssueRequestFactory(JiraHandlerFactory handlerFactory,
-    Provider<HttpServletRequest> requestProvider,
-    Provider<WebSecurityContext> securityContextProvider)
+  public JiraIssueRequestFactory(JiraHandlerFactory handlerFactory)
   {
     this.handlerFactory = handlerFactory;
-    this.requestProvider = requestProvider;
-    this.securityContextProvider = securityContextProvider;
   }
 
   //~--- methods --------------------------------------------------------------
@@ -105,10 +89,9 @@ public class JiraIssueRequestFactory
   public JiraIssueRequest createRequest(JiraConfiguration configuration,
     Repository repository)
   {
-    String username = getUsername();
-    String password = getPassword();
+    String[] credentials = getUserCredentials();
 
-    return new JiraIssueRequest(handlerFactory, username, password,
+    return new JiraIssueRequest(handlerFactory, credentials[0], credentials[1],
       configuration, repository);
   }
 
@@ -120,13 +103,31 @@ public class JiraIssueRequestFactory
    *
    * @return
    */
-  private String getPassword()
+  private String getCredentialsString()
   {
-    HttpSession session = requestProvider.get().getSession();
+    String crendentials = null;
 
-    AssertUtil.assertIsNotNull(session);
+    Subject subject = SecurityUtils.getSubject();
+    Session session = subject.getSession();
 
-    String credentialsString = (String) session.getAttribute(SCM_CREDENTIALS);
+    if (session != null)
+    {
+      crendentials = (String) session.getAttribute(SCM_CREDENTIALS);
+
+    }
+
+    return crendentials;
+  }
+
+  /**
+   * Method description
+   *
+   *
+   * @return
+   */
+  private String[] getUserCredentials()
+  {
+    String credentialsString = getCredentialsString();
 
     AssertUtil.assertIsNotEmpty(credentialsString);
     credentialsString = CipherUtil.getInstance().decode(credentialsString);
@@ -135,46 +136,14 @@ public class JiraIssueRequestFactory
 
     if (credentialsArray.length < 2)
     {
-      throw new RuntimeException("credentials empty");
+      throw new RuntimeException("non valid credentials found");
     }
 
-    return credentialsArray[1];
-  }
-
-  /**
-   * Method description
-   *
-   *
-   *
-   *
-   * @param configuration
-   * @return
-   */
-  private String getUsername()
-  {
-    String username = null;
-    User user = SecurityUtil.getCurrentUser(securityContextProvider);
-
-    if (user != null)
-    {
-      username = user.getName();
-    }
-    else if (logger.isErrorEnabled())
-    {
-      logger.error("could not find current user");
-    }
-
-    return username;
+    return credentialsArray;
   }
 
   //~--- fields ---------------------------------------------------------------
 
   /** Field description */
   private JiraHandlerFactory handlerFactory;
-
-  /** Field description */
-  private Provider<HttpServletRequest> requestProvider;
-
-  /** Field description */
-  private Provider<WebSecurityContext> securityContextProvider;
 }
