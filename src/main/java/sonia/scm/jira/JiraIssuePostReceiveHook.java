@@ -43,6 +43,7 @@ import org.slf4j.LoggerFactory;
 
 import sonia.scm.plugin.ext.Extension;
 import sonia.scm.repository.Changeset;
+import sonia.scm.repository.PostReceiveRepositoryHook;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryHookEvent;
 import sonia.scm.util.IOUtil;
@@ -51,7 +52,6 @@ import sonia.scm.util.Util;
 //~--- JDK imports ------------------------------------------------------------
 
 import java.util.Collection;
-import sonia.scm.repository.PostReceiveRepositoryHook;
 
 /**
  *
@@ -76,6 +76,7 @@ public class JiraIssuePostReceiveHook extends PostReceiveRepositoryHook
    * @param context
    * @param requestFactory
    * @param templateHandler
+   * @param linkHandlerProvider
    * @param templateHandlerProvider
    */
   @Inject
@@ -131,7 +132,6 @@ public class JiraIssuePostReceiveHook extends PostReceiveRepositoryHook
       logger.error("receive repository hook without repository");
     }
   }
-  //~--- methods --------------------------------------------------------------
 
   /**
    * Method description

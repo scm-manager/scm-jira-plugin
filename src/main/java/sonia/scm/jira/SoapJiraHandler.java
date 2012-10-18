@@ -35,6 +35,8 @@ package sonia.scm.jira;
 
 //~--- non-JDK imports --------------------------------------------------------
 
+import com.google.common.base.Strings;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -178,6 +180,81 @@ public class SoapJiraHandler implements JiraHandler
     {
       throw new JiraException("logout failed", ex);
     }
+  }
+
+  //~--- get methods ----------------------------------------------------------
+
+  /**
+   * Method description
+   *
+   *
+   * @param issueId
+   * @param contains
+   *
+   * @return
+   *
+   * @throws JiraException
+   */
+  @Override
+  public boolean isCommentAlreadyExists(String issueId, String... contains)
+    throws JiraException
+  {
+    boolean result = false;
+
+    try
+    {
+      RemoteComment[] comments = service.getComments(token, issueId);
+
+      for (RemoteComment comment : comments)
+      {
+        if (contains(comment, contains))
+        {
+          result = true;
+
+          break;
+        }
+      }
+    }
+    catch (Exception ex)
+    {
+      throw new JiraException("could not check for jira comment", ex);
+    }
+
+    return result;
+  }
+
+  //~--- methods --------------------------------------------------------------
+
+  /**
+   * Method description
+   *
+   *
+   * @param comment
+   * @param contains
+   *
+   * @return
+   */
+  private boolean contains(RemoteComment comment, String... contains)
+  {
+    boolean result = false;
+    String body = comment.getBody();
+
+    if (!Strings.isNullOrEmpty(body))
+    {
+      for (String c : contains)
+      {
+        if (body.contains(c))
+        {
+          result = true;
+
+          break;
+
+        }
+
+      }
+    }
+
+    return result;
   }
 
   //~--- fields ---------------------------------------------------------------

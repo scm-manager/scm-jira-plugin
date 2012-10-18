@@ -89,16 +89,14 @@ public class DefaultCommentTemplateHandler implements CommentTemplateHandler
    * @param templateEngineFactory
    * @param wuiUrlProvider
    * @param restUrlProvider
+   * @param linkHandler
    */
   @Inject
   public DefaultCommentTemplateHandler(
-    TemplateEngineFactory templateEngineFactory,
-    @Named(UrlProviderFactory.TYPE_WUI) UrlProvider wuiUrlProvider,
-    @Named(UrlProviderFactory.TYPE_RESTAPI_XML) UrlProvider restUrlProvider)
+    TemplateEngineFactory templateEngineFactory, LinkHandler linkHandler)
   {
     this.templateEngineFactory = templateEngineFactory;
-    this.wuiUrlProvider = wuiUrlProvider;
-    this.restUrlProvider = restUrlProvider;
+    this.linkHandler = linkHandler;
   }
 
   //~--- methods --------------------------------------------------------------
@@ -147,9 +145,9 @@ public class DefaultCommentTemplateHandler implements CommentTemplateHandler
     env.put(ENV_REPOSITORY, repository);
     env.put(ENV_CHANGESET, changeset);
     env.put(ENV_AUTOCLOSEWORD, Util.nonNull(autoCloseWord));
-    env.put(ENV_DIFFURL, getDiffUrl(repository, changeset));
-    env.put(ENV_DIFFRESTURL, getDiffRestUrl(repository, changeset));
-    env.put(ENV_REPOSITORYURL, getRepositoryUrl(repository));
+    env.put(ENV_DIFFURL, linkHandler.getDiffUrl(repository, changeset));
+    env.put(ENV_DIFFRESTURL, linkHandler.getDiffRestUrl(repository, changeset));
+    env.put(ENV_REPOSITORYURL, linkHandler.getRepositoryUrl(repository));
 
     TemplateEngine engine = templateEngineFactory.getDefaultEngine();
     Template template = engine.getTemplate(tpl.getResource());
@@ -161,60 +159,11 @@ public class DefaultCommentTemplateHandler implements CommentTemplateHandler
     return writer.toString();
   }
 
-  //~--- get methods ----------------------------------------------------------
-
-  /**
-   * Method description
-   *
-   *
-   * @param repository
-   * @param changeset
-   *
-   * @return
-   */
-  private String getDiffRestUrl(Repository repository, Changeset changeset)
-  {
-    return restUrlProvider.getRepositoryUrlProvider().getDiffUrl(
-      repository.getId(), changeset.getId());
-  }
-
-  /**
-   * Method description
-   *
-   *
-   * @param repository
-   * @param changeset
-   *
-   * @return
-   */
-  private String getDiffUrl(Repository repository, Changeset changeset)
-  {
-    return wuiUrlProvider.getRepositoryUrlProvider().getDiffUrl(
-      repository.getId(), changeset.getId());
-  }
-
-  /**
-   * Method description
-   *
-   *
-   * @param repository
-   *
-   * @return
-   */
-  private String getRepositoryUrl(Repository repository)
-  {
-    return wuiUrlProvider.getRepositoryUrlProvider().getDetailUrl(
-      repository.getId());
-  }
-
   //~--- fields ---------------------------------------------------------------
 
   /** Field description */
-  private UrlProvider restUrlProvider;
+  private LinkHandler linkHandler;
 
   /** Field description */
   private TemplateEngineFactory templateEngineFactory;
-
-  /** Field description */
-  private UrlProvider wuiUrlProvider;
 }

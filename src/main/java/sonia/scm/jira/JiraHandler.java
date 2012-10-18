@@ -69,4 +69,20 @@ public interface JiraHandler
    * @throws JiraException
    */
   public void logout() throws JiraException;
+
+  //~--- get methods ----------------------------------------------------------
+
+  /**
+   * Method description
+   *
+   *
+   * @param issueId
+   * @param contains
+   *
+   * @return
+   *
+   * @throws JiraException
+   */
+  public boolean isCommentAlreadyExists(String issueId, String... contains)
+    throws JiraException;
 }

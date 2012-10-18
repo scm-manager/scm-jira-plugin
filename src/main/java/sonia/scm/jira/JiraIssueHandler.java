@@ -61,6 +61,8 @@ public class JiraIssueHandler
    * Constructs ...
    *
    *
+   *
+   * @param linkHandler
    * @param templateHandler
    * @param request
    */
@@ -209,10 +211,20 @@ public class JiraIssueHandler
     try
     {
       JiraHandler handler = request.createJiraHandler();
-      String comment = templateHandler.render(CommentTemplate.UPADTE, request,
-                         changeset);
 
-      handler.addComment(issueId, comment);
+      if (! handler.isCommentAlreadyExists(issueId, changeset.getId(),
+        changeset.getDescription()))
+      {
+        String comment = templateHandler.render(CommentTemplate.UPADTE,
+                           request, changeset);
+
+        handler.addComment(issueId, comment);
+      }
+      else if (logger.isInfoEnabled())
+      {
+        logger.info("comment for changeset {} already exists at issue {}",
+          changeset.getId(), issueId);
+      }
     }
     catch (IOException ex)
     {
