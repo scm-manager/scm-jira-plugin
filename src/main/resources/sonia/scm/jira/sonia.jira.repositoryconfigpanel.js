@@ -65,6 +65,19 @@ Sonia.jira.RepositoryConfigPanel = Ext.extend(Sonia.repository.PropertiesFormPan
         property: 'jira.auto-close-words',
         helpText: Sonia.jira.I18n.autoCloseWordsHelpText,
         value: Sonia.jira.I18n.autoCloseDefaultValues
+      },{
+        id: 'jiraUsername',
+        name: 'jiraUsername',
+        fieldLabel: Sonia.jira.I18n.usernameText,
+        property: 'jira.username',
+        helpText: Sonia.jira.I18n.usernameHelpText
+      },{
+        id: 'jiraPassword',
+        name: 'jiraPassword',
+        fieldLabel: Sonia.jira.I18n.passwordText,
+        property: 'jira.password',
+        inputType: 'password',
+        helpText: Sonia.jira.I18n.passwordHelpText
       }]
     }
     

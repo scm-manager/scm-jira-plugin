@@ -73,6 +73,19 @@ Sonia.jira.GlobalConfigPanel = Ext.extend(Sonia.config.ConfigForm, {
         fieldLabel: Sonia.jira.I18n.autoCloseWordsText,
         helpText: Sonia.jira.I18n.autoCloseWordsHelpText,
         value: Sonia.jira.I18n.autoCloseDefaultValues
+      },{
+        id: 'username',
+        name: 'username',
+        xtype: 'textfield',
+        fieldLabel: Sonia.jira.I18n.usernameText,
+        helpText: Sonia.jira.I18n.usernameHelpText
+      },{
+        id: 'password',
+        name: 'password',
+        xtype: 'textfield',
+        fieldLabel: Sonia.jira.I18n.passwordText,
+        inputType: 'password',
+        helpText: Sonia.jira.I18n.passwordHelpText
       }]
     }
 

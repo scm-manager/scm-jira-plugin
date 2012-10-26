@@ -59,8 +59,14 @@ Sonia.jira.I18n = {
   
   autoCloseWordsText: 'Auto-Close Words',
   autoCloseWordsHelpText: 'Comma separated list of words to enable the auto close function. \n\
-                           Each commit message of a changeset is being searched for these words.'
+                           Each commit message of a changeset is being searched for these words.',
   
+  usernameText: 'Username',
+  usernameHelpText: 'Jira username for connection. Leave this field empty to create the connection\n\
+                     with the credentials of the user which is logged in.',
+  
+  passwordText: 'Password',
+  passwordHelpText: 'Jira password for connection.'
 }
 
 Sonia.jira.toggleFields = function(cmps, scope){

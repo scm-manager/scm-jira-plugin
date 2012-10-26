@@ -35,12 +35,16 @@ package sonia.scm.jira;
 
 //~--- non-JDK imports --------------------------------------------------------
 
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import sonia.scm.repository.Repository;
 import sonia.scm.security.CipherUtil;
@@ -56,6 +60,12 @@ public class JiraIssueRequestFactory
 
   /** Field description */
   public static final String SCM_CREDENTIALS = "SCM_CREDENTIALS";
+
+  /**
+   * the logger for JiraIssueRequestFactory
+   */
+  private static final Logger logger =
+    LoggerFactory.getLogger(JiraIssueRequestFactory.class);
 
   //~--- constructors ---------------------------------------------------------
 
@@ -89,9 +99,28 @@ public class JiraIssueRequestFactory
   public JiraIssueRequest createRequest(JiraConfiguration configuration,
     Repository repository)
   {
-    String[] credentials = getUserCredentials();
+    String username = configuration.getUsername();
+    String password = configuration.getPassword();
 
-    return new JiraIssueRequest(handlerFactory, credentials[0], credentials[1],
+    if (Strings.isNullOrEmpty(username))
+    {
+      if (logger.isTraceEnabled())
+      {
+        logger.trace("no username configured, use current credentials");
+      }
+
+      String[] credentials = getUserCredentials();
+
+      username = credentials[0];
+      password = credentials[1];
+    }
+
+    if (logger.isDebugEnabled())
+    {
+      logger.debug("create jira issue request for user {}", username);
+    }
+
+    return new JiraIssueRequest(handlerFactory, username, password,
       configuration, repository);
   }
 

@@ -71,7 +71,13 @@ public class JiraConfiguration implements Validateable
   public static final String PROPERTY_JIRA_URL = "jira.url";
 
   /** Field description */
+  public static final String PROPERTY_PASSWORD = "jira.password";
+
+  /** Field description */
   public static final String PROPERTY_UPDATEISSUES = "jira.update-issues";
+
+  /** Field description */
+  public static final String PROPERTY_USERNAME = "jira.username";
 
   /** Field description */
   public static final String SEPARATOR = ",";
@@ -96,6 +102,8 @@ public class JiraConfiguration implements Validateable
     updateIssues = getBooleanProperty(repository, PROPERTY_UPDATEISSUES);
     autoClose = getBooleanProperty(repository, PROPERTY_AUTOCLOSE);
     autoCloseWords = getSetProperty(repository, PROPERTY_AUTOCLOSEWORDS);
+    username = repository.getProperty(PROPERTY_USERNAME);
+    password = getEncryptedProperty(repository, PROPERTY_PASSWORD);
   }
 
   //~--- get methods ----------------------------------------------------------
@@ -117,9 +125,31 @@ public class JiraConfiguration implements Validateable
    *
    * @return
    */
+  public String getPassword()
+  {
+    return password;
+  }
+
+  /**
+   * Method description
+   *
+   *
+   * @return
+   */
   public String getUrl()
   {
     return url;
+  }
+
+  /**
+   * Method description
+   *
+   *
+   * @return
+   */
+  public String getUsername()
+  {
+    return username;
   }
 
   /**
@@ -188,6 +218,27 @@ public class JiraConfiguration implements Validateable
    *
    * @return
    */
+  private String getEncryptedProperty(Repository repository, String key)
+  {
+    String value = repository.getProperty(key);
+
+    if (EncryptionUtil.isEncrypted(value))
+    {
+      value = EncryptionUtil.decrypt(value);
+    }
+
+    return value;
+  }
+
+  /**
+   * Method description
+   *
+   *
+   * @param repository
+   * @param key
+   *
+   * @return
+   */
   private Set<String> getSetProperty(Repository repository, String key)
   {
     Set<String> values;
@@ -221,9 +272,16 @@ public class JiraConfiguration implements Validateable
   private Set<String> autoCloseWords;
 
   /** Field description */
+  @XmlJavaTypeAdapter(XmlEncryptionAdapter.class)
+  private String password;
+
+  /** Field description */
   @XmlElement(name = "update-issues")
   private boolean updateIssues;
 
   /** Field description */
   private String url;
+
+  /** Field description */
+  private String username;
 }
