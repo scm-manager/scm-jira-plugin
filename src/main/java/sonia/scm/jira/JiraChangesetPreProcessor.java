@@ -37,8 +37,12 @@ package sonia.scm.jira;
 
 import com.google.common.base.Strings;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import sonia.scm.repository.Changeset;
 import sonia.scm.repository.ChangesetPreProcessor;
+import sonia.scm.repository.Repository;
 
 //~--- JDK imports ------------------------------------------------------------
 
@@ -56,6 +60,12 @@ public class JiraChangesetPreProcessor implements ChangesetPreProcessor
   private static final Pattern KEY_PATTERN =
     Pattern.compile("\\b([A-Z]+-\\d+)");
 
+  /**
+   * the logger for JiraChangesetPreProcessor
+   */
+  private static final Logger logger =
+    LoggerFactory.getLogger(JiraChangesetPreProcessor.class);
+
   //~--- constructors ---------------------------------------------------------
 
   /**
@@ -63,11 +73,17 @@ public class JiraChangesetPreProcessor implements ChangesetPreProcessor
    *
    *
    *
+   *
+   * @param context
+   * @param repository
    * @param keyReplacementPattern
    * @param projectKeys
    */
-  public JiraChangesetPreProcessor(String keyReplacementPattern)
+  public JiraChangesetPreProcessor(JiraGlobalContext context,
+    Repository repository, String keyReplacementPattern)
   {
+    this.context = context;
+    this.repository = repository;
     this.keyReplacementPattern = keyReplacementPattern;
   }
 
@@ -95,7 +111,16 @@ public class JiraChangesetPreProcessor implements ChangesetPreProcessor
 
         if (issueHandler != null)
         {
-          issueHandler.handleIssue(m.group(), changeset);
+          if (!context.isHandled(repository, changeset))
+          {
+            issueHandler.handleIssue(m.group(), changeset);
+            context.markAsHandled(repository, changeset);
+          }
+          else if (logger.isDebugEnabled())
+          {
+            logger.debug("changeset {} of repository {} is already handled",
+              changeset.getId(), repository.getId());
+          }
         }
       }
 
@@ -122,8 +147,14 @@ public class JiraChangesetPreProcessor implements ChangesetPreProcessor
   //~--- fields ---------------------------------------------------------------
 
   /** Field description */
+  private JiraGlobalContext context;
+
+  /** Field description */
   private JiraIssueHandler issueHandler;
 
   /** Field description */
   private String keyReplacementPattern;
+
+  /** Field description */
+  private Repository repository;
 }

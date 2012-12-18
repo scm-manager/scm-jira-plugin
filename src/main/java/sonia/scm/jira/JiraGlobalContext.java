@@ -38,6 +38,13 @@ package sonia.scm.jira;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import sonia.scm.repository.Changeset;
+import sonia.scm.repository.Repository;
+import sonia.scm.store.DataStore;
+import sonia.scm.store.DataStoreFactory;
 import sonia.scm.store.Store;
 import sonia.scm.store.StoreFactory;
 
@@ -52,6 +59,12 @@ public class JiraGlobalContext
   /** Field description */
   private static final String NAME = "jira";
 
+  /**
+   * the logger for JiraGlobalContext
+   */
+  private static final Logger logger =
+    LoggerFactory.getLogger(JiraGlobalContext.class);
+
   //~--- constructors ---------------------------------------------------------
 
   /**
@@ -59,17 +72,40 @@ public class JiraGlobalContext
    *
    *
    * @param storeFactory
+   * @param dataStoreFactory
    */
   @Inject
-  public JiraGlobalContext(StoreFactory storeFactory)
+  public JiraGlobalContext(StoreFactory storeFactory,
+    DataStoreFactory dataStoreFactory)
   {
     store = storeFactory.getStore(JiraGlobalConfiguration.class, NAME);
+    dataStore = dataStoreFactory.getStore(JiraData.class, NAME);
     configuration = store.get();
 
     if (configuration == null)
     {
       configuration = new JiraGlobalConfiguration();
     }
+  }
+
+  //~--- methods --------------------------------------------------------------
+
+  /**
+   * Method description
+   *
+   *
+   * @param repository
+   * @param changeset
+   */
+  public void markAsHandled(Repository repository, Changeset changeset)
+  {
+    logger.debug("mark changeset {} of repository {} as handled",
+      changeset.getId(), repository.getId());
+
+    JiraData data = getData(repository);
+
+    data.getHandledChangesets().add(changeset.getId());
+    dataStore.put(repository.getId(), data);
   }
 
   //~--- get methods ----------------------------------------------------------
@@ -85,6 +121,22 @@ public class JiraGlobalContext
     return configuration;
   }
 
+  /**
+   * Method description
+   *
+   *
+   * @param repository
+   * @param changeset
+   *
+   * @return
+   */
+  public boolean isHandled(Repository repository, Changeset changeset)
+  {
+    JiraData data = getData(repository);
+
+    return data.getHandledChangesets().contains(changeset.getId());
+  }
+
   //~--- set methods ----------------------------------------------------------
 
   /**
@@ -95,14 +147,40 @@ public class JiraGlobalContext
    */
   public void setConfiguration(JiraGlobalConfiguration configuration)
   {
+    logger.debug("store jira configuration");
     this.configuration = configuration;
     this.store.set(configuration);
+  }
+
+  //~--- get methods ----------------------------------------------------------
+
+  /**
+   * Method description
+   *
+   *
+   * @param repository
+   *
+   * @return
+   */
+  private JiraData getData(Repository repository)
+  {
+    JiraData data = dataStore.get(repository.getId());
+
+    if (data == null)
+    {
+      data = new JiraData();
+    }
+
+    return data;
   }
 
   //~--- fields ---------------------------------------------------------------
 
   /** Field description */
   private JiraGlobalConfiguration configuration;
+
+  /** Field description */
+  private DataStore<JiraData> dataStore;
 
   /** Field description */
   private Store<JiraGlobalConfiguration> store;

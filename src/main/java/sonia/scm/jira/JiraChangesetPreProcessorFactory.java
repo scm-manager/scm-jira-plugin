@@ -104,7 +104,8 @@ public class JiraChangesetPreProcessorFactory
       String replacementPattern = MessageFormat.format(REPLACEMENT_LINK,
                                     jiraUrl);
 
-      cpp = new JiraChangesetPreProcessor(replacementPattern);
+      cpp = new JiraChangesetPreProcessor(context, repository,
+        replacementPattern);
     }
 
     return cpp;
