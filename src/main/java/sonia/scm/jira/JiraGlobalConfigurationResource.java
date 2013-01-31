@@ -37,6 +37,13 @@ package sonia.scm.jira;
 
 import com.google.inject.Inject;
 
+import org.apache.shiro.SecurityUtils;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import sonia.scm.security.Role;
+
 //~--- JDK imports ------------------------------------------------------------
 
 import javax.ws.rs.Consumes;
@@ -44,16 +51,26 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 /**
  *
  * @author Sebastian Sdorra
  */
-@Path("/plugins/jira/global-config")
+@Path("plugins/jira/global-config")
 public class JiraGlobalConfigurationResource
 {
+
+  /**
+   * the logger for JiraGlobalConfigurationResource
+   */
+  private static final Logger logger =
+    LoggerFactory.getLogger(JiraGlobalConfigurationResource.class);
+
+  //~--- constructors ---------------------------------------------------------
 
   /**
    * Constructs ...
@@ -64,6 +81,13 @@ public class JiraGlobalConfigurationResource
   @Inject
   public JiraGlobalConfigurationResource(JiraGlobalContext context)
   {
+    if (!SecurityUtils.getSubject().hasRole(Role.ADMIN))
+    {
+      logger.warn("user has not enough privileges to configure jira");
+
+      throw new WebApplicationException(Status.FORBIDDEN);
+    }
+
     this.context = context;
   }
 
