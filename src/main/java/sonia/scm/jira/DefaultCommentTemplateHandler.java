@@ -37,15 +37,12 @@ package sonia.scm.jira;
 
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
-import com.google.inject.name.Named;
 
 import sonia.scm.repository.Changeset;
 import sonia.scm.repository.Repository;
 import sonia.scm.template.Template;
 import sonia.scm.template.TemplateEngine;
 import sonia.scm.template.TemplateEngineFactory;
-import sonia.scm.url.UrlProvider;
-import sonia.scm.url.UrlProviderFactory;
 import sonia.scm.util.Util;
 
 //~--- JDK imports ------------------------------------------------------------
