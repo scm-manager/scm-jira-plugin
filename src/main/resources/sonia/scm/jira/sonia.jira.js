@@ -60,6 +60,9 @@ Sonia.jira.I18n = {
   autoCloseWordsText: 'Auto-Close Words',
   autoCloseWordsHelpText: 'Comma separated list of words to enable the auto close function. \n\
                            Each commit message of a changeset is being searched for these words.',
+          
+  roleLevelText: 'Role visibility',
+  roleLevelHelpText: 'Defines for which Project Role the comments are visible. <b>Note:</b> The name must be a valid jira role name.',
   
   usernameText: 'Username',
   usernameHelpText: 'Jira username for connection. Leave this field empty to create the connection\n\

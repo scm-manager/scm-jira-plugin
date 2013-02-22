@@ -62,9 +62,16 @@ Sonia.jira.RepositoryConfigPanel = Ext.extend(Sonia.repository.PropertiesFormPan
         id: 'jiraAutoCloseWords',
         name: 'jiraAutoCloseWords',
         fieldLabel: Sonia.jira.I18n.autoCloseWordsText,
-        property: 'jira.auto-close-words',
+        property: 'jira.role-level',
         helpText: Sonia.jira.I18n.autoCloseWordsHelpText,
         value: Sonia.jira.I18n.autoCloseDefaultValues
+      },{
+        id: 'roleLevel',
+        name: 'role-level',
+        xtype: 'textfield',
+        property: 'jira.auto-close-words',
+        fieldLabel: Sonia.jira.I18n.roleLevelText,
+        helpText: Sonia.jira.I18n.roleLevelHelpText
       },{
         id: 'jiraUsername',
         name: 'jiraUsername',
@@ -93,7 +100,8 @@ Sonia.jira.RepositoryConfigPanel = Ext.extend(Sonia.repository.PropertiesFormPan
   toggleUpdateIssues: function(checkbox){
     var cmps = [
       Ext.getCmp( 'jiraAutoClose' ),
-      Ext.getCmp( 'jiraAutoCloseWords' )
+      Ext.getCmp( 'jiraAutoCloseWords' ),
+      Ext.getCmp( 'roleLevel' )
     ];
     
     Sonia.jira.toggleFields(cmps, checkbox);

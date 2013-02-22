@@ -94,7 +94,7 @@ public class SoapJiraHandler implements JiraHandler
    * @throws JiraException
    */
   @Override
-  public void addComment(String issueId, String comment) throws JiraException
+  public void addComment(String issueId, Comment comment) throws JiraException
   {
     if (logger.isInfoEnabled())
     {
@@ -105,7 +105,12 @@ public class SoapJiraHandler implements JiraHandler
 
     remoteComment.setAuthor(username);
     remoteComment.setCreated(new GregorianCalendar());
-    remoteComment.setBody(comment);
+    remoteComment.setBody(comment.getBody());
+
+    if (!Strings.isNullOrEmpty(comment.getBody()))
+    {
+      remoteComment.setRoleLevel(comment.getRoleLevel());
+    }
 
     try
     {

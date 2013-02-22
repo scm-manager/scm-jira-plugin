@@ -144,7 +144,7 @@ public class JiraIssueHandler
                          request, changeset, autoCloseWord);
 
       handler.close(issueId, autoCloseWord);
-      handler.addComment(issueId, comment);
+      handler.addComment(issueId, createComment(comment));
     }
     catch (IOException ex)
     {
@@ -154,6 +154,19 @@ public class JiraIssueHandler
     {
       logger.error("could not close jira issue", ex);
     }
+  }
+
+  /**
+   * Method description
+   *
+   *
+   * @param body
+   *
+   * @return
+   */
+  private Comment createComment(String body)
+  {
+    return new Comment(body, request.getConfiguration().getRoleLevel());
   }
 
   /**
@@ -212,13 +225,13 @@ public class JiraIssueHandler
     {
       JiraHandler handler = request.createJiraHandler();
 
-      if (! handler.isCommentAlreadyExists(issueId, changeset.getId(),
+      if (!handler.isCommentAlreadyExists(issueId, changeset.getId(),
         changeset.getDescription()))
       {
         String comment = templateHandler.render(CommentTemplate.UPADTE,
                            request, changeset);
 
-        handler.addComment(issueId, comment);
+        handler.addComment(issueId, createComment(comment));
       }
       else if (logger.isInfoEnabled())
       {

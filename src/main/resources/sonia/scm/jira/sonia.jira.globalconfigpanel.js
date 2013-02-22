@@ -74,6 +74,12 @@ Sonia.jira.GlobalConfigPanel = Ext.extend(Sonia.config.ConfigForm, {
         helpText: Sonia.jira.I18n.autoCloseWordsHelpText,
         value: Sonia.jira.I18n.autoCloseDefaultValues
       },{
+        id: 'roleLevel',
+        name: 'role-level',
+        xtype: 'textfield',
+        fieldLabel: Sonia.jira.I18n.roleLevelText,
+        helpText: Sonia.jira.I18n.roleLevelHelpText
+      },{
         id: 'username',
         name: 'username',
         xtype: 'textfield',
@@ -96,7 +102,8 @@ Sonia.jira.GlobalConfigPanel = Ext.extend(Sonia.config.ConfigForm, {
   toggleUpdateIssues: function(checkbox){
     var cmps = [
       Ext.getCmp( 'autoClose' ),
-      Ext.getCmp( 'autoCloseWords' )
+      Ext.getCmp( 'autoCloseWords' ),
+      Ext.getCmp( 'roleLevel' )
     ];
     
     Sonia.jira.toggleFields(cmps, checkbox);

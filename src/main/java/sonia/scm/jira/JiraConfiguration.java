@@ -74,6 +74,9 @@ public class JiraConfiguration implements Validateable
   public static final String PROPERTY_PASSWORD = "jira.password";
 
   /** Field description */
+  public static final String PROPERTY_ROLELEVEL = "jira.role-level";
+
+  /** Field description */
   public static final String PROPERTY_UPDATEISSUES = "jira.update-issues";
 
   /** Field description */
@@ -104,6 +107,7 @@ public class JiraConfiguration implements Validateable
     autoCloseWords = getSetProperty(repository, PROPERTY_AUTOCLOSEWORDS);
     username = repository.getProperty(PROPERTY_USERNAME);
     password = getEncryptedProperty(repository, PROPERTY_PASSWORD);
+    roleLevel = repository.getProperty(PROPERTY_ROLELEVEL);
   }
 
   //~--- get methods ----------------------------------------------------------
@@ -128,6 +132,17 @@ public class JiraConfiguration implements Validateable
   public String getPassword()
   {
     return password;
+  }
+
+  /**
+   * Method description
+   *
+   *
+   * @return
+   */
+  public String getRoleLevel()
+  {
+    return roleLevel;
   }
 
   /**
@@ -274,6 +289,10 @@ public class JiraConfiguration implements Validateable
   /** Field description */
   @XmlJavaTypeAdapter(XmlEncryptionAdapter.class)
   private String password;
+
+  /** Field description */
+  @XmlElement(name = "role-level")
+  private String roleLevel;
 
   /** Field description */
   @XmlElement(name = "update-issues")
