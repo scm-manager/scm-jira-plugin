@@ -53,8 +53,8 @@ import java.rmi.RemoteException;
 import java.text.MessageFormat;
 
 import java.util.GregorianCalendar;
+import java.util.Locale;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  *
@@ -135,16 +135,16 @@ public class SoapJiraHandler implements JiraHandler
    *
    *
    * @param issueId
-   * @param autoCloseWords
+   * @param autoCloseWord
    *
    * @throws JiraException
    */
   @Override
-  public void close(String issueId, String autoCloseWords) throws JiraException
+  public void close(String issueId, String autoCloseWord) throws JiraException
   {
     if (logger.isInfoEnabled())
     {
-      logger.info("close issue {}", issueId);
+      logger.info("try to close issue {}", issueId);
     }
 
     try
@@ -154,7 +154,7 @@ public class SoapJiraHandler implements JiraHandler
 
       for (RemoteNamedObject rnm : rnms)
       {
-        if (rnm.getName().toLowerCase().contains(autoCloseWords.toLowerCase()))
+        if (contains(rnm.getName(), autoCloseWord))
         {
           id = rnm.getId();
 
@@ -258,6 +258,20 @@ public class SoapJiraHandler implements JiraHandler
    * Method description
    *
    *
+   * @param text
+   * @param value
+   *
+   * @return
+   */
+  private boolean contains(String text, String value)
+  {
+    return toLowerCase(text).contains(toLowerCase(value));
+  }
+
+  /**
+   * Method description
+   *
+   *
    * @param comment
    * @param contains
    *
@@ -311,6 +325,19 @@ public class SoapJiraHandler implements JiraHandler
     body = body.replaceAll(EscapeUtil.escape(link), issueId);
 
     return body;
+  }
+
+  /**
+   * Method description
+   *
+   *
+   * @param value
+   *
+   * @return
+   */
+  private String toLowerCase(String value)
+  {
+    return Strings.nullToEmpty(value).toLowerCase(Locale.ENGLISH);
   }
 
   //~--- fields ---------------------------------------------------------------
