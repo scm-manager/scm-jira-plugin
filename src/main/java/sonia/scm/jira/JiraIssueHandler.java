@@ -148,7 +148,7 @@ public class JiraIssueHandler
     }
     catch (IOException ex)
     {
-      logger.error("could render template", ex);
+      logger.error("could not render template", ex);
     }
     catch (JiraException ex)
     {
