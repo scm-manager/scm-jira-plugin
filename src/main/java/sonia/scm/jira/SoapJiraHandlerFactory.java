@@ -95,7 +95,7 @@ public class SoapJiraHandlerFactory implements JiraHandlerFactory
         new JiraSoapServiceServiceLocator().getJirasoapserviceV2(url);
       String token = service.login(username, password);
 
-      handler = new SoapJiraHandler(service, token, username);
+      handler = new SoapJiraHandler(service, urlString, token, username);
     }
     catch (Exception ex)
     {
