@@ -108,7 +108,7 @@ Sonia.jira.RepositoryConfigPanel = Ext.extend(Sonia.repository.PropertiesFormPan
     cmps = [ Ext.getCmp('jiraAutoCloseWords'),
              Ext.getCmp( 'roleLevel' ) ];
     Sonia.jira.toggleFields(cmps, Ext.getCmp('jiraAutoClose').getValue() && checkbox);
-  }
+  },
 
   toggleAutoClose : function(checkbox) {
       var cmps = [ Ext.getCmp('jiraAutoCloseWords'),
