@@ -65,7 +65,10 @@ Sonia.jira.GlobalConfigPanel = Ext.extend(Sonia.config.ConfigForm, {
         xtype: 'checkbox',
         inputValue: 'true',
         fieldLabel: Sonia.jira.I18n.autoCloseText,
-        helpText: Sonia.jira.I18n.autoCloseHelpText
+        helpText: Sonia.jira.I18n.autoCloseHelpText,
+	listeners : {
+	    check : this.toggleAutoClose
+	}
       },{
         id: 'autoCloseWords',
         name: 'auto-close-words',
@@ -100,13 +103,19 @@ Sonia.jira.GlobalConfigPanel = Ext.extend(Sonia.config.ConfigForm, {
   },
   
   toggleUpdateIssues: function(checkbox){
-    var cmps = [
-      Ext.getCmp( 'autoClose' ),
-      Ext.getCmp( 'autoCloseWords' ),
-      Ext.getCmp( 'roleLevel' )
-    ];
-    
+    var cmps = [ Ext.getCmp( 'autoClose' ) ];
     Sonia.jira.toggleFields(cmps, checkbox);
+    
+    // Cascade enabling for dependent menus.
+    cmps = [ Ext.getCmp('autoCloseWords'),
+             Ext.getCmp( 'roleLevel' ) ];
+    Sonia.jira.toggleFields(cmps, Ext.getCmp('autoClose').getValue() && checkbox);
+  },
+  
+  toggleAutoClose : function(checkbox) {
+      var cmps = [ Ext.getCmp('autoCloseWords'),
+                   Ext.getCmp( 'roleLevel' ) ];
+      Sonia.jira.toggleFields(cmps, checkbox);
   },
 
   onSubmit: function(values){
