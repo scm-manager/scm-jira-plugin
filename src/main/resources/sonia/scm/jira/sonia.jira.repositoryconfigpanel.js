@@ -64,15 +64,14 @@ Sonia.jira.RepositoryConfigPanel = Ext.extend(Sonia.repository.PropertiesFormPan
       },{
         id: 'jiraAutoCloseWords',
         name: 'jiraAutoCloseWords',
+        property: 'jira.auto-close-words',
         fieldLabel: Sonia.jira.I18n.autoCloseWordsText,
-        property: 'jira.role-level',
         helpText: Sonia.jira.I18n.autoCloseWordsHelpText,
         value: Sonia.jira.I18n.autoCloseDefaultValues
       },{
-        id: 'roleLevel',
+        id: 'jiraRoleLevel',
         name: 'role-level',
-        xtype: 'textfield',
-        property: 'jira.auto-close-words',
+        property: 'jira.role-level',
         fieldLabel: Sonia.jira.I18n.roleLevelText,
         helpText: Sonia.jira.I18n.roleLevelHelpText
       },{
@@ -95,10 +94,10 @@ Sonia.jira.RepositoryConfigPanel = Ext.extend(Sonia.repository.PropertiesFormPan
     Sonia.jira.RepositoryConfigPanel.superclass.initComponent.apply(this, arguments);
   },
   
-//  loadExtraProperties: function(item){
-//    var cmp = Ext.getCmp('jiraUpdateIssues');
-//    this.toggleUpdateIssues.call(cmp);
-//  },
+  loadExtraProperties: function(item){
+    var cmp = Ext.getCmp('jiraUpdateIssues');
+    this.toggleUpdateIssues.call(cmp);
+  },
   
   toggleUpdateIssues: function(checkbox){
     var cmps = [ Ext.getCmp( 'jiraAutoClose' ) ];
@@ -106,13 +105,13 @@ Sonia.jira.RepositoryConfigPanel = Ext.extend(Sonia.repository.PropertiesFormPan
     
     // Cascade enabling for dependent menus.
     cmps = [ Ext.getCmp('jiraAutoCloseWords'),
-             Ext.getCmp( 'roleLevel' ) ];
+             Ext.getCmp( 'jiraRoleLevel' ) ];
     Sonia.jira.toggleFields(cmps, Ext.getCmp('jiraAutoClose').getValue() && checkbox);
   },
 
   toggleAutoClose : function(checkbox) {
       var cmps = [ Ext.getCmp('jiraAutoCloseWords'),
-	           Ext.getCmp( 'roleLevel' )  ];
+	           Ext.getCmp( 'jiraRoleLevel' )  ];
       Sonia.jira.toggleFields(cmps, checkbox);
   }
   
