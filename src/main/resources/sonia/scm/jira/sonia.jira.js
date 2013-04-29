@@ -70,25 +70,25 @@ Sonia.jira.I18n = {
   
   passwordText: 'Password',
   passwordHelpText: 'Jira password for connection.'
-}
+};
 
 Sonia.jira.toggleFields = function(cmps, scope){
   Ext.each(cmps, function(cmp){
-	// If cmp is a checkbox, use enable/disable.
-	if (cmp.getXType() === "checkbox") {
-	    if (!this.checked) {
-		cmp.disable();
-	    } else {
-		cmp.enable();
-	    }
-	} else {
-	    cmp.setReadOnly(!this.checked);
-	    // Add/remove CSS class which indicates disabling.
-	    if (!this.checked) {
-		cmp.addClass('x-item-disabled');
-	    } else {
-		cmp.removeClass('x-item-disabled');
-	    }
-	}
+    // If cmp is a checkbox, use enable/disable.
+    if (cmp.getXType() === "checkbox") {
+      if (!this.checked) {
+        cmp.disable();
+      } else {
+        cmp.enable();
+      }
+    } else {
+      cmp.setReadOnly(!this.checked);
+        // Add/remove CSS class which indicates disabling.
+      if (!this.checked) {
+        cmp.addClass('x-item-disabled');
+      } else {
+        cmp.removeClass('x-item-disabled');
+      }
+    }
   }, scope);
-}
+};

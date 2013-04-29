@@ -66,9 +66,9 @@ Sonia.jira.GlobalConfigPanel = Ext.extend(Sonia.config.ConfigForm, {
         inputValue: 'true',
         fieldLabel: Sonia.jira.I18n.autoCloseText,
         helpText: Sonia.jira.I18n.autoCloseHelpText,
-	listeners : {
-	    check : this.toggleAutoClose
-	}
+        listeners : {
+            check : this.toggleAutoClose
+        }
       },{
         id: 'autoCloseWords',
         name: 'auto-close-words',
@@ -96,7 +96,7 @@ Sonia.jira.GlobalConfigPanel = Ext.extend(Sonia.config.ConfigForm, {
         inputType: 'password',
         helpText: Sonia.jira.I18n.passwordHelpText
       }]
-    }
+    };
 
     Ext.apply(this, Ext.apply(this.initialConfig, config));
     Sonia.jira.GlobalConfigPanel.superclass.initComponent.apply(this, arguments);

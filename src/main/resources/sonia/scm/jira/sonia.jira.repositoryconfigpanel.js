@@ -58,9 +58,9 @@ Sonia.jira.RepositoryConfigPanel = Ext.extend(Sonia.repository.PropertiesFormPan
         fieldLabel: Sonia.jira.I18n.autoCloseText,
         property: 'jira.auto-close',
         helpText: Sonia.jira.I18n.autoCloseHelpText,
-	listeners : {
-	    check : this.toggleAutoClose
-	}
+        listeners : {
+            check : this.toggleAutoClose
+        }
       },{
         id: 'jiraAutoCloseWords',
         name: 'jiraAutoCloseWords',
