@@ -74,21 +74,25 @@ Sonia.jira.I18n = {
 
 Sonia.jira.toggleFields = function(cmps, scope){
   Ext.each(cmps, function(cmp){
+    var checked = this.getValue();
     // If cmp is a checkbox, use enable/disable.
     if (cmp.getXType() === "checkbox") {
-      if (!this.checked) {
+      if (!checked) {
         cmp.disable();
       } else {
         cmp.enable();
       }
     } else {
-      cmp.setReadOnly(!this.checked);
-        // Add/remove CSS class which indicates disabling.
-      if (!this.checked) {
-        cmp.addClass('x-item-disabled');
+      // Add/remove CSS class which indicates disabling.
+      if (!checked ) {
+        if ( ! cmp.readOnly ){
+          cmp.addClass('x-item-disabled');
+        }
       } else {
         cmp.removeClass('x-item-disabled');
       }
+      
+      cmp.setReadOnly(!checked);
     }
   }, scope);
 };
