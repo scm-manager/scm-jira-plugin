@@ -35,6 +35,7 @@ package sonia.scm.jira;
 
 //~--- non-JDK imports --------------------------------------------------------
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 
 import org.slf4j.Logger;
@@ -277,18 +278,20 @@ public class SoapJiraHandler implements JiraHandler
    *
    * @return
    */
-  private boolean contains(RemoteComment comment, String... contains)
+  @VisibleForTesting
+  boolean contains(RemoteComment comment, String... contains)
   {
     boolean result = false;
     String body = comment.getBody();
 
     if (!Strings.isNullOrEmpty(body))
     {
+      result = true;
       for (String c : contains)
       {
-        if (body.contains(c))
+        if (!body.contains(c))
         {
-          result = true;
+          result = false;
 
           break;
 
