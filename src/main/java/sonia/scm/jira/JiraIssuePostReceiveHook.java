@@ -35,30 +35,32 @@ package sonia.scm.jira;
 
 //~--- non-JDK imports --------------------------------------------------------
 
+import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sonia.scm.EagerSingleton;
+import sonia.scm.event.Subscriber;
 import sonia.scm.plugin.ext.Extension;
 import sonia.scm.repository.Changeset;
-import sonia.scm.repository.PostReceiveRepositoryHook;
+import sonia.scm.repository.PostReceiveRepositoryHookEvent;
 import sonia.scm.repository.Repository;
-import sonia.scm.repository.RepositoryHookEvent;
+import sonia.scm.repository.api.HookChangesetBuilder;
+import sonia.scm.repository.api.HookContext;
+import sonia.scm.repository.api.HookFeature;
 import sonia.scm.util.IOUtil;
-import sonia.scm.util.Util;
-
-//~--- JDK imports ------------------------------------------------------------
-
-import java.util.Collection;
 
 /**
  *
  * @author Sebastian Sdorra
  */
 @Extension
-public class JiraIssuePostReceiveHook extends PostReceiveRepositoryHook
+@EagerSingleton
+@Subscriber(async = true)
+public final class JiraIssuePostReceiveHook
 {
 
   /** the logger for JiraIssuePostReceiveHook */
@@ -75,8 +77,6 @@ public class JiraIssuePostReceiveHook extends PostReceiveRepositoryHook
    *
    * @param context
    * @param requestFactory
-   * @param templateHandler
-   * @param linkHandlerProvider
    * @param templateHandlerProvider
    */
   @Inject
@@ -99,8 +99,8 @@ public class JiraIssuePostReceiveHook extends PostReceiveRepositoryHook
    *
    * @param event
    */
-  @Override
-  public void onEvent(RepositoryHookEvent event)
+  @Subscribe
+  public void onEvent(PostReceiveRepositoryHookEvent event)
   {
     Repository repository = event.getRepository();
 
@@ -141,12 +141,12 @@ public class JiraIssuePostReceiveHook extends PostReceiveRepositoryHook
    * @param repository
    * @param configuration
    */
-  private void handleIssueEvent(RepositoryHookEvent event,
+  private void handleIssueEvent(PostReceiveRepositoryHookEvent event,
     Repository repository, JiraConfiguration configuration)
   {
-    Collection<Changeset> changesets = event.getChangesets();
+    Iterable<Changeset> changesets = getChangesetsFromEvent(event);
 
-    if (Util.isNotEmpty(changesets))
+    if (changesets != null)
     {
       JiraChangesetPreProcessor jcpp =
         changesetPreProcessorFactory.createPreProcessor(repository);
@@ -174,17 +174,61 @@ public class JiraIssuePostReceiveHook extends PostReceiveRepositoryHook
     }
   }
 
+  //~--- get methods ----------------------------------------------------------
+
+  /**
+   * Method description
+   *
+   *
+   * @param event
+   *
+   * @return
+   */
+  private Iterable<Changeset> getChangesetsFromEvent(
+    PostReceiveRepositoryHookEvent event)
+  {
+    Iterable<Changeset> changesets = null;
+
+    if (event.isContextAvailable())
+    {
+      HookContext hookCtx = event.getContext();
+
+      if (hookCtx.isFeatureSupported(HookFeature.CHANGESET_PROVIDER))
+      {
+        HookChangesetBuilder builder = hookCtx.getChangesetProvider();
+
+        changesets = builder.setDisablePreProcessors(true).getChangesets();
+      }
+      else
+      {
+        logger.warn("hook context does not support changeset provider");
+      }
+    }
+    else
+    {
+      logger.warn("event does not support hook context");
+    }
+
+    if (changesets == null)
+    {
+      logger.warn("fall back to old getChangesets method");
+      changesets = event.getChangesets();
+    }
+
+    return changesets;
+  }
+
   //~--- fields ---------------------------------------------------------------
 
   /** Field description */
-  private JiraChangesetPreProcessorFactory changesetPreProcessorFactory;
+  private final JiraChangesetPreProcessorFactory changesetPreProcessorFactory;
 
   /** Field description */
-  private JiraGlobalContext context;
+  private final JiraGlobalContext context;
 
   /** Field description */
-  private JiraIssueRequestFactory requestFactory;
+  private final JiraIssueRequestFactory requestFactory;
 
   /** Field description */
-  private Provider<CommentTemplateHandler> templateHandlerProvider;
+  private final Provider<CommentTemplateHandler> templateHandlerProvider;
 }
