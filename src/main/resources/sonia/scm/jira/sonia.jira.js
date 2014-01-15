@@ -64,6 +64,9 @@ Sonia.jira.I18n = {
   roleLevelText: 'Role visibility',
   roleLevelHelpText: 'Defines for which Project Role the comments are visible. <b>Note:</b> The name must be a valid jira role name.',
   
+  commentPrefixText: 'Comment prefix',
+  commentPrefixHelpText: 'The comment prefix is created in front of every jira comment created by SCM-Manager. The default prefix is [SCM].',
+  
   usernameText: 'Username',
   usernameHelpText: 'Jira username for connection. Leave this field empty to create the connection\n\
                      with the credentials of the user which is logged in.',

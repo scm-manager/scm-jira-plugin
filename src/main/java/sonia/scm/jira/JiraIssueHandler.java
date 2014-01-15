@@ -35,6 +35,8 @@ package sonia.scm.jira;
 
 //~--- non-JDK imports --------------------------------------------------------
 
+import com.google.common.base.Strings;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,7 +64,6 @@ public class JiraIssueHandler
    *
    *
    *
-   * @param linkHandler
    * @param templateHandler
    * @param request
    */
@@ -166,7 +167,19 @@ public class JiraIssueHandler
    */
   private Comment createComment(String body)
   {
-    return new Comment(body, request.getConfiguration().getRoleLevel());
+    String prefix = request.getConfiguration().getCommentPrefix();
+
+    if (!Strings.isNullOrEmpty(prefix))
+    {
+      prefix = prefix.concat(" ");
+    }
+
+    //J-
+    return new Comment(
+      Strings.nullToEmpty(prefix).concat(Strings.nullToEmpty(body)),
+      request.getConfiguration().getRoleLevel()
+    );
+    //J+
   }
 
   /**
@@ -252,8 +265,8 @@ public class JiraIssueHandler
   //~--- fields ---------------------------------------------------------------
 
   /** Field description */
-  private JiraIssueRequest request;
+  private final JiraIssueRequest request;
 
   /** Field description */
-  private CommentTemplateHandler templateHandler;
+  private final CommentTemplateHandler templateHandler;
 }

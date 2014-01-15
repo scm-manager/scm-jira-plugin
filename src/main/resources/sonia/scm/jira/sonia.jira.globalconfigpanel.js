@@ -89,6 +89,12 @@ Sonia.jira.GlobalConfigPanel = Ext.extend(Sonia.config.ConfigForm, {
         fieldLabel: Sonia.jira.I18n.roleLevelText,
         helpText: Sonia.jira.I18n.roleLevelHelpText
       },{
+        id: 'commentPrefix',
+        name: 'comment-prefix',
+        xtype: 'textfield',
+        fieldLabel: Sonia.jira.I18n.commentPrefixText,
+        helpText: Sonia.jira.I18n.commentPrefixHelpText
+      },{
         id: 'username',
         name: 'username',
         xtype: 'textfield',

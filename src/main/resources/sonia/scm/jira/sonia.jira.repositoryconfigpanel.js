@@ -81,6 +81,12 @@ Sonia.jira.RepositoryConfigPanel = Ext.extend(Sonia.repository.PropertiesFormPan
         fieldLabel: Sonia.jira.I18n.roleLevelText,
         helpText: Sonia.jira.I18n.roleLevelHelpText
       },{
+        id: 'jiraCommentPrefix',
+        name: 'comment-prefix',
+        property: 'jira.comment-prefix',
+        fieldLabel: Sonia.jira.I18n.commentPrefixText,
+        helpText: Sonia.jira.I18n.commentPrefixHelpText
+      },{
         id: 'jiraUsername',
         name: 'jiraUsername',
         fieldLabel: Sonia.jira.I18n.usernameText,

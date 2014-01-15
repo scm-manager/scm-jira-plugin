@@ -62,10 +62,16 @@ public class JiraConfiguration implements Validateable
 {
 
   /** Field description */
+  public static final String DEFAULT_COMMENT_PREFIX = "[SCM]";
+
+  /** Field description */
   public static final String PROPERTY_AUTOCLOSE = "jira.auto-close";
 
   /** Field description */
   public static final String PROPERTY_AUTOCLOSEWORDS = "jira.auto-close-words";
+
+  /** Field description */
+  public static final String PROPERTY_COMMENT_PREFIX = "jira.comment-prefix";
 
   /** Field description */
   public static final String PROPERTY_JIRA_URL = "jira.url";
@@ -108,6 +114,12 @@ public class JiraConfiguration implements Validateable
     username = repository.getProperty(PROPERTY_USERNAME);
     password = getEncryptedProperty(repository, PROPERTY_PASSWORD);
     roleLevel = repository.getProperty(PROPERTY_ROLELEVEL);
+    commentPrefix = repository.getProperty(PROPERTY_COMMENT_PREFIX);
+
+    if (Strings.isNullOrEmpty(commentPrefix))
+    {
+      commentPrefix = DEFAULT_COMMENT_PREFIX;
+    }
   }
 
   //~--- get methods ----------------------------------------------------------
@@ -121,6 +133,17 @@ public class JiraConfiguration implements Validateable
   public Set<String> getAutoCloseWords()
   {
     return autoCloseWords;
+  }
+
+  /**
+   * Method description
+   *
+   *
+   * @return
+   */
+  public String getCommentPrefix()
+  {
+    return commentPrefix;
   }
 
   /**
@@ -285,6 +308,10 @@ public class JiraConfiguration implements Validateable
   @XmlElement(name = "auto-close-words")
   @XmlJavaTypeAdapter(XmlStringSetAdapter.class)
   private Set<String> autoCloseWords;
+
+  /** Field description */
+  @XmlElement(name = "comment-prefix")
+  private String commentPrefix = DEFAULT_COMMENT_PREFIX;
 
   /** Field description */
   @XmlJavaTypeAdapter(XmlEncryptionAdapter.class)
