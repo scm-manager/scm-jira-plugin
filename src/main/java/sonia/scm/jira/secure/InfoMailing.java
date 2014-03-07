@@ -50,9 +50,16 @@ public class InfoMailing {
 	}
 	
 	public String generateMailMessage(CommentData commentData, boolean savingError) {
-		//TODO: Generate Mail message / Add info if saving was unsuccessful
+		String htmlMessage = "";
+		htmlMessage += "The following comment could not be sent to the jira server: <br/>";
+		htmlMessage += "<br/> Author: " + commentData.getAuthor();
+		htmlMessage += "<br/> IssueId: " + commentData.getIssueId();
+		htmlMessage += commentData.getBody();
 		
+		if(savingError) {
+			htmlMessage += "<br/><br/><b> This comment could not be saved.</b>";
+		}
 		
-		return "";
+		return htmlMessage;
 	}
 }
