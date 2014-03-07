@@ -1,0 +1,58 @@
+package sonia.scm.jira.secure;
+
+import java.util.Properties;
+
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.Message.RecipientType;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+
+public class InfoMailing {
+	
+	private String address;
+	private String from;
+	Session session;
+	
+	public InfoMailing(String address, String host) {
+		this.setAddress(address);
+		
+		Properties properties = System.getProperties();
+		properties.setProperty("mail.smtp.host", host);
+		session = Session.getDefaultInstance(properties);
+		
+		//TODO: Set variables
+	}
+	
+	public void sendInfoMail(String htmlMessage) throws JiraMailingException{
+		//TODO: Send a mail to a given address
+		
+		try {
+			MimeMessage message = new MimeMessage(session);
+			message.setFrom(new InternetAddress(from));
+			message.addRecipient(RecipientType.TO, new InternetAddress(address));
+			message.setSubject("A Jira Comment could not be sent.");
+			message.setContent(htmlMessage, "text/html");
+		
+			Transport.send(message);
+		} catch (MessagingException e) {
+			throw new JiraMailingException("The mail could not be sent.", e.getCause());
+		}
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+	
+	public String generateMailMessage(CommentData commentData, boolean savingError) {
+		//TODO: Generate Mail message / Add info if saving was unsuccessful
+		
+		
+		return "";
+	}
+}
