@@ -30,15 +30,18 @@ public class MessageProblemHandler {
 	}
 	
 	private void saveComment() {
+		logger.debug("Save comment started.");
 		try {
 			saveComment.save(commentData);
 		} catch (JiraSaveCommentException e) {
 			logger.error(e.getMessage(), e);
 			savingError = true;
 		}
+		logger.debug("Save comment completed.");
 	}
 	
 	private void sendMail() {
+		logger.debug("Send mail started.");
 		String message = infoMailing.generateMailMessage(commentData, savingError);
 		
 		try {
@@ -46,5 +49,6 @@ public class MessageProblemHandler {
 		} catch (JiraMailingException e) {
 			logger.error(e.getMessage(), e);
 		}
+		logger.debug("Send mail completed.");
 	}
 }
