@@ -134,7 +134,21 @@ public class SoapJiraHandler implements JiraHandler
         MessageProblemHandler messageProblemHandler = new MessageProblemHandler(mailAddress, mailHost);
         messageProblemHandler.handleMessageProblem(token, issueId, remoteComment, jiraUrl);
         
-      throw new JiraException("add comment failed", ex);
+        // Detailed logging of the occurred exception
+        if(ex instanceof sonia.scm.jira.soap.RemotePermissionException) {
+        	logger.error("The permission was denied.");
+        } else if(ex instanceof sonia.scm.jira.soap.RemoteAuthenticationException) {
+        	logger.error("The authentication was incorrect.");
+        } else if(ex instanceof sonia.scm.jira.soap.RemoteValidationException) {
+        	logger.error("The message could not be validated.");
+        } else if(ex instanceof org.apache.axis.NoEndPointException) {
+        	logger.error(ex.getLocalizedMessage() + "  No endpoint could be found.");
+        } else if(ex instanceof java.rmi.RemoteException) {
+        	logger.error(ex.getLocalizedMessage());
+        } else {
+        	logger.error("An error occured during remote comment adding.");
+        }
+        throw new JiraException("add comment failed", ex);
     }
   }
 
