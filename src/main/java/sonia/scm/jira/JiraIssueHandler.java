@@ -258,7 +258,7 @@ public class JiraIssueHandler
     }
     catch (JiraException ex)
     {
-      logger.error("could not close jira issue", ex);
+      logger.error("could not add comment to jira issue", ex);
     }
   }
 
