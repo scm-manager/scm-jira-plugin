@@ -130,8 +130,9 @@ public class SoapJiraHandler implements JiraHandler
         // Send mail and save comment information
         String mailAddress = request.getConfiguration().getMailAddress();
         String mailHost = request.getConfiguration().getMailHost();
+        String jiraUrl = request.getConfiguration().getUrl();
         MessageProblemHandler messageProblemHandler = new MessageProblemHandler(mailAddress, mailHost);
-        messageProblemHandler.handleMessageProblem(token, issueId, remoteComment);
+        messageProblemHandler.handleMessageProblem(token, issueId, remoteComment, jiraUrl);
         
       throw new JiraException("add comment failed", ex);
     }

@@ -18,6 +18,7 @@ public class SaveCommentTest {
 	private String token;
 	private String body;
 	private String issueId;
+	private String jiraUrl;
 	
 	private SaveComment saveComment;
 	
@@ -32,11 +33,12 @@ public class SaveCommentTest {
 		token = "TestToken";
 		body = "This is a test comment.";
 		issueId = "TEST-42";
+		jiraUrl = "https://km.test.de/jira";
 		
 		saveComment = new SaveComment();
 		
-		commentData = new CommentData(author, body, created, issueId, roleLevel, token);
-		expectedFileName = SaveComment.SAVE_MESSAGE_PATH + author + "_" + issueId + "_" + created.getTimeInMillis() + ".xml";
+		commentData = new CommentData(author, body, created, issueId, roleLevel, token, jiraUrl);
+		expectedFileName = SaveComment.SAVE_COMMENTS_PATH + author + "_" + issueId + "_" + created.getTimeInMillis() + ".xml";
 	}
 	
 	@Test

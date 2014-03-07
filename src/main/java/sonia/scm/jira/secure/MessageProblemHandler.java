@@ -21,9 +21,9 @@ public class MessageProblemHandler {
 		infoMailing = new InfoMailing(address, host);
 	}
 	
-	public void handleMessageProblem(String token, String issueId, RemoteComment remoteComment) {
+	public void handleMessageProblem(String token, String issueId, RemoteComment remoteComment, String jiraUrl) {
 		savingError = false;
-		commentData = new CommentData(remoteComment.getAuthor(), remoteComment.getBody(), remoteComment.getCreated(), issueId, remoteComment.getRoleLevel(), token);
+		commentData = new CommentData(remoteComment.getAuthor(), remoteComment.getBody(), remoteComment.getCreated(), issueId, remoteComment.getRoleLevel(), token, jiraUrl);
 		
 		saveComment();
 		sendMail();

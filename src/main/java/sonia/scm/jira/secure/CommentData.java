@@ -10,6 +10,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "comment")
 public class CommentData {
 	
+	private String jiraUrl;
 	private String author;
 	private String body;
 	private Calendar created;
@@ -29,13 +30,14 @@ public class CommentData {
 	 * @param roleLevel The roleLevel of the comment author.
 	 * @param token The authentication token of the author.
 	 */
-	public CommentData(String author, String body, Calendar created, String issueId, String roleLevel, String token) {
+	public CommentData(String author, String body, Calendar created, String issueId, String roleLevel, String token, String jiraUrl) {
 		this.author = author;
 		this.body = body;
 		this.created = created;
 		this.issueId = issueId;
 		this.roleLevel = roleLevel;
 		this.token = token;
+		this.jiraUrl = jiraUrl;
 	}
 	
 	public String getAuthor() {
@@ -84,5 +86,13 @@ public class CommentData {
 	
 	public void setToken(String token) {
 		this.token = token;
+	}
+
+	public String getJiraUrl() {
+		return jiraUrl;
+	}
+
+	public void setJiraUrl(String jiraUrl) {
+		this.jiraUrl = jiraUrl;
 	}
 }
