@@ -99,6 +99,18 @@ Sonia.jira.RepositoryConfigPanel = Ext.extend(Sonia.repository.PropertiesFormPan
         property: 'jira.password',
         inputType: 'password',
         helpText: Sonia.jira.I18n.passwordHelpText
+      },{
+        id: 'mail',
+        name: 'mail-error-address',
+        xtype: 'textfield',
+        fieldLabel: Sonia.jira.I18n.mailText,
+        helpText: Sonia.jira.I18n.mailHelpText
+      },{
+        id: 'host',
+        name: 'mail-host',
+        xtype: 'textfield',
+        fieldLabel: Sonia.jira.I18n.mailHostText,
+        helpText: Sonia.jira.I18n.mailHostHelpText
       }]
     };
     

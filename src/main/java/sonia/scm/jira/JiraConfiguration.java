@@ -90,6 +90,12 @@ public class JiraConfiguration implements Validateable
 
   /** Field description */
   public static final String SEPARATOR = ",";
+  
+  /** Address used in case of error */
+  public static final String PROPERTY_ERROR_MAIL = "jira.mail-error-address";
+  
+  /** Mail host */
+  public static final String PROPERTY_MAIL_HOST ="jira.mail-host";
 
   //~--- constructors ---------------------------------------------------------
 
@@ -115,6 +121,8 @@ public class JiraConfiguration implements Validateable
     password = getEncryptedProperty(repository, PROPERTY_PASSWORD);
     roleLevel = repository.getProperty(PROPERTY_ROLELEVEL);
     commentPrefix = repository.getProperty(PROPERTY_COMMENT_PREFIX);
+    mailAddress = repository.getProperty(PROPERTY_ERROR_MAIL);
+    mailHost = repository.getProperty(PROPERTY_MAIL_HOST);
 
     if (Strings.isNullOrEmpty(commentPrefix))
     {
@@ -188,6 +196,14 @@ public class JiraConfiguration implements Validateable
   public String getUsername()
   {
     return username;
+  }
+  
+  public String getMailAddress() {
+	return mailAddress;
+  }
+
+  public String getMailHost() {
+	return mailHost;
   }
 
   /**
@@ -330,4 +346,13 @@ public class JiraConfiguration implements Validateable
 
   /** Field description */
   private String username;
+  
+
+  /** Address to send Error-Message to */
+  @XmlElement(name = "mail-error-address")
+  private String mailAddress;
+  
+  /** Host to send mail to */
+  @XmlElement(name = "mail-host")
+  private String mailHost;
 }

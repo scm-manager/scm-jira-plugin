@@ -22,7 +22,7 @@ public class InfoMailing {
 		properties.setProperty("mail.smtp.host", host);
 		session = Session.getDefaultInstance(properties);
 		
-		//TODO: Set variables
+		from = "dontreply@scmmanager.de";
 	}
 	
 	public void sendInfoMail(String htmlMessage) throws JiraMailingException{

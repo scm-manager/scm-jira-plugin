@@ -73,6 +73,12 @@ Sonia.jira.I18n = {
   
   passwordText: 'Password',
   passwordHelpText: 'Jira password for connection.'
+  
+  mailText: 'E-Mail',
+  mailHelpText: 'The mail address to send a message to if a jira comment fails.',
+  
+  mailHostText: 'Mail host',
+  mailHostHelpText: 'The corresponding host to the mail address given in the above textfield.'
 };
 
 Sonia.jira.toggleFields = function(cmps, scope){
