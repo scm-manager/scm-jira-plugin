@@ -41,6 +41,7 @@ import com.google.common.base.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sonia.scm.jira.secure.MessageProblemHandler;
 import sonia.scm.jira.soap.JiraSoapService;
 import sonia.scm.jira.soap.RemoteComment;
 import sonia.scm.jira.soap.RemoteFieldValue;
@@ -49,10 +50,9 @@ import sonia.scm.repository.EscapeUtil;
 
 //~--- JDK imports ------------------------------------------------------------
 
+
 import java.rmi.RemoteException;
-
 import java.text.MessageFormat;
-
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -103,7 +103,7 @@ public class SoapJiraHandler implements JiraHandler
    * @throws JiraException
    */
   @Override
-  public void addComment(String issueId, Comment comment) throws JiraException
+  public void addComment(String issueId, Comment comment, JiraIssueRequest request) throws JiraException
   {
     if (logger.isInfoEnabled())
     {
@@ -127,6 +127,12 @@ public class SoapJiraHandler implements JiraHandler
     }
     catch (Exception ex)
     {
+        // Send mail and save comment information
+        String mailAddress = request.getConfiguration().getMailAddress();
+        String mailHost = request.getConfiguration().getMailHost();
+        MessageProblemHandler messageProblemHandler = new MessageProblemHandler(mailAddress, mailHost);
+        messageProblemHandler.handleMessageProblem(token, issueId, remoteComment);
+        
       throw new JiraException("add comment failed", ex);
     }
   }

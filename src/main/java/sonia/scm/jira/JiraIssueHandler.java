@@ -40,9 +40,11 @@ import com.google.common.base.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sonia.scm.jira.secure.MessageProblemHandler;
 import sonia.scm.repository.Changeset;
 
 //~--- JDK imports ------------------------------------------------------------
+
 
 import java.io.IOException;
 
@@ -145,7 +147,7 @@ public class JiraIssueHandler
                          request, changeset, autoCloseWord);
 
       handler.close(issueId, autoCloseWord);
-      handler.addComment(issueId, createComment(comment));
+      handler.addComment(issueId, createComment(comment), request);
     }
     catch (IOException ex)
     {
@@ -244,7 +246,7 @@ public class JiraIssueHandler
         String comment = templateHandler.render(CommentTemplate.UPADTE,
                            request, changeset);
 
-        handler.addComment(issueId, createComment(comment));
+        handler.addComment(issueId, createComment(comment), request);
       }
       else if (logger.isInfoEnabled())
       {

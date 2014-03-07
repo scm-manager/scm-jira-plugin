@@ -16,10 +16,8 @@ public class MessageProblemHandler {
 	
 	private boolean savingError;
 	
-	public MessageProblemHandler() {
+	public MessageProblemHandler(String address, String host) {
 		saveComment = new SaveComment();
-		String address = ""; // JiraConfiguration.getMailAddress() TODO: Add mail address to properties
-		String host = ""; // TODO: add to properties / Get from config file
 		infoMailing = new InfoMailing(address, host);
 	}
 	
