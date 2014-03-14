@@ -10,7 +10,7 @@ import javax.xml.bind.Marshaller;
 
 public class SaveComment {
 	
-	public static String SAVE_COMMENTS_PATH = "/comments";	//TODO: Set folder via properties
+	public static String SAVE_COMMENTS_PATH = "comments/";	//TODO: Set folder via properties
 	
 	/**
 	 * Save the given comment using JAXB.

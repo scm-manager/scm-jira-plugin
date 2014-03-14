@@ -148,6 +148,7 @@ public class SoapJiraHandler implements JiraHandler
         } else {
         	logger.error("An error occured during remote comment adding.");
         }
+        
         throw new JiraException("add comment failed", ex);
     }
   }
