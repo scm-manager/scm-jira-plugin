@@ -104,12 +104,14 @@ Sonia.jira.RepositoryConfigPanel = Ext.extend(Sonia.repository.PropertiesFormPan
         name: 'mail-error-address',
         xtype: 'textfield',
         fieldLabel: Sonia.jira.I18n.mailText,
+        property: 'jira.mail-error-address',
         helpText: Sonia.jira.I18n.mailHelpText
       },{
         id: 'host',
         name: 'mail-host',
         xtype: 'textfield',
         fieldLabel: Sonia.jira.I18n.mailHostText,
+        property: 'jira.mail-host',
         helpText: Sonia.jira.I18n.mailHostHelpText
       }]
     };

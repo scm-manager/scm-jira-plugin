@@ -72,7 +72,7 @@ Sonia.jira.I18n = {
                      with the credentials of the user which is logged in.',
   
   passwordText: 'Password',
-  passwordHelpText: 'Jira password for connection.'
+  passwordHelpText: 'Jira password for connection.',
   
   mailText: 'E-Mail',
   mailHelpText: 'The mail address to send a message to if a jira comment fails.',
