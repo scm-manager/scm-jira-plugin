@@ -54,7 +54,7 @@ public class InfoMailing {
 		htmlMessage += "The following comment could not be sent to the jira server: <br/>";
 		htmlMessage += "<br/> Author: " + commentData.getAuthor();
 		htmlMessage += "<br/> IssueId: " + commentData.getIssueId();
-		htmlMessage += commentData.getBody();
+		htmlMessage += "<br/> Body: </br>" + commentData.getBody();
 		
 		if(savingError) {
 			htmlMessage += "<br/><br/><b> This comment could not be saved.</b>";
