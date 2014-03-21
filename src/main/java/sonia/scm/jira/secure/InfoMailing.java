@@ -15,14 +15,14 @@ public class InfoMailing {
 	private String from;
 	Session session;
 	
-	public InfoMailing(String address, String host) {
+	public InfoMailing(String address, String host, String from) {
 		this.setAddress(address);
 		
 		Properties properties = System.getProperties();
 		properties.setProperty("mail.smtp.host", host);
 		session = Session.getDefaultInstance(properties);
 		
-		from = "dontreply@scmmanager.de";
+		this.from = from;
 	}
 	
 	public void sendInfoMail(String htmlMessage) throws JiraMailingException{

@@ -96,7 +96,10 @@ public class JiraConfiguration implements Validateable
   
   /** Mail host */
   public static final String PROPERTY_MAIL_HOST ="jira.mail-host";
-
+  
+  /** Send mail address */
+  public static final String PROPERTY_SEND_MAIL = "jira.sendmail";
+  
   //~--- constructors ---------------------------------------------------------
 
   /**
@@ -123,6 +126,7 @@ public class JiraConfiguration implements Validateable
     commentPrefix = repository.getProperty(PROPERTY_COMMENT_PREFIX);
     mailAddress = repository.getProperty(PROPERTY_ERROR_MAIL);
     mailHost = repository.getProperty(PROPERTY_MAIL_HOST);
+    sendMail = repository.getProperty(PROPERTY_SEND_MAIL);
 
     if (Strings.isNullOrEmpty(commentPrefix))
     {
@@ -204,6 +208,10 @@ public class JiraConfiguration implements Validateable
 
   public String getMailHost() {
 	return mailHost;
+  }
+  
+  public String getSendMail() {
+	  return sendMail;
   }
 
   /**
@@ -355,4 +363,8 @@ public class JiraConfiguration implements Validateable
   /** Host to send mail to */
   @XmlElement(name = "mail-host")
   private String mailHost;
+  
+  /** Address of the sender */
+  @XmlElement(name = "sendmail")
+  private String sendMail;
 }

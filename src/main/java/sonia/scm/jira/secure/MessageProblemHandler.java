@@ -18,9 +18,9 @@ public class MessageProblemHandler {
 	
 	private boolean savingError;
 	
-	public MessageProblemHandler(String address, String host) {
+	public MessageProblemHandler(String address, String host, String from) {
 		saveComment = new SaveComment();
-		infoMailing = new InfoMailing(address, host);
+		infoMailing = new InfoMailing(address, host, from);
 	}
 	
 	public void handleMessageProblem(String token, String issueId, RemoteComment remoteComment, String jiraUrl) {

@@ -284,6 +284,7 @@ public class JiraIssueHandler
 	  // Get Information
 	  String mailAddress = request.getConfiguration().getMailAddress();
       String mailHost = request.getConfiguration().getMailHost();
+      String from = request.getConfiguration().getSendMail();
       String jiraUrl = request.getConfiguration().getUrl();
       String roleLevel = request.getConfiguration().getRoleLevel();
       String author = request.getUsername();
@@ -301,7 +302,7 @@ public class JiraIssueHandler
 	  
 	  // Send mail and save comment information
       
-      MessageProblemHandler messageProblemHandler = new MessageProblemHandler(mailAddress, mailHost);
+      MessageProblemHandler messageProblemHandler = new MessageProblemHandler(mailAddress, mailHost, from);
       messageProblemHandler.handleMessageProblem(token, issueId, roleLevel, author, body, new GregorianCalendar(), jiraUrl);
   }
 
