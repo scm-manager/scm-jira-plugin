@@ -1,6 +1,8 @@
 package sonia.scm.jira.secure;
 
 
+import java.util.Calendar;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,6 +31,14 @@ public class MessageProblemHandler {
 		sendMail();
 	}
 	
+	public void handleMessageProblem(String token, String issueId, String roleLevel, String author, String body, Calendar created, String jiraUrl) {
+		savingError = false;
+		commentData = new CommentData(author, body, created, issueId, roleLevel, token, jiraUrl);
+		
+		saveComment();
+		sendMail();
+	}
+	
 	private void saveComment() {
 		logger.debug("Save comment started.");
 		try {
@@ -37,7 +47,7 @@ public class MessageProblemHandler {
 			logger.error(e.getMessage(), e);
 			savingError = true;
 		}
-		logger.debug("Save comment completed.");
+		logger.debug("Save comment completed. " + saveComment.getFileName(commentData));
 	}
 	
 	private void sendMail() {

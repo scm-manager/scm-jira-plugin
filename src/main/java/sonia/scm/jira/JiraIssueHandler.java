@@ -46,7 +46,10 @@ import sonia.scm.repository.Changeset;
 //~--- JDK imports ------------------------------------------------------------
 
 
+
+
 import java.io.IOException;
+import java.util.GregorianCalendar;
 
 /**
  *
@@ -260,8 +263,46 @@ public class JiraIssueHandler
     }
     catch (JiraException ex)
     {
+    	//TODO: Save comment in case of login-error or existence check
+    	// Possibly remove saving from soap jira handler
+    	
+    	//TODO Case of rendering mistake (IO)
+    	
+    	// Check if token is used
+    	String token = null;
+    	if(ex instanceof JiraExceptionTokenized) {
+    		token = ((JiraExceptionTokenized) ex).getToken();
+    	}
+    	
+    	handleException(issueId, changeset, token);
+        
       logger.error("could not add comment to jira issue", ex);
     }
+  }
+  
+  private void handleException(String issueId, Changeset changeset, String token) {
+	  // Get Information
+	  String mailAddress = request.getConfiguration().getMailAddress();
+      String mailHost = request.getConfiguration().getMailHost();
+      String jiraUrl = request.getConfiguration().getUrl();
+      String roleLevel = request.getConfiguration().getRoleLevel();
+      String author = request.getUsername();
+	  
+	  // Create comment body
+	  String body = null;
+	  try {
+		  String comment = templateHandler.render(CommentTemplate.UPADTE, request, changeset);
+		  CommentPreparation commentPreparation = new CommentPreparation(jiraUrl);
+		  body = commentPreparation.prepareComment(issueId, createComment(comment));
+	  } catch (IOException e) {
+		  logger.error("could render template", e);
+	  }
+	  
+	  
+	  // Send mail and save comment information
+      
+      MessageProblemHandler messageProblemHandler = new MessageProblemHandler(mailAddress, mailHost);
+      messageProblemHandler.handleMessageProblem(token, issueId, roleLevel, author, body, new GregorianCalendar(), jiraUrl);
   }
 
   //~--- fields ---------------------------------------------------------------

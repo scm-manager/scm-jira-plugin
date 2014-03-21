@@ -127,12 +127,13 @@ public class SoapJiraHandler implements JiraHandler
     }
     catch (Exception ex)
     {
+    	/* Handled in JiraIssueHandler
         // Send mail and save comment information
         String mailAddress = request.getConfiguration().getMailAddress();
         String mailHost = request.getConfiguration().getMailHost();
         String jiraUrl = request.getConfiguration().getUrl();
         MessageProblemHandler messageProblemHandler = new MessageProblemHandler(mailAddress, mailHost);
-        messageProblemHandler.handleMessageProblem(token, issueId, remoteComment, jiraUrl);
+        messageProblemHandler.handleMessageProblem(token, issueId, remoteComment, jiraUrl); */
         
         // Detailed logging of the occurred exception
         if(ex instanceof sonia.scm.jira.soap.RemotePermissionException) {
@@ -149,7 +150,7 @@ public class SoapJiraHandler implements JiraHandler
         	logger.error("An error occured during remote comment adding.");
         }
         
-        throw new JiraException("add comment failed", ex);
+        throw new JiraExceptionTokenized("add comment failed", ex, token);
     }
   }
 
