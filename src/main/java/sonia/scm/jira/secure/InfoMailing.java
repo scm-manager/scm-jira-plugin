@@ -15,6 +15,12 @@ public class InfoMailing {
 	private String from;
 	Session session;
 	
+	/**
+	 * Create Class used to send a Mail.
+	 * @param address Address to send the message to.
+	 * @param host The used host.
+	 * @param from Valid message used as sender in the generated mails.
+	 */
 	public InfoMailing(String address, String host, String from) {
 		this.setAddress(address);
 		
@@ -25,6 +31,11 @@ public class InfoMailing {
 		this.from = from;
 	}
 	
+	/**
+	 * Send mail with the given message.
+	 * @param htmlMessage The mail text in HTML format.
+	 * @throws JiraMailingException
+	 */
 	public void sendInfoMail(String htmlMessage) throws JiraMailingException{
 		//TODO: Send a mail to a given address
 		
@@ -49,6 +60,12 @@ public class InfoMailing {
 		this.address = address;
 	}
 	
+	/**
+	 * Generates a HTML-message-text for a stopped comment.
+	 * @param commentData The given data for the comment to inform about.
+	 * @param savingError Inform about the saving status of this comment on the SCM Manager server.
+	 * @return
+	 */
 	public String generateMailMessage(CommentData commentData, boolean savingError) {
 		String htmlMessage = "";
 		htmlMessage += "The following comment could not be sent to the jira server: <br/>";

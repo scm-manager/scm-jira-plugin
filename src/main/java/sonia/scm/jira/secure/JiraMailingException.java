@@ -2,6 +2,10 @@ package sonia.scm.jira.secure;
 
 import sonia.scm.jira.JiraException;
 
+/**
+ * An exception in case the mail sending throws an exception.
+ *
+ */
 public class JiraMailingException extends JiraException {
 
 	/**
