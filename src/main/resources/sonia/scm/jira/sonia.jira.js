@@ -78,7 +78,7 @@ Sonia.jira.I18n = {
   mailHelpText: 'The mail address to send a message to if a jira comment fails.',
   
   mailHostText: 'Mail host',
-  mailHostHelpText: 'The corresponding host to the mail address given in the above textfield.',
+  mailHostHelpText: 'The host used for sending the mail.',
 	  
   sendmailText: 'Send Mail',
   sendmailHelpText: 'The mail address used as the sender. This address must be valid.'
