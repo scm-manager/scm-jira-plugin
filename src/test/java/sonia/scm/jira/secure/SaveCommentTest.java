@@ -38,18 +38,18 @@ public class SaveCommentTest {
 		saveComment = new SaveComment();
 		
 		commentData = new CommentData(author, body, created, issueId, roleLevel, token, jiraUrl);
-		expectedFileName = SaveComment.SAVE_COMMENTS_PATH + author + "_" + issueId + "_" + created.getTimeInMillis() + ".xml";
+		expectedFileName = "comments/" + author + "_" + issueId + "_" + created.getTimeInMillis() + ".xml";
 	}
 	
 	@Test
 	public void testGetFileName() {
-		String actualFileName = saveComment.getFileName(commentData);
+		String actualFileName = saveComment.getFileName(commentData, "comments/");
 		assertEquals("The file name is not correctly build.", expectedFileName, actualFileName);
 	}
 	
 	@Test
 	public void testSave() throws JiraSaveCommentException, IOException {
-		saveComment.save(commentData);
+		saveComment.save(commentData, "comments/");
 		
 		File file = new File(expectedFileName);
 		assertTrue("The file does not exist", file.exists());

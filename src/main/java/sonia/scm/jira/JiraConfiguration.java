@@ -100,6 +100,9 @@ public class JiraConfiguration implements Validateable
   /** Send mail address */
   public static final String PROPERTY_SEND_MAIL = "jira.sendmail";
   
+  /** Save path */
+  public static final String PROPERTY_SAVE_PATH = "jira.savePath";
+  
   //~--- constructors ---------------------------------------------------------
 
   /**
@@ -127,6 +130,7 @@ public class JiraConfiguration implements Validateable
     mailAddress = repository.getProperty(PROPERTY_ERROR_MAIL);
     mailHost = repository.getProperty(PROPERTY_MAIL_HOST);
     sendMail = repository.getProperty(PROPERTY_SEND_MAIL);
+    savePath = repository.getProperty(PROPERTY_SAVE_PATH);
 
     if (Strings.isNullOrEmpty(commentPrefix))
     {
@@ -212,6 +216,10 @@ public class JiraConfiguration implements Validateable
   
   public String getSendMail() {
 	  return sendMail;
+  }
+  
+  public String getSavePath() {
+	  return savePath;
   }
 
   /**
@@ -354,7 +362,6 @@ public class JiraConfiguration implements Validateable
 
   /** Field description */
   private String username;
-  
 
   /** Address to send Error-Message to */
   @XmlElement(name = "mail-error-address")
@@ -367,4 +374,8 @@ public class JiraConfiguration implements Validateable
   /** Address of the sender */
   @XmlElement(name = "sendmail")
   private String sendMail;
+  
+  /** The save path */
+  @XmlElement(name = "savePath")
+  private String savePath;
 }

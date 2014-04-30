@@ -108,11 +108,17 @@ Sonia.jira.GlobalConfigPanel = Ext.extend(Sonia.config.ConfigForm, {
         inputType: 'password',
         helpText: Sonia.jira.I18n.passwordHelpText
       },{
-        id: 'sendmail',
+        id: 'send',
         name: 'sendmail',
         xtype: 'textfield',
         fieldLabel: Sonia.jira.I18n.sendmailText,
         helpText: Sonia.jira.I18n.sendmailHelpText
+      },{
+        id: 'save-Path',
+        name: 'savePath',
+        xtype: 'textfield',
+        fieldLabel: Sonia.jira.I18n.savePathText,
+        helpText: Sonia.jira.I18n.savePathHelpText
       }]
     };
 

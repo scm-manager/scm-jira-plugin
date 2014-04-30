@@ -20,6 +20,8 @@ public class MessageProblemHandler {
 	private InfoMailing infoMailing;
 	private CommentData commentData;
 	
+	private String savePath;
+	
 	private boolean savingError;
 	
 	/**
@@ -28,9 +30,10 @@ public class MessageProblemHandler {
 	 * @param host A host used for the mail sending.
 	 * @param from The message inserted as the sender in the mail.
 	 */
-	public MessageProblemHandler(String address, String host, String from) {
+	public MessageProblemHandler(String address, String host, String from, String savePath) {
 		saveComment = new SaveComment();
 		infoMailing = new InfoMailing(address, host, from);
+		this.savePath = savePath;
 	}
 	
 	/**
@@ -72,12 +75,12 @@ public class MessageProblemHandler {
 	private void saveComment() {
 		logger.debug("Save comment started.");
 		try {
-			saveComment.save(commentData);
+			saveComment.save(commentData, savePath);
 		} catch (JiraSaveCommentException e) {
 			logger.error(e.getMessage(), e);
 			savingError = true;
 		}
-		logger.debug("Save comment completed. " + saveComment.getFileName(commentData));
+		logger.debug("Save comment completed. " + saveComment.getFileName(commentData, savePath));
 	}
 	
 	/**

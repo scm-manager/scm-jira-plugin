@@ -10,20 +10,18 @@ import javax.xml.bind.Marshaller;
 
 public class SaveComment {
 	
-	public static String SAVE_COMMENTS_PATH = "comments/";	//TODO: Set folder via properties
-	
 	/**
 	 * Save the given comment using JAXB.
 	 * @param commentData The data of the given comment to save.
 	 * @throws JiraSaveCommentException The saving of the commentData went wrong.
 	 */
-	public void save(CommentData commentData) throws JiraSaveCommentException {
+	public void save(CommentData commentData, String savePath) throws JiraSaveCommentException {
 		FileOutputStream fileOutputStream = null;
 		
 		try {
 			JAXBContext jaxbContext = JAXBContext.newInstance(CommentData.class);
 			Marshaller marshaller = jaxbContext.createMarshaller();
-			fileOutputStream = new FileOutputStream(getFileName(commentData));
+			fileOutputStream = new FileOutputStream(getFileName(commentData, savePath));
 			marshaller.marshal(commentData, fileOutputStream);
 			
 		} catch (JAXBException jaxbException) {
@@ -44,9 +42,13 @@ public class SaveComment {
 	 * @param commentData The data used to create a unique name.
 	 * @return file name with file path.
 	 */
-	public String getFileName(CommentData commentData) {
+	public String getFileName(CommentData commentData, String savePath) {
 		String fileName = commentData.getAuthor() + "_" + commentData.getIssueId() + "_" + commentData.getCreated().getTimeInMillis() + ".xml";
 		
-		return SAVE_COMMENTS_PATH + fileName;
+		if(!savePath.endsWith("/")) {
+			savePath = savePath + "/";
+		}
+		
+		return savePath + fileName;
 	}
 }

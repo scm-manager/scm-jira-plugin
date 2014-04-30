@@ -114,7 +114,7 @@ Sonia.jira.RepositoryConfigPanel = Ext.extend(Sonia.repository.PropertiesFormPan
         property: 'jira.mail-host',
         helpText: Sonia.jira.I18n.mailHostHelpText
       },{
-        id: 'sendmail',
+        id: 'send',
         name: 'sendmail',
         xtype: 'textfield',
         fieldLabel: Sonia.jira.I18n.sendmailText,
