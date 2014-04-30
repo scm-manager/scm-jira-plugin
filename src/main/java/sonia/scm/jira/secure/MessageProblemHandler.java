@@ -28,8 +28,8 @@ public class MessageProblemHandler {
 	 * @param host A host used for the mail sending.
 	 * @param from The message inserted as the sender in the mail.
 	 */
-	public MessageProblemHandler(String address, String host, String from) {
-		saveComment = new SaveComment();
+	public MessageProblemHandler(String address, String host, String from, String savePath) {
+		saveComment = new SaveComment(savePath);
 		infoMailing = new InfoMailing(address, host, from);
 	}
 	

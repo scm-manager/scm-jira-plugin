@@ -10,7 +10,21 @@ import javax.xml.bind.Marshaller;
 
 public class SaveComment {
 	
-	public static String SAVE_COMMENTS_PATH = "comments/";	//TODO: Set folder via properties
+	private String savePath;
+	
+	/**
+	 * A class used to save comment data in XML-files.
+	 * @param savePath The path used to save the given comments
+	 */
+	public SaveComment(String savePath) {
+		
+		// Add backslash to complete path
+		if(!savePath.endsWith("/")) {
+			this.savePath = savePath + "/";
+		} else {
+			this.savePath = savePath;
+		}
+	}
 	
 	/**
 	 * Save the given comment using JAXB.
@@ -47,6 +61,6 @@ public class SaveComment {
 	public String getFileName(CommentData commentData) {
 		String fileName = commentData.getAuthor() + "_" + commentData.getIssueId() + "_" + commentData.getCreated().getTimeInMillis() + ".xml";
 		
-		return SAVE_COMMENTS_PATH + fileName;
+		return savePath + fileName;
 	}
 }

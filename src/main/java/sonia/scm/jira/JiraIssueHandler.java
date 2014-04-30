@@ -288,6 +288,7 @@ public class JiraIssueHandler
       String jiraUrl = request.getConfiguration().getUrl();
       String roleLevel = request.getConfiguration().getRoleLevel();
       String author = request.getUsername();
+      String savePath = request.getConfiguration().getSavePath();
 	  
 	  // Create comment body
 	  String body = null;
@@ -302,7 +303,7 @@ public class JiraIssueHandler
 	  
 	  // Send mail and save comment information
       
-      MessageProblemHandler messageProblemHandler = new MessageProblemHandler(mailAddress, mailHost, from);
+      MessageProblemHandler messageProblemHandler = new MessageProblemHandler(mailAddress, mailHost, from, savePath);
       messageProblemHandler.handleMessageProblem(token, issueId, roleLevel, author, body, new GregorianCalendar(), jiraUrl);
   }
 

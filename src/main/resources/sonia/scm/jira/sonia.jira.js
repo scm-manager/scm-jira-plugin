@@ -81,7 +81,11 @@ Sonia.jira.I18n = {
   mailHostHelpText: 'The host used for sending the mail.',
 	  
   sendmailText: 'Send Mail',
-  sendmailHelpText: 'The mail address used as the sender. This address must be valid.'
+  sendmailHelpText: 'The mail address used as the sender. This address must be valid.',
+	  
+  savePathText: 'Save path',
+  savePathHelpText = 'The path to save all comments if the connection to jira fails.',
+  savePathDefaultText = 'comments/'
 };
 
 Sonia.jira.toggleFields = function(cmps, scope){
