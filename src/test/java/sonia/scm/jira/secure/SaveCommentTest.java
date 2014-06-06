@@ -10,6 +10,9 @@ import java.util.GregorianCalendar;
 import org.junit.Before;
 import org.junit.Test;
 
+import sonia.scm.repository.Changeset;
+import sonia.scm.repository.Repository;
+
 public class SaveCommentTest {
 	
 	private String author;
@@ -37,13 +40,18 @@ public class SaveCommentTest {
 		
 		saveComment = new SaveComment();
 		
-		commentData = new CommentData(author, body, created, issueId, roleLevel, token, jiraUrl);
+		Changeset changeset = new Changeset();
+		changeset.setDate(created.getTimeInMillis());
+		changeset.setId(issueId);
+		changeset.setDescription(body);
+		Repository repository = null;
+		commentData = new CommentData(author, body, created, issueId, roleLevel, token, jiraUrl, changeset, repository);
 		expectedFileName = "comments/" + author + "_" + issueId + "_" + created.getTimeInMillis() + ".xml";
 	}
 	
 	@Test
 	public void testGetFileName() {
-		String actualFileName = saveComment.getFileName(commentData, "comments/");
+		String actualFileName = SaveComment.getFileName(commentData, "comments/");
 		assertEquals("The file name is not correctly build.", expectedFileName, actualFileName);
 	}
 	
