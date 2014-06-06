@@ -42,7 +42,7 @@ public class SaveComment {
 	 * @param commentData The data used to create a unique name.
 	 * @return file name with file path.
 	 */
-	public String getFileName(CommentData commentData, String savePath) {
+	public static String getFileName(CommentData commentData, String savePath) {
 		String fileName = commentData.getAuthor() + "_" + commentData.getIssueId() + "_" + commentData.getCreated().getTimeInMillis() + ".xml";
 		
 		if(!savePath.endsWith("/")) {

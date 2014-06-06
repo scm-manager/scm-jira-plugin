@@ -7,6 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sonia.scm.jira.soap.RemoteComment;
+import sonia.scm.repository.Changeset;
+import sonia.scm.repository.Repository;
 
 /**
  * A class to handle problems of message sending.
@@ -43,9 +45,9 @@ public class MessageProblemHandler {
 	 * @param remoteComment Packaged Information about the corresponding comment(author, comment-body, author-role-level, date of creation).
 	 * @param jiraUrl URL of the Jira-Server.
 	 */
-	public void handleMessageProblem(String token, String issueId, RemoteComment remoteComment, String jiraUrl) {
+	public void handleMessageProblem(String token, String issueId, RemoteComment remoteComment, String jiraUrl, Changeset changeset, Repository repository) {
 		savingError = false;
-		commentData = new CommentData(remoteComment.getAuthor(), remoteComment.getBody(), remoteComment.getCreated(), issueId, remoteComment.getRoleLevel(), token, jiraUrl);
+		commentData = new CommentData(remoteComment.getAuthor(), remoteComment.getBody(), remoteComment.getCreated(), issueId, remoteComment.getRoleLevel(), token, jiraUrl, changeset, repository);
 		
 		saveComment();
 		sendMail();
@@ -61,9 +63,9 @@ public class MessageProblemHandler {
 	 * @param created Date the jira comment was created.
 	 * @param jiraUrl URL of the Jira-Server.
 	 */
-	public void handleMessageProblem(String token, String issueId, String roleLevel, String author, String body, Calendar created, String jiraUrl) {
+	public void handleMessageProblem(String token, String issueId, String roleLevel, String author, String body, Calendar created, String jiraUrl, Changeset changeset, Repository repository) {
 		savingError = false;
-		commentData = new CommentData(author, body, created, issueId, roleLevel, token, jiraUrl);
+		commentData = new CommentData(author, body, created, issueId, roleLevel, token, jiraUrl, changeset, repository);
 		
 		saveComment();
 		sendMail();
@@ -74,13 +76,14 @@ public class MessageProblemHandler {
 	 */
 	private void saveComment() {
 		logger.debug("Save comment started.");
+		logger.debug("Given save Path: " + savePath);
 		try {
 			saveComment.save(commentData, savePath);
 		} catch (JiraSaveCommentException e) {
 			logger.error(e.getMessage(), e);
 			savingError = true;
 		}
-		logger.debug("Save comment completed. " + saveComment.getFileName(commentData, savePath));
+		logger.debug("Save comment completed. " + SaveComment.getFileName(commentData, savePath));
 	}
 	
 	/**

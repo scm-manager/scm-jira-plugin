@@ -58,7 +58,13 @@ import sonia.scm.util.AssertUtil;
 public class JiraIssueRequestFactory
 {
 
-  /** Field description */
+  @Override
+	public String toString() {
+		return "JiraIssueRequestFactory [handlerFactory=" + handlerFactory
+				+ "]";
+	}
+
+/** Field description */
   public static final String SCM_CREDENTIALS = "SCM_CREDENTIALS";
 
   /**

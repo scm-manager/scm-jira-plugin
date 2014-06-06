@@ -75,6 +75,7 @@ public class JiraIssueHandler
   public JiraIssueHandler(CommentTemplateHandler templateHandler,
     JiraIssueRequest request)
   {
+	  logger.debug("Constructor JiraIssueHandler " + request.toString());
     this.templateHandler = templateHandler;
     this.request = request;
   }
@@ -289,6 +290,25 @@ public class JiraIssueHandler
       String roleLevel = request.getConfiguration().getRoleLevel();
       String author = request.getUsername();
       String savePath = request.getConfiguration().getSavePath();
+      
+      if(mailAddress == null || mailAddress.equals("")) {
+    	  mailAddress = request.getRepository().getProperty("jira.mail-error-address");
+      }
+      if(mailHost == null || mailHost.equals("")) {
+    	  mailHost = request.getRepository().getProperty("jira.mail-host");
+      }
+      if(from == null || from.equals("")) {
+    	  from = request.getRepository().getProperty("jira.sendmail");
+      }
+      if(jiraUrl == null || jiraUrl.equals("")) {
+    	  jiraUrl = request.getRepository().getProperty("jira.url");
+      }
+      if(roleLevel == null || roleLevel.equals("")) {
+    	  roleLevel = request.getRepository().getProperty("jira.role-level");
+      }
+      if(savePath == null || savePath.equals("")) {
+    	  savePath = request.getRepository().getProperty("jira.savePath");
+      }
 	  
 	  // Create comment body
 	  String body = null;
@@ -304,14 +324,20 @@ public class JiraIssueHandler
 	  // Send mail and save comment information
       
       MessageProblemHandler messageProblemHandler = new MessageProblemHandler(mailAddress, mailHost, from, savePath);
-      messageProblemHandler.handleMessageProblem(token, issueId, roleLevel, author, body, new GregorianCalendar(), jiraUrl);
+      messageProblemHandler.handleMessageProblem(token, issueId, roleLevel, author, body, new GregorianCalendar(), jiraUrl, changeset, request.getRepository());
   }
 
+  @Override
+public String toString() {
+	return "JiraIssueHandler [request=" + request + ", templateHandler="
+			+ templateHandler + "]";
+}
+  
   //~--- fields ---------------------------------------------------------------
 
   /** Field description */
   private final JiraIssueRequest request;
 
-  /** Field description */
+/** Field description */
   private final CommentTemplateHandler templateHandler;
 }

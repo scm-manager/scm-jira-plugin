@@ -49,7 +49,15 @@ import java.io.IOException;
 public class JiraIssueRequest implements Closeable
 {
 
-  /**
+  @Override
+	public String toString() {
+		return "JiraIssueRequest [configuration=" + configuration
+				+ ", handler=" + handler + ", handlerFactory=" + handlerFactory
+				+ ", repository=" + repository
+				+ ", username=" + username + "]";
+	}
+
+/**
    * Constructs ...
    *
    *
@@ -104,9 +112,13 @@ public class JiraIssueRequest implements Closeable
    */
   public JiraHandler createJiraHandler() throws JiraConnectException
   {
+	  String url = configuration.getUrl();
+	  if(url == null || url.equals("") || url.equals(" ")) {
+		  url = repository.getProperty("jira.url");
+	  }
     if (handler == null)
     {
-      handler = handlerFactory.createJiraHandler(configuration.getUrl(),
+      handler = handlerFactory.createJiraHandler(url,
         username, password);
     }
 

@@ -378,4 +378,17 @@ public class JiraConfiguration implements Validateable
   /** The save path */
   @XmlElement(name = "savePath")
   private String savePath;
+
+@Override
+public String toString() {
+	return "JiraConfiguration [autoClose=" + autoClose + ", autoCloseWords="
+			+ autoCloseWords + ", commentPrefix=" + commentPrefix
+			+ ", roleLevel=" + roleLevel
+			+ ", updateIssues=" + updateIssues + ", url=" + url + ", username="
+			+ username + ", mailAddress=" + mailAddress + ", mailHost="
+			+ mailHost + ", sendMail=" + sendMail + ", savePath=" + savePath
+			+ "]";
+}
+  
+
 }

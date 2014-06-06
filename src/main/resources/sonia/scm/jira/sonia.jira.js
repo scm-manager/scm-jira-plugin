@@ -84,7 +84,10 @@ Sonia.jira.I18n = {
   sendmailHelpText: 'The mail address used as the sender. This address must be valid.',
   
   savePathText: 'Save Path',
-  savePathHelpText: 'The path to save the lost comments.'
+  savePathHelpText: 'The path to save the lost comments.',
+  
+  redoText: 'Redo Comments',
+  redoHelpText: 'Retrys to send all stopped comments to Jira.'
 };
 
 Sonia.jira.toggleFields = function(cmps, scope){

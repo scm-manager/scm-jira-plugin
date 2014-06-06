@@ -9,7 +9,14 @@ import javax.mail.Message.RecipientType;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import sonia.scm.jira.JiraIssueHandler;
+
 public class InfoMailing {
+	
+	private static final Logger logger = LoggerFactory.getLogger(InfoMailing.class);
 	
 	private String address;
 	private String from;
@@ -22,6 +29,7 @@ public class InfoMailing {
 	 * @param from Valid message used as sender in the generated mails.
 	 */
 	public InfoMailing(String address, String host, String from) {
+		logger.debug("start InfoMailing with address=" + address + ", host=" + host + ", from=" + from);
 		this.setAddress(address);
 		
 		Properties properties = System.getProperties();

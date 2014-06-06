@@ -120,7 +120,14 @@ Sonia.jira.RepositoryConfigPanel = Ext.extend(Sonia.repository.PropertiesFormPan
         fieldLabel: Sonia.jira.I18n.sendmailText,
         property: 'jira.sendmail',
         helpText: Sonia.jira.I18n.sendmailHelpText
-      }]
+      },{
+          id: 'jiraSave-Path',
+          name: 'jiraSavePath',
+          xtype: 'textfield',
+          fieldLabel: Sonia.jira.I18n.savePathText,
+          property: 'jira.savePath',
+          helpText: Sonia.jira.I18n.savePathHelpText
+        }]
     };
     
     Ext.apply(this, Ext.apply(this.initialConfig, config));

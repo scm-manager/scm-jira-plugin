@@ -6,6 +6,9 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import sonia.scm.repository.Changeset;
+import sonia.scm.repository.Repository;
+
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "comment")
 public class CommentData {
@@ -17,6 +20,8 @@ public class CommentData {
 	private String issueId;
 	private String roleLevel;
 	private String token; //TODO: Needed?
+	private Changeset changeset;
+	private Repository repository;
 	
 	public CommentData() {
 	}
@@ -30,7 +35,7 @@ public class CommentData {
 	 * @param roleLevel The roleLevel of the comment author.
 	 * @param token The authentication token of the author.
 	 */
-	public CommentData(String author, String body, Calendar created, String issueId, String roleLevel, String token, String jiraUrl) {
+	public CommentData(String author, String body, Calendar created, String issueId, String roleLevel, String token, String jiraUrl, Changeset changeset, Repository repository) {
 		this.author = author;
 		this.body = body;
 		this.created = created;
@@ -38,6 +43,8 @@ public class CommentData {
 		this.roleLevel = roleLevel;
 		this.token = token;
 		this.jiraUrl = jiraUrl;
+		this.setChangeset(changeset);
+		this.setRepository(repository);
 	}
 	
 	public String getAuthor() {
@@ -94,5 +101,21 @@ public class CommentData {
 
 	public void setJiraUrl(String jiraUrl) {
 		this.jiraUrl = jiraUrl;
+	}
+
+	public Changeset getChangeset() {
+		return changeset;
+	}
+
+	public void setChangeset(Changeset changeset) {
+		this.changeset = changeset;
+	}
+
+	public Repository getRepository() {
+		return repository;
+	}
+
+	public void setRepository(Repository repository) {
+		this.repository = repository;
 	}
 }
