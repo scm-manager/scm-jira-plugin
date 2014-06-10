@@ -291,22 +291,22 @@ public class JiraIssueHandler
       String author = request.getUsername();
       String savePath = request.getConfiguration().getSavePath();
       
-      if(mailAddress == null || mailAddress.equals("")) {
+      if(Strings.isNullOrEmpty(mailAddress)) {
     	  mailAddress = request.getRepository().getProperty(JiraConfiguration.PROPERTY_ERROR_MAIL);
       }
-      if(mailHost == null || mailHost.equals("")) {
+      if(Strings.isNullOrEmpty(mailHost)) {
     	  mailHost = request.getRepository().getProperty(JiraConfiguration.PROPERTY_MAIL_HOST);
       }
-      if(from == null || from.equals("")) {
+      if(Strings.isNullOrEmpty(from)) {
     	  from = request.getRepository().getProperty(JiraConfiguration.PROPERTY_SEND_MAIL);
       }
-      if(jiraUrl == null || jiraUrl.equals("")) {
+      if(Strings.isNullOrEmpty(jiraUrl)) {
     	  jiraUrl = request.getRepository().getProperty(JiraConfiguration.PROPERTY_JIRA_URL);
       }
-      if(roleLevel == null || roleLevel.equals("")) {
+      if(Strings.isNullOrEmpty(roleLevel)) {
     	  roleLevel = request.getRepository().getProperty(JiraConfiguration.PROPERTY_ROLELEVEL);
       }
-      if(savePath == null || savePath.equals("")) {
+      if(Strings.isNullOrEmpty(savePath)) {
     	  savePath = request.getRepository().getProperty(JiraConfiguration.PROPERTY_SAVE_PATH);
       }
 	  

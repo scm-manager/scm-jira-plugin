@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Provider;
 
 import sonia.scm.jira.CommentTemplateHandler;
+import sonia.scm.jira.JiraConfiguration;
 import sonia.scm.jira.JiraGlobalContext;
 import sonia.scm.jira.JiraHandler;
 import sonia.scm.jira.JiraIssueHandler;
@@ -60,7 +61,7 @@ public class ReplayCommentsHandler {
 		
 		JiraIssueRequest request = requestFactory.createRequest(context.getConfiguration(), commentData.getRepository());
 		logger.debug("JiraIssueRequest: " + request);
-		logger.debug(commentData.getRepository().getProperty("jira.url"));
+		logger.debug(commentData.getRepository().getProperty(JiraConfiguration.PROPERTY_JIRA_URL));
 		JiraIssueHandler jiraIssueHandler = new JiraIssueHandler(templateHandlerProvider.get(), request);
 		
 		jiraIssueHandler.handleIssue(commentData.getIssueId(), commentData.getChangeset());

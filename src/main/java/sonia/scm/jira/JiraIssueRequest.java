@@ -39,8 +39,11 @@ import sonia.scm.repository.Repository;
 
 //~--- JDK imports ------------------------------------------------------------
 
+
 import java.io.Closeable;
 import java.io.IOException;
+
+import com.google.common.base.Strings;
 
 /**
  *
@@ -113,8 +116,8 @@ public class JiraIssueRequest implements Closeable
   public JiraHandler createJiraHandler() throws JiraConnectException
   {
 	  String url = configuration.getUrl();
-	  if(url == null || url.equals("") || url.equals(" ")) {
-		  url = repository.getProperty("jira.url");
+	  if(Strings.isNullOrEmpty(url) || url.equals(" ")) {
+		  url = repository.getProperty(JiraConfiguration.PROPERTY_JIRA_URL);
 	  }
     if (handler == null)
     {
