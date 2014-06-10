@@ -292,22 +292,22 @@ public class JiraIssueHandler
       String savePath = request.getConfiguration().getSavePath();
       
       if(mailAddress == null || mailAddress.equals("")) {
-    	  mailAddress = request.getRepository().getProperty("jira.mail-error-address");
+    	  mailAddress = request.getRepository().getProperty(JiraConfiguration.PROPERTY_ERROR_MAIL);
       }
       if(mailHost == null || mailHost.equals("")) {
-    	  mailHost = request.getRepository().getProperty("jira.mail-host");
+    	  mailHost = request.getRepository().getProperty(JiraConfiguration.PROPERTY_MAIL_HOST);
       }
       if(from == null || from.equals("")) {
-    	  from = request.getRepository().getProperty("jira.sendmail");
+    	  from = request.getRepository().getProperty(JiraConfiguration.PROPERTY_SEND_MAIL);
       }
       if(jiraUrl == null || jiraUrl.equals("")) {
-    	  jiraUrl = request.getRepository().getProperty("jira.url");
+    	  jiraUrl = request.getRepository().getProperty(JiraConfiguration.PROPERTY_JIRA_URL);
       }
       if(roleLevel == null || roleLevel.equals("")) {
-    	  roleLevel = request.getRepository().getProperty("jira.role-level");
+    	  roleLevel = request.getRepository().getProperty(JiraConfiguration.PROPERTY_ROLELEVEL);
       }
       if(savePath == null || savePath.equals("")) {
-    	  savePath = request.getRepository().getProperty("jira.savePath");
+    	  savePath = request.getRepository().getProperty(JiraConfiguration.PROPERTY_SAVE_PATH);
       }
 	  
 	  // Create comment body
