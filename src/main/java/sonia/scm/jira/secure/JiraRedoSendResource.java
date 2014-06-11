@@ -28,6 +28,13 @@ public class JiraRedoSendResource {
 	private JiraGlobalContext context;
 	private JiraIssueRequestFactory requestFactory;
 	
+	/**
+	 * Create a new resource to resent a comment.
+	 * Used to get the given parameters and selections from the application.
+	 * @param context The given context with the used parameters.
+	 * @param templateHandlerProvider The provider for the used handler.
+	 * @param requestFactory The factory used to send an issue.
+	 */
 	@Inject
 	public JiraRedoSendResource(JiraGlobalContext context, Provider<CommentTemplateHandler> templateHandlerProvider, JiraIssueRequestFactory requestFactory) {
 		logger.debug("Global context: " + context.toString() + " Configuration: " + context.getConfiguration());
@@ -38,6 +45,10 @@ public class JiraRedoSendResource {
 		this.requestFactory = requestFactory;
 	}
 
+	/**
+	 * Resent all comments that could not be sent at the last time.
+	 * @return Response if the Comments could be executed or a returned error message.
+	 */
 	@POST
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public Response redoSend()

@@ -48,6 +48,10 @@ public class ReplayCommentsHandler {
 		this.templateHandlerProvider = templateHandlerProvider;
 	}
 	
+	/**
+	 * Extract all XML-Files in the given path.
+	 * Resent these comments to jira.
+	 */
 	public void replay() {
 		List<CommentData> commentsListed = extractComment.getAllComments(savePath);
 		
@@ -57,6 +61,10 @@ public class ReplayCommentsHandler {
 		}
 	}
 
+	/**
+	 * Add the given comment to jira and delete the XML-File.
+	 * @param commentData The data to use for resent.
+	 */
 	private void addComment(CommentData commentData) {
 		
 		JiraIssueRequest request = requestFactory.createRequest(context.getConfiguration(), commentData.getRepository());

@@ -60,6 +60,11 @@ public class ExtractComment {
 		return allComments;
 	}
 	
+	/**
+	 * Delete the file with the given path.
+	 * @param filePath The given file path.
+	 * @return File could be deleted.
+	 */
 	public boolean deleteCommentFile(String filePath) {
 		File file = new File(filePath);
 		if(file.exists()) {
