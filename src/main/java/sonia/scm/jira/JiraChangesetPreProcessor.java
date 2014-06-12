@@ -77,7 +77,6 @@ public class JiraChangesetPreProcessor implements ChangesetPreProcessor
    * @param context
    * @param repository
    * @param keyReplacementPattern
-   * @param projectKeys
    */
   public JiraChangesetPreProcessor(JiraGlobalContext context,
     Repository repository, String keyReplacementPattern)
@@ -114,7 +113,6 @@ public class JiraChangesetPreProcessor implements ChangesetPreProcessor
           if (!context.isHandled(repository, changeset))
           {
             issueHandler.handleIssue(m.group(), changeset);
-            context.markAsHandled(repository, changeset);
           }
           else if (logger.isDebugEnabled())
           {
@@ -126,6 +124,11 @@ public class JiraChangesetPreProcessor implements ChangesetPreProcessor
 
       m.appendTail(sb);
       description = sb.toString();
+    }
+
+    if (!context.isHandled(repository, changeset))
+    {
+      context.markAsHandled(repository, changeset);
     }
 
     changeset.setDescription(description);
