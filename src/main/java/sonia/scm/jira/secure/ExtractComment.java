@@ -19,7 +19,7 @@ public class ExtractComment {
 	}
 
 	/**
-	 * Extract the data for a comment given in the xml file.
+	 * Extract the data for a comment given in the XML file.
 	 * @param file The file to extract the data from.
 	 * @return The extracted comment data.
 	 * @throws JAXBException

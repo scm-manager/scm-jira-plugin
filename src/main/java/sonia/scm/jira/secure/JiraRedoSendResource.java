@@ -45,9 +45,10 @@ public class JiraRedoSendResource {
 		this.requestFactory = requestFactory;
 	}
 
-	/**
+	/** 
 	 * Resent all comments that could not be sent at the last time.
-	 * @return Response if the Comments could be executed or a returned error message.
+	 * Delete the corresponding file in success.
+	 * @return Response if the comments could be executed or a returned error message.
 	 */
 	@POST
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
