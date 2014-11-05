@@ -39,8 +39,11 @@ import sonia.scm.repository.Repository;
 
 //~--- JDK imports ------------------------------------------------------------
 
+
 import java.io.Closeable;
 import java.io.IOException;
+
+import com.google.common.base.Strings;
 
 /**
  *
@@ -49,7 +52,15 @@ import java.io.IOException;
 public class JiraIssueRequest implements Closeable
 {
 
-  /**
+  @Override
+	public String toString() {
+		return "JiraIssueRequest [configuration=" + configuration
+				+ ", handler=" + handler + ", handlerFactory=" + handlerFactory
+				+ ", repository=" + repository
+				+ ", username=" + username + "]";
+	}
+
+/**
    * Constructs ...
    *
    *
@@ -104,9 +115,13 @@ public class JiraIssueRequest implements Closeable
    */
   public JiraHandler createJiraHandler() throws JiraConnectException
   {
+	  String url = configuration.getUrl();
+	  if(Strings.isNullOrEmpty(url) || url.equals(" ")) {
+		  url = repository.getProperty(JiraConfiguration.PROPERTY_JIRA_URL);
+	  }
     if (handler == null)
     {
-      handler = handlerFactory.createJiraHandler(configuration.getUrl(),
+      handler = handlerFactory.createJiraHandler(url,
         username, password);
     }
 

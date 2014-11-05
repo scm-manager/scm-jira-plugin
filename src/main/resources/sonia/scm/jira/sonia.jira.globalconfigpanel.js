@@ -107,6 +107,32 @@ Sonia.jira.GlobalConfigPanel = Ext.extend(Sonia.config.ConfigForm, {
         fieldLabel: Sonia.jira.I18n.passwordText,
         inputType: 'password',
         helpText: Sonia.jira.I18n.passwordHelpText
+      },{
+        id: 'save-Path',
+        name: 'savePath',
+        xtype: 'textfield',
+        fieldLabel: Sonia.jira.I18n.savePathText,
+        helpText: Sonia.jira.I18n.savePathHelpText
+      },{
+    	  id: 'redo',
+    	  name: 'redoButton',
+    	  xtype: 'button',
+    	  handler: function(){
+    		  Ext.Ajax.request({
+    			  url: restUrl + 'plugins/jira/redo-send.json',
+    			  method: 'POST',
+    			  jsonData: '',
+    			  scope: this,
+    		      disableCaching: true,
+    		      success: function(){
+    		      },
+    		      failure: function(){
+    		          alert('failure');
+    		      }
+    		  });
+    	  },
+    	  text: Sonia.jira.I18n.redoText,
+    	  fieldLabel: Sonia.jira.I18n.redoHelpText 
       }]
     };
 

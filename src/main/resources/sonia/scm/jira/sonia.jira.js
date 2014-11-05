@@ -72,7 +72,22 @@ Sonia.jira.I18n = {
                      with the credentials of the user which is logged in.',
   
   passwordText: 'Password',
-  passwordHelpText: 'Jira password for connection.'
+  passwordHelpText: 'Jira password for connection.',
+  
+  mailText: 'E-Mail',
+  mailHelpText: 'The mail address to send a message to if a jira comment fails.',
+  
+  mailHostText: 'Mail host',
+  mailHostHelpText: 'The host used for sending the mail.',
+	  
+  sendmailText: 'Send Mail',
+  sendmailHelpText: 'The mail address used as the sender. This address must be valid.',
+  
+  savePathText: 'Save Path',
+  savePathHelpText: 'The path to save the lost comments.',
+  
+  redoText: 'Redo Comments',
+  redoHelpText: 'Retrys to send all stopped comments to Jira.'
 };
 
 Sonia.jira.toggleFields = function(cmps, scope){
