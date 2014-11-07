@@ -35,7 +35,10 @@ package sonia.scm.jira;
 
 //~--- non-JDK imports --------------------------------------------------------
 
+import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.common.base.Throwables;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,10 +48,8 @@ import sonia.scm.repository.Changeset;
 
 //~--- JDK imports ------------------------------------------------------------
 
-
-
-
 import java.io.IOException;
+
 import java.util.GregorianCalendar;
 
 /**
@@ -68,14 +69,14 @@ public class JiraIssueHandler
    * Constructs ...
    *
    *
-   *
+   * @param problemHandler
    * @param templateHandler
    * @param request
    */
-  public JiraIssueHandler(CommentTemplateHandler templateHandler,
-    JiraIssueRequest request)
+  public JiraIssueHandler(MessageProblemHandler problemHandler,
+    CommentTemplateHandler templateHandler, JiraIssueRequest request)
   {
-	  logger.debug("Constructor JiraIssueHandler " + request.toString());
+    this.problemHandler = problemHandler;
     this.templateHandler = templateHandler;
     this.request = request;
   }
@@ -131,6 +132,23 @@ public class JiraIssueHandler
    * Method description
    *
    *
+   * @return
+   */
+  @Override
+  public String toString()
+  {
+    //J-
+    return Objects.toStringHelper(this)
+                  .add("request", request)
+                  .add("problemHandler", templateHandler)
+                  .toString();
+    //J+
+  }
+
+  /**
+   * Method description
+   *
+   *
    * @param changeset
    * @param issueId
    * @param autoCloseWord
@@ -155,10 +173,14 @@ public class JiraIssueHandler
     }
     catch (IOException ex)
     {
+
+      // TODO use problem handler
       logger.error("could not render template", ex);
     }
     catch (JiraException ex)
     {
+
+      // TODO use problem handler
       logger.error("could not close jira issue", ex);
     }
   }
@@ -184,6 +206,56 @@ public class JiraIssueHandler
     return new Comment(
       Strings.nullToEmpty(prefix).concat(Strings.nullToEmpty(body)),
       request.getConfiguration().getRoleLevel()
+    );
+    //J+
+  }
+
+  /**
+   * Method description
+   *
+   *
+   * @param issueId
+   * @param comment
+   * @param changeset
+   *
+   * @throws IOException
+   */
+  private void handleException(String issueId, String comment,
+    Changeset changeset)
+    throws IOException
+  {
+    Preconditions.checkArgument(!Strings.isNullOrEmpty(issueId),
+      "issue id is null");
+
+    /*
+     * Preconditions.checkArgument(!Strings.isNullOrEmpty(comment),
+     * "comment is null");
+     */
+    Preconditions.checkNotNull(changeset, "changeset is null");
+
+    JiraConfiguration configuration = request.getConfiguration();
+
+    if (comment == null)
+    {
+      comment = templateHandler.render(CommentTemplate.UPADTE, request,
+        changeset);
+    }
+
+    CommentPreparation commentPreparation =
+      new CommentPreparation(configuration.getUrl());
+    String body = commentPreparation.prepareComment(issueId,
+                    createComment(comment));
+
+    // Send mail and save comment information
+    //J-
+    problemHandler.handleMessageProblem(
+      configuration,
+      issueId, 
+      request.getUsername(), 
+      body, 
+      new GregorianCalendar(),
+      changeset, 
+      request.getRepository()
     );
     //J+
   }
@@ -234,11 +306,10 @@ public class JiraIssueHandler
    */
   private void updateIssue(Changeset changeset, String issueId)
   {
-    if (logger.isDebugEnabled())
-    {
-      logger.debug("try to update issue {} because of changeset {}", issueId,
-        changeset.getId());
-    }
+    logger.debug("try to update issue {} because of changeset {}", issueId,
+      changeset.getId());
+
+    String comment = null;
 
     try
     {
@@ -247,8 +318,8 @@ public class JiraIssueHandler
       if (!handler.isCommentAlreadyExists(issueId, changeset.getId(),
         changeset.getDescription()))
       {
-        String comment = templateHandler.render(CommentTemplate.UPADTE,
-                           request, changeset);
+        comment = templateHandler.render(CommentTemplate.UPADTE, request,
+          changeset);
 
         handler.addComment(issueId, createComment(comment), request);
       }
@@ -264,80 +335,35 @@ public class JiraIssueHandler
     }
     catch (JiraException ex)
     {
-    	//TODO: Save comment in case of login-error or existence check
-    	// Possibly remove saving from soap jira handler
-    	
-    	//TODO Case of rendering mistake (IO)
-    	
-    	// Check if token is used
-    	String token = null;
-    	if(ex instanceof JiraExceptionTokenized) {
-    		token = ((JiraExceptionTokenized) ex).getToken();
-    	}
-    	
-    	handleException(issueId, changeset, token);
-        
+
+      // TODO: Save comment in case of login-error or existence check
+      // Possibly remove saving from soap jira handler
+
+      // TODO Case of rendering mistake (IO)
       logger.error("could not add comment to jira issue", ex);
+
+      try
+      {
+        handleException(issueId, comment, changeset);
+      }
+      catch (IOException e)
+      {
+
+        // do something useful
+        throw Throwables.propagate(e);
+      }
+
     }
   }
-  
-  private void handleException(String issueId, Changeset changeset, String token) {
-	  // Get Information
-	  String mailAddress = request.getConfiguration().getMailAddress();
-      String mailHost = request.getConfiguration().getMailHost();
-      String from = request.getConfiguration().getSendMail();
-      String jiraUrl = request.getConfiguration().getUrl();
-      String roleLevel = request.getConfiguration().getRoleLevel();
-      String author = request.getUsername();
-      String savePath = request.getConfiguration().getSavePath();
-      
-      if(Strings.isNullOrEmpty(mailAddress)) {
-    	  mailAddress = request.getRepository().getProperty(JiraConfiguration.PROPERTY_ERROR_MAIL);
-      }
-      if(Strings.isNullOrEmpty(mailHost)) {
-    	  mailHost = request.getRepository().getProperty(JiraConfiguration.PROPERTY_MAIL_HOST);
-      }
-      if(Strings.isNullOrEmpty(from)) {
-    	  from = request.getRepository().getProperty(JiraConfiguration.PROPERTY_SEND_MAIL);
-      }
-      if(Strings.isNullOrEmpty(jiraUrl)) {
-    	  jiraUrl = request.getRepository().getProperty(JiraConfiguration.PROPERTY_JIRA_URL);
-      }
-      if(Strings.isNullOrEmpty(roleLevel)) {
-    	  roleLevel = request.getRepository().getProperty(JiraConfiguration.PROPERTY_ROLELEVEL);
-      }
-      if(Strings.isNullOrEmpty(savePath)) {
-    	  savePath = request.getRepository().getProperty(JiraConfiguration.PROPERTY_SAVE_PATH);
-      }
-	  
-	  // Create comment body
-	  String body = null;
-	  try {
-		  String comment = templateHandler.render(CommentTemplate.UPADTE, request, changeset);
-		  CommentPreparation commentPreparation = new CommentPreparation(jiraUrl);
-		  body = commentPreparation.prepareComment(issueId, createComment(comment));
-	  } catch (IOException e) {
-		  logger.error("could render template", e);
-	  }
-	  
-	  
-	  // Send mail and save comment information
-      
-      MessageProblemHandler messageProblemHandler = new MessageProblemHandler(mailAddress, mailHost, from, savePath);
-      messageProblemHandler.handleMessageProblem(token, issueId, roleLevel, author, body, new GregorianCalendar(), jiraUrl, changeset, request.getRepository());
-  }
 
-  @Override
-public String toString() {
-	return "JiraIssueHandler [request=" + request + ", templateHandler="
-			+ templateHandler + "]";
-}
-  
   //~--- fields ---------------------------------------------------------------
+
+  /** Field description */
+  private final MessageProblemHandler problemHandler;
 
   /** Field description */
   private final JiraIssueRequest request;
 
-/** Field description */
+  /** Field description */
   private final CommentTemplateHandler templateHandler;
 }

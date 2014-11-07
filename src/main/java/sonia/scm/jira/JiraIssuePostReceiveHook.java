@@ -44,6 +44,7 @@ import org.slf4j.LoggerFactory;
 
 import sonia.scm.EagerSingleton;
 import sonia.scm.event.Subscriber;
+import sonia.scm.jira.secure.MessageProblemHandler;
 import sonia.scm.plugin.ext.Extension;
 import sonia.scm.repository.Changeset;
 import sonia.scm.repository.PostReceiveRepositoryHookEvent;
@@ -78,17 +79,20 @@ public final class JiraIssuePostReceiveHook
    * @param context
    * @param requestFactory
    * @param templateHandlerProvider
+   * @param messageProblemHandler
    */
   @Inject
   public JiraIssuePostReceiveHook(JiraGlobalContext context,
     JiraIssueRequestFactory requestFactory,
-    Provider<CommentTemplateHandler> templateHandlerProvider)
+    Provider<CommentTemplateHandler> templateHandlerProvider,
+    MessageProblemHandler messageProblemHandler)
   {
     this.context = context;
     this.requestFactory = requestFactory;
     this.templateHandlerProvider = templateHandlerProvider;
     this.changesetPreProcessorFactory =
       new JiraChangesetPreProcessorFactory(context);
+    this.messageProblemHandler = messageProblemHandler;
   }
 
   //~--- methods --------------------------------------------------------------
@@ -154,9 +158,17 @@ public final class JiraIssuePostReceiveHook
 
       try
       {
+        //J-
         request = requestFactory.createRequest(configuration, repository);
+        
         jcpp.setJiraIssueHandler(
-          new JiraIssueHandler(templateHandlerProvider.get(), request));
+          new JiraIssueHandler(
+            messageProblemHandler, 
+            templateHandlerProvider.get(),
+            request
+          )
+        );
+        //J+
 
         for (Changeset c : changesets)
         {
@@ -225,6 +237,9 @@ public final class JiraIssuePostReceiveHook
 
   /** Field description */
   private final JiraGlobalContext context;
+
+  /** Field description */
+  private final MessageProblemHandler messageProblemHandler;
 
   /** Field description */
   private final JiraIssueRequestFactory requestFactory;

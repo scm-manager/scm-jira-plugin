@@ -35,6 +35,7 @@ package sonia.scm.jira;
 
 //~--- non-JDK imports --------------------------------------------------------
 
+import com.google.common.base.Objects;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
@@ -73,6 +74,9 @@ public class JiraConfiguration implements Validateable
   /** Field description */
   public static final String PROPERTY_COMMENT_PREFIX = "jira.comment-prefix";
 
+  /** Address used in case of error */
+  public static final String PROPERTY_ERROR_MAIL = "jira.mail-error-address";
+
   /** Field description */
   public static final String PROPERTY_JIRA_URL = "jira.url";
 
@@ -90,19 +94,7 @@ public class JiraConfiguration implements Validateable
 
   /** Field description */
   public static final String SEPARATOR = ",";
-  
-  /** Address used in case of error */
-  public static final String PROPERTY_ERROR_MAIL = "jira.mail-error-address";
-  
-  /** Mail host */
-  public static final String PROPERTY_MAIL_HOST ="jira.mail-host";
-  
-  /** Send mail address */
-  public static final String PROPERTY_SEND_MAIL = "jira.sendmail";
-  
-  /** Save path */
-  public static final String PROPERTY_SAVE_PATH = "jira.savePath";
-  
+
   //~--- constructors ---------------------------------------------------------
 
   /**
@@ -128,14 +120,37 @@ public class JiraConfiguration implements Validateable
     roleLevel = repository.getProperty(PROPERTY_ROLELEVEL);
     commentPrefix = repository.getProperty(PROPERTY_COMMENT_PREFIX);
     mailAddress = repository.getProperty(PROPERTY_ERROR_MAIL);
-    mailHost = repository.getProperty(PROPERTY_MAIL_HOST);
-    sendMail = repository.getProperty(PROPERTY_SEND_MAIL);
-    savePath = repository.getProperty(PROPERTY_SAVE_PATH);
 
     if (Strings.isNullOrEmpty(commentPrefix))
     {
       commentPrefix = DEFAULT_COMMENT_PREFIX;
     }
+  }
+
+  //~--- methods --------------------------------------------------------------
+
+  /**
+   * Method description
+   *
+   *
+   * @return
+   */
+  @Override
+  public String toString()
+  {
+    //J-
+    return Objects.toStringHelper(this)
+                  .add("url", url)
+                  .add("updateIssues", updateIssues)
+                  .add("commentPrefix", commentPrefix)
+                  .add("roleLevel", roleLevel)
+                  .add("autoClose", autoClose)
+                  .add("autoCloseWords", autoCloseWords)
+                  .add("username", username)
+                  .add("password", "xxx")
+                  .add("mailAddress", mailAddress)
+                  .toString();
+    //J+
   }
 
   //~--- get methods ----------------------------------------------------------
@@ -160,6 +175,17 @@ public class JiraConfiguration implements Validateable
   public String getCommentPrefix()
   {
     return commentPrefix;
+  }
+
+  /**
+   * Method description
+   *
+   *
+   * @return
+   */
+  public String getMailAddress()
+  {
+    return mailAddress;
   }
 
   /**
@@ -204,22 +230,6 @@ public class JiraConfiguration implements Validateable
   public String getUsername()
   {
     return username;
-  }
-  
-  public String getMailAddress() {
-	return mailAddress;
-  }
-
-  public String getMailHost() {
-	return mailHost;
-  }
-  
-  public String getSendMail() {
-	  return sendMail;
-  }
-  
-  public String getSavePath() {
-	  return savePath;
   }
 
   /**
@@ -345,6 +355,10 @@ public class JiraConfiguration implements Validateable
   @XmlElement(name = "comment-prefix")
   private String commentPrefix = DEFAULT_COMMENT_PREFIX;
 
+  /** Address to send Error-Message to */
+  @XmlElement(name = "mail-error-address")
+  private String mailAddress;
+
   /** Field description */
   @XmlJavaTypeAdapter(XmlEncryptionAdapter.class)
   private String password;
@@ -362,33 +376,4 @@ public class JiraConfiguration implements Validateable
 
   /** Field description */
   private String username;
-
-  /** Address to send Error-Message to */
-  @XmlElement(name = "mail-error-address")
-  private String mailAddress;
-  
-  /** Host to send mail to */
-  @XmlElement(name = "mail-host")
-  private String mailHost;
-  
-  /** Address of the sender */
-  @XmlElement(name = "sendmail")
-  private String sendMail;
-  
-  /** The save path */
-  @XmlElement(name = "savePath")
-  private String savePath;
-
-@Override
-public String toString() {
-	return "JiraConfiguration [autoClose=" + autoClose + ", autoCloseWords="
-			+ autoCloseWords + ", commentPrefix=" + commentPrefix
-			+ ", roleLevel=" + roleLevel
-			+ ", updateIssues=" + updateIssues + ", url=" + url + ", username="
-			+ username + ", mailAddress=" + mailAddress + ", mailHost="
-			+ mailHost + ", sendMail=" + sendMail + ", savePath=" + savePath
-			+ "]";
-}
-  
-
 }
