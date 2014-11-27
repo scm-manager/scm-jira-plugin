@@ -65,6 +65,8 @@ public class JiraConfiguration implements Validateable
   /** Field description */
   public static final String DEFAULT_COMMENT_PREFIX = "[SCM]";
 
+  public static final String DEFAULT_COMMENT_WRAP = "";
+
   /** Field description */
   public static final String PROPERTY_AUTOCLOSE = "jira.auto-close";
 
@@ -91,6 +93,12 @@ public class JiraConfiguration implements Validateable
 
   /** Field description */
   public static final String PROPERTY_USERNAME = "jira.username";
+
+  /** Field description */
+  public static final String PROPERTY_WRAP_FORMAT = "jira.comment-wrap";
+
+  /** Field description */
+  public static final String PROPERTY_MONOSPACE = "jira.comment-monospace";
 
   /** Field description */
   public static final String SEPARATOR = ",";
@@ -120,6 +128,8 @@ public class JiraConfiguration implements Validateable
     roleLevel = repository.getProperty(PROPERTY_ROLELEVEL);
     commentPrefix = repository.getProperty(PROPERTY_COMMENT_PREFIX);
     mailAddress = repository.getProperty(PROPERTY_ERROR_MAIL);
+    commentWrap = repository.getProperty(PROPERTY_WRAP_FORMAT);
+    commentMonospace = getBooleanProperty(repository, PROPERTY_MONOSPACE);
 
     if (Strings.isNullOrEmpty(commentPrefix))
     {
@@ -267,6 +277,11 @@ public class JiraConfiguration implements Validateable
     return Util.isNotEmpty(url);
   }
 
+
+  public String getCommentWrap() { return commentWrap; }
+
+  public boolean getCommentMonospace() { return commentMonospace; }
+
   /**
    * Method description
    *
@@ -376,4 +391,10 @@ public class JiraConfiguration implements Validateable
 
   /** Field description */
   private String username;
+
+  @XmlElement(name = "comment-wrap")
+  private String commentWrap = DEFAULT_COMMENT_WRAP;
+
+  @XmlElement(name = "comment-monospace")
+  private boolean commentMonospace;
 }

@@ -85,7 +85,13 @@ Sonia.jira.I18n = {
   
   savePathText: 'Save Path',
   savePathHelpText: 'The path to save the lost comments.',
-  
+
+  commentWrapText: 'Wrap Comment With',
+  commentWrapHelpText: 'Text to place around the changeset description in the Jira comment. The default is no wrapping.  Examples:  {quote} or {noformat}.  See https://jira.atlassian.com/secure/WikiRendererHelpAction.jspa?section=all',
+
+  commentMonospaceText: 'Monospace',
+  commentMonospaceHelpText: 'Should the comment include the mono-space wrapper?  {{ }}.  Note:  Jira handling for this is not consistant.',
+
   redoText: 'Redo Comments',
   redoHelpText: 'Retrys to send all stopped comments to Jira.'
 };
