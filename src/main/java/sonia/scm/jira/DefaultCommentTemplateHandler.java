@@ -66,6 +66,9 @@ public class DefaultCommentTemplateHandler implements CommentTemplateHandler
   private static final String ENV_AUTOCLOSEWORD = "autoCloseWord";
 
   /** Field description */
+  private static final String ENV_CHANGESET = "changeset";
+
+  /** Field description */
   private static final String ENV_DESCRIPTION_LINE = "descriptionLine";
 
   /** Field description */
@@ -144,6 +147,7 @@ public class DefaultCommentTemplateHandler implements CommentTemplateHandler
     Map<String, Object> env = Maps.newHashMap();
 
     env.put(ENV_REPOSITORY, repository);
+    env.put(ENV_CHANGESET, changeset);
     // Mustache is pretty annoying, in that it escapes HTML.  Thus any lovely line-feeds in the changeset
     // description get eaten, and don't show up in Jira.  Thus, we split the description by the line separator,
     // and make mustache put each line on its own line.
