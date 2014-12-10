@@ -106,6 +106,21 @@ Sonia.jira.RepositoryConfigPanel = Ext.extend(Sonia.repository.PropertiesFormPan
         fieldLabel: Sonia.jira.I18n.mailText,
         property: 'jira.mail-error-address',
         helpText: Sonia.jira.I18n.mailHelpText
+      },{
+        id: 'commentWrap',
+        name: 'comment-wrap',
+        xtype: 'textfield',
+        property: 'jira.comment-wrap',
+        fieldLabel: Sonia.jira.I18n.commentWrapText,
+        helpText: Sonia.jira.I18n.commentWrapHelpText
+      },{
+        id: 'commentMonospace',
+        name: 'comment-monospace',
+        inputValue: 'true',
+        property: 'jira.comment-monospace',
+        xtype: 'checkbox',
+        fieldLabel: Sonia.jira.I18n.commentMonospaceText,
+        helpText: Sonia.jira.I18n.commentMonospaceHelpText
       }]
     };
     
