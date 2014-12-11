@@ -48,11 +48,11 @@ import sonia.scm.util.Util;
 
 //~--- JDK imports ------------------------------------------------------------
 
-import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -85,6 +85,9 @@ public class DefaultCommentTemplateHandler implements CommentTemplateHandler
 
   private static final String ENV_COMMENTWRAP_PRE = "commentWrapPre";
   private static final String ENV_COMMENTWRAP_POST = "commentWrapPost";
+
+  private static final String ENV_BRANCHES = "branches";
+  private static final String ENV_BOOKMARKS = "bookmarks";
 
   //~--- constructors ---------------------------------------------------------
 
@@ -156,6 +159,8 @@ public class DefaultCommentTemplateHandler implements CommentTemplateHandler
     env.put(ENV_DIFFURL, linkHandler.getDiffUrl(repository, changeset));
     env.put(ENV_DIFFRESTURL, linkHandler.getDiffRestUrl(repository, changeset));
     env.put(ENV_REPOSITORYURL, linkHandler.getRepositoryUrl(repository));
+    env.put(ENV_BRANCHES, changeset.getBranches()); // TODO:  Mercurial has empty branches for "default" ...
+    env.put(ENV_BOOKMARKS, changeset.getProperty("hg.bookmarks"));
 
     final JiraConfiguration configuration = request.getConfiguration();
     final boolean commentMonospace = configuration.getCommentMonospace();
