@@ -45,26 +45,24 @@ import sonia.scm.jira.soap.JiraSoapService;
 import sonia.scm.jira.soap.RemoteComment;
 import sonia.scm.jira.soap.RemoteFieldValue;
 import sonia.scm.jira.soap.RemoteNamedObject;
-import sonia.scm.repository.EscapeUtil;
 
 //~--- JDK imports ------------------------------------------------------------
 
 import java.rmi.RemoteException;
 
-import java.text.MessageFormat;
-
 import java.util.GregorianCalendar;
 import java.util.Locale;
-import java.util.regex.Matcher;
 
 /**
+ * Implementation of the {@link JiraHandler} which uses the SOAP protocol to
+ * communicate with Jira.
  *
  * @author Sebastian Sdorra
  */
 public class SoapJiraHandler implements JiraHandler
 {
 
-  /** Field description */
+  /** id for the default close action */
   public static final String ACTION_DEFAULT_CLOSE = "2";
 
   /** the logger for SoapJiraHandler */
@@ -74,19 +72,19 @@ public class SoapJiraHandler implements JiraHandler
   //~--- constructors ---------------------------------------------------------
 
   /**
-   * Constructs ...
+   * Constructs a new SoapJiraHandler.
    *
    *
-   * @param service
-   * @param jiraUrl
-   * @param token
-   * @param username
+   * @param service jira soap service
+   * @param request jira issure request
+   * @param token authentication token
+   * @param username connection username
    */
-  public SoapJiraHandler(JiraSoapService service, String jiraUrl, String token,
-    String username)
+  public SoapJiraHandler(JiraSoapService service, JiraIssueRequest request,
+    String token, String username)
   {
     this.service = service;
-    this.jiraUrl = jiraUrl;
+    this.request = request;
     this.token = token;
     this.username = username;
   }
@@ -94,19 +92,10 @@ public class SoapJiraHandler implements JiraHandler
   //~--- methods --------------------------------------------------------------
 
   /**
-   * Method description
-   *
-   *
-   * @param issueId
-   * @param comment
-   * @param request issue request
-   *
-   * @throws JiraException
+   * {@inheritDoc}
    */
   @Override
-  public void addComment(String issueId, Comment comment,
-    JiraIssueRequest request)
-    throws JiraException
+  public void addComment(String issueId, Comment comment) throws JiraException
   {
     if (logger.isInfoEnabled())
     {
@@ -117,7 +106,7 @@ public class SoapJiraHandler implements JiraHandler
 
     remoteComment.setAuthor(username);
     remoteComment.setCreated(new GregorianCalendar());
-    remoteComment.setBody(prepareComment(issueId, comment));
+    remoteComment.setBody(Comments.prepareComment(request, issueId, comment));
 
     if (!Strings.isNullOrEmpty(comment.getBody()))
     {
@@ -136,13 +125,7 @@ public class SoapJiraHandler implements JiraHandler
   }
 
   /**
-   * Method description
-   *
-   *
-   * @param issueId
-   * @param autoCloseWord
-   *
-   * @throws JiraException
+   * {@inheritDoc}
    */
   @Override
   public void close(String issueId, String autoCloseWord) throws JiraException
@@ -178,10 +161,7 @@ public class SoapJiraHandler implements JiraHandler
   }
 
   /**
-   * Method description
-   *
-   *
-   * @throws JiraException
+   * {@inheritDoc}
    */
   @Override
   public void logout() throws JiraException
@@ -201,34 +181,10 @@ public class SoapJiraHandler implements JiraHandler
     }
   }
 
-  /**
-   * Method description
-   *
-   *
-   * @param issueId
-   * @param comment
-   *
-   * @return
-   */
-  public String prepareComment(String issueId, Comment comment)
-  {
-    String body = Strings.nullToEmpty(comment.getBody());
-
-    return removeIssueLink(issueId, body);
-  }
-
   //~--- get methods ----------------------------------------------------------
 
   /**
-   * Method description
-   *
-   *
-   * @param issueId
-   * @param contains
-   *
-   * @return
-   *
-   * @throws JiraException
+   * {@inheritDoc}
    */
   @Override
   public boolean isCommentAlreadyExists(String issueId, String... contains)
@@ -262,13 +218,13 @@ public class SoapJiraHandler implements JiraHandler
   //~--- methods --------------------------------------------------------------
 
   /**
-   * Method description
+   * Returns {@code true} if the body of the comment contains one of the given 
+   * strings.
    *
+   * @param comment comment
+   * @param contains string for the contains check
    *
-   * @param comment
-   * @param contains
-   *
-   * @return
+   * @return {@code true} if the comment contains one of the strings
    */
   @VisibleForTesting
   boolean contains(RemoteComment comment, String... contains)
@@ -296,55 +252,11 @@ public class SoapJiraHandler implements JiraHandler
     return result;
   }
 
-  /**
-   * Method description
-   *
-   *
-   * @param text
-   * @param value
-   *
-   * @return
-   */
   private boolean contains(String text, String value)
   {
     return toLowerCase(text).contains(toLowerCase(value));
   }
 
-  /**
-   * Remove issue self reference link.
-   * {@see https://bitbucket.org/sdorra/scm-manager/issue/337/jira-comment-contains-unneccessary-link}.
-   *
-   * TODO: The preprocessor order on hooks should be fixed in the core.
-   *
-   *
-   * @param issueId
-   * @param body
-   *
-   * @return
-   */
-  private String removeIssueLink(String issueId, String body)
-  {
-    //J-
-    String link = MessageFormat.format(
-      JiraChangesetPreProcessorFactory.REPLACEMENT_LINK,
-      jiraUrl
-    ).replaceAll(Matcher.quoteReplacement("$0"), issueId);
-    //J+
-
-    body = body.replaceAll(link, issueId);
-    body = body.replaceAll(EscapeUtil.escape(link), issueId);
-
-    return body;
-  }
-
-  /**
-   * Method description
-   *
-   *
-   * @param value
-   *
-   * @return
-   */
   private String toLowerCase(String value)
   {
     return Strings.nullToEmpty(value).toLowerCase(Locale.ENGLISH);
@@ -352,15 +264,15 @@ public class SoapJiraHandler implements JiraHandler
 
   //~--- fields ---------------------------------------------------------------
 
-  /** Field description */
-  private final String jiraUrl;
+  /** jira issue request */
+  private final JiraIssueRequest request;
 
-  /** Field description */
+  /** jira soap service */
   private final JiraSoapService service;
 
-  /** Field description */
+  /** authentication token */
   private final String token;
 
-  /** Field description */
+  /** connection username */
   private final String username;
 }

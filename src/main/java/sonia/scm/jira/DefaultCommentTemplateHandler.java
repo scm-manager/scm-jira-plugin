@@ -84,8 +84,6 @@ public class DefaultCommentTemplateHandler implements CommentTemplateHandler
    *
    *
    * @param templateEngineFactory
-   * @param wuiUrlProvider
-   * @param restUrlProvider
    * @param linkHandler
    */
   @Inject
@@ -159,8 +157,8 @@ public class DefaultCommentTemplateHandler implements CommentTemplateHandler
   //~--- fields ---------------------------------------------------------------
 
   /** Field description */
-  private LinkHandler linkHandler;
+  private final LinkHandler linkHandler;
 
   /** Field description */
-  private TemplateEngineFactory templateEngineFactory;
+  private final TemplateEngineFactory templateEngineFactory;
 }

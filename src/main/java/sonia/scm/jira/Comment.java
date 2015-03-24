@@ -36,6 +36,7 @@ package sonia.scm.jira;
 import com.google.common.base.Objects;
 
 /**
+ * A jira comment.
  *
  * @author Sebastian Sdorra
  */
@@ -46,9 +47,8 @@ public final class Comment
    * Constructs ...
    *
    *
-   * @param body
-   * @param roleVisibility
-   * @param roleLevel
+   * @param body comment body
+   * @param roleLevel role level
    */
   public Comment(String body, String roleLevel)
   {
@@ -59,12 +59,7 @@ public final class Comment
   //~--- methods --------------------------------------------------------------
 
   /**
-   * Method description
-   *
-   *
-   * @param obj
-   *
-   * @return
+   * {@inheritDoc}
    */
   @Override
   public boolean equals(Object obj)
@@ -86,10 +81,7 @@ public final class Comment
   }
 
   /**
-   * Method description
-   *
-   *
-   * @return
+   * {@inheritDoc}
    */
   @Override
   public int hashCode()
@@ -98,10 +90,7 @@ public final class Comment
   }
 
   /**
-   * Method description
-   *
-   *
-   * @return
+   * {@inheritDoc}
    */
   @Override
   public String toString()
@@ -117,10 +106,10 @@ public final class Comment
   //~--- get methods ----------------------------------------------------------
 
   /**
-   * Method description
+   * Returns the body of the comment.
    *
    *
-   * @return
+   * @return comment body
    */
   public String getBody()
   {
@@ -128,10 +117,11 @@ public final class Comment
   }
 
   /**
-   * Method description
+   * Returns the role level of the comment. The role level defines which jira 
+   * users can view the comment.
    *
    *
-   * @return
+   * @return role level
    */
   public String getRoleLevel()
   {
@@ -140,9 +130,9 @@ public final class Comment
 
   //~--- fields ---------------------------------------------------------------
 
-  /** Field description */
-  private String body;
+  /** body of the comment */
+  private final String body;
 
-  /** Field description */
-  private String roleLevel;
+  /** role level */
+  private final String roleLevel;
 }

@@ -44,7 +44,7 @@ public interface JiraHandlerFactory
    * Method description
    *
    *
-   * @param url
+   * @param request
    * @param username
    * @param password
    *
@@ -52,7 +52,7 @@ public interface JiraHandlerFactory
    *
    * @throws JiraConnectException
    */
-  public JiraHandler createJiraHandler(String url, String username,
+  public JiraHandler createJiraHandler(JiraIssueRequest request, String username,
     String password)
     throws JiraConnectException;
 }

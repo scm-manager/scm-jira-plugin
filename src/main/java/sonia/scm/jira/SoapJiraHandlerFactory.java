@@ -48,13 +48,15 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
+ * The SoapJiraHandlerFactory is able to create a new instance of a
+ * {@link JiraHandler} which uses the SOAP protocol to communicate with jira.
  *
  * @author Sebastian Sdorra
  */
 public class SoapJiraHandlerFactory implements JiraHandlerFactory
 {
 
-  /** Field description */
+  /** default soap path */
   public static final String PATH_SOAPSERVICE = "/rpc/soap/jirasoapservice-v2";
 
   /** the logger for SoapJiraHandlerFactory */
@@ -64,58 +66,42 @@ public class SoapJiraHandlerFactory implements JiraHandlerFactory
   //~--- methods --------------------------------------------------------------
 
   /**
-   * Method description
-   *
-   *
-   * @param urlString
-   * @param username
-   * @param password
-   *
-   * @return
-   *
-   * @throws JiraConnectException
+   * {@inheritDoc}
    */
   @Override
-  public JiraHandler createJiraHandler(String urlString, String username,
-    String password)
+  public JiraHandler createJiraHandler(JiraIssueRequest request,
+    String username, String password)
     throws JiraConnectException
   {
     JiraHandler handler = null;
 
+    String urlString = request.getConfiguration().getUrl();
+
     try
     {
-      URL url = createSoapUrl(urlString);
+      URL url = createSoapUrl(request.getConfiguration().getUrl());
 
-      if (logger.isDebugEnabled())
-      {
-        logger.debug("connect to jira {} as user {}", url, username);
-      }
+      logger.debug("connect to jira {} as user {}", url, username);
 
       JiraSoapService service =
         new JiraSoapServiceServiceLocator().getJirasoapserviceV2(url);
       String token = service.login(username, password);
 
-      handler = new SoapJiraHandler(service, urlString, token, username);
+      handler = new SoapJiraHandler(service, request, token, username);
     }
     catch (Exception ex)
     {
+      //J-
       throw new JiraConnectException(
-        "could not connect to jira instance at ".concat(urlString), ex);
+        JiraExceptions.createMessage(ex, "Could not connect to jira instance at ".concat(urlString)),
+        ex
+      );
+      //J+
     }
 
     return handler;
   }
 
-  /**
-   * Method description
-   *
-   *
-   * @param url
-   *
-   * @return
-   *
-   * @throws MalformedURLException
-   */
   private URL createSoapUrl(String url) throws MalformedURLException
   {
     url = HttpUtil.getUriWithoutEndSeperator(url);

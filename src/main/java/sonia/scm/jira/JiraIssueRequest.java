@@ -35,36 +35,27 @@ package sonia.scm.jira;
 
 //~--- non-JDK imports --------------------------------------------------------
 
+import com.google.common.base.Objects;
+
 import sonia.scm.repository.Repository;
 
 //~--- JDK imports ------------------------------------------------------------
 
-
 import java.io.Closeable;
 import java.io.IOException;
 
-import com.google.common.base.Strings;
-
 /**
+ * The JiraIssueRequest contains all informations which are required to create a
+ * connection to the jira server and is able to create {@link JiraHandler}.
  *
  * @author Sebastian Sdorra
  */
 public class JiraIssueRequest implements Closeable
 {
 
-  @Override
-	public String toString() {
-		return "JiraIssueRequest [configuration=" + configuration
-				+ ", handler=" + handler + ", handlerFactory=" + handlerFactory
-				+ ", repository=" + repository
-				+ ", username=" + username + "]";
-	}
-
-/**
-   * Constructs ...
-   *
-   *
-   *
+  /**
+   * Constructs a new JiraIssueRequest.
+   * 
    * @param handlerFactory
    * @param username
    * @param password
@@ -84,10 +75,7 @@ public class JiraIssueRequest implements Closeable
   //~--- methods --------------------------------------------------------------
 
   /**
-   * Method description
-   *
-   *
-   * @throws IOException
+   * {@inheritDoc}
    */
   @Override
   public void close() throws IOException
@@ -106,35 +94,47 @@ public class JiraIssueRequest implements Closeable
   }
 
   /**
-   * Method description
+   * Creates a new {@link JiraHandler} for the configured jira server.
    *
    *
-   * @return
+   * @return new {@link JiraHandler}
    *
    * @throws JiraConnectException
    */
   public JiraHandler createJiraHandler() throws JiraConnectException
   {
-	  String url = configuration.getUrl();
-	  if(Strings.isNullOrEmpty(url) || url.equals(" ")) {
-		  url = repository.getProperty(JiraConfiguration.PROPERTY_JIRA_URL);
-	  }
     if (handler == null)
     {
-      handler = handlerFactory.createJiraHandler(url,
-        username, password);
+      handler = handlerFactory.createJiraHandler(this, username, password);
     }
 
     return handler;
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String toString()
+  {
+    //J-
+    return Objects.toStringHelper(this)
+                  .add("handlerFactory", handlerFactory.getClass())
+                  .add("username", username)
+                  .add("password", "xxx")
+                  .add("configuration", configuration)
+                  .add("repository", repository)
+                  .toString();
+    //J+
+  }
+
   //~--- get methods ----------------------------------------------------------
 
   /**
-   * Method description
+   * Returns jira configuration.
    *
    *
-   * @return
+   * @return jira configuration
    */
   public JiraConfiguration getConfiguration()
   {
@@ -142,10 +142,10 @@ public class JiraIssueRequest implements Closeable
   }
 
   /**
-   * Method description
+   * Returns the password which is used for the connection.
    *
    *
-   * @return
+   * @return connection password
    */
   public String getPassword()
   {
@@ -153,10 +153,10 @@ public class JiraIssueRequest implements Closeable
   }
 
   /**
-   * Method description
+   * Returns the changed repository.
    *
    *
-   * @return
+   * @return changed repository
    */
   public Repository getRepository()
   {
@@ -164,10 +164,10 @@ public class JiraIssueRequest implements Closeable
   }
 
   /**
-   * Method description
+   * Returns the username which is used for the connection.
    *
    *
-   * @return
+   * @return connection username
    */
   public String getUsername()
   {
@@ -176,21 +176,21 @@ public class JiraIssueRequest implements Closeable
 
   //~--- fields ---------------------------------------------------------------
 
-  /** Field description */
-  private JiraConfiguration configuration;
+  /** jira configuration */
+  private final JiraConfiguration configuration;
 
-  /** Field description */
+  /** jira handler */
   private JiraHandler handler;
 
-  /** Field description */
-  private JiraHandlerFactory handlerFactory;
+  /** jira handler factory */
+  private final JiraHandlerFactory handlerFactory;
 
-  /** Field description */
-  private String password;
+  /** connection password */
+  private final String password;
 
-  /** Field description */
-  private Repository repository;
+  /** changed repository */
+  private final Repository repository;
 
-  /** Field description */
-  private String username;
+  /** connection username */
+  private final String username;
 }

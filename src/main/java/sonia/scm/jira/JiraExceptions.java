@@ -33,6 +33,8 @@ package sonia.scm.jira;
 
 //~--- non-JDK imports --------------------------------------------------------
 
+import com.google.common.base.Strings;
+
 import org.apache.axis.NoEndPointException;
 
 import sonia.scm.jira.soap.RemoteAuthenticationException;
@@ -44,7 +46,7 @@ import sonia.scm.jira.soap.RemoteValidationException;
  *
  * @author Sebastian Sdorra
  */
-public class JiraExceptions
+public final class JiraExceptions
 {
 
   /**
@@ -60,13 +62,31 @@ public class JiraExceptions
    *
    *
    * @param ex exception
+   *
+   * @return message
+   */
+  public static String createMessage(Exception ex)
+  {
+    return createMessage(ex, null);
+  }
+
+  /**
+   * Creates a message from the given exception.
+   *
+   *
+   * @param ex exception
    * @param messagePrefix prefix for the message
    *
    * @return message
    */
   public static String createMessage(Exception ex, String messagePrefix)
   {
-    String message = messagePrefix.concat(". ");
+    String message = "";
+
+    if (!Strings.isNullOrEmpty(messagePrefix))
+    {
+      message = messagePrefix.concat(". ");
+    }
 
     if (ex instanceof RemotePermissionException)
     {

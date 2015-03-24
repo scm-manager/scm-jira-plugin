@@ -169,7 +169,12 @@ public class JiraIssueHandler
                          request, changeset, autoCloseWord);
 
       handler.close(issueId, autoCloseWord);
-      handler.addComment(issueId, createComment(comment), request);
+      //J-
+      handler.addComment(
+        issueId, 
+        Comments.createComment(request, comment)
+      );
+      //J+
     }
     catch (IOException ex)
     {
@@ -183,31 +188,6 @@ public class JiraIssueHandler
       // TODO use problem handler
       logger.error("could not close jira issue", ex);
     }
-  }
-
-  /**
-   * Method description
-   *
-   *
-   * @param body
-   *
-   * @return
-   */
-  private Comment createComment(String body)
-  {
-    String prefix = request.getConfiguration().getCommentPrefix();
-
-    if (!Strings.isNullOrEmpty(prefix))
-    {
-      prefix = prefix.concat(" ");
-    }
-
-    //J-
-    return new Comment(
-      Strings.nullToEmpty(prefix).concat(Strings.nullToEmpty(body)),
-      request.getConfiguration().getRoleLevel()
-    );
-    //J+
   }
 
   /**
@@ -241,13 +221,12 @@ public class JiraIssueHandler
         changeset);
     }
 
-    CommentPreparation commentPreparation =
-      new CommentPreparation(configuration.getUrl());
-    String body = commentPreparation.prepareComment(issueId,
-                    createComment(comment));
+    //J-
+    String body = Comments.prepareComment(
+      configuration.getUrl(), issueId, Comments.createComment(request, comment)
+    );
 
     // Send mail and save comment information
-    //J-
     problemHandler.handleMessageProblem(
       configuration,
       issueId, 
@@ -321,7 +300,12 @@ public class JiraIssueHandler
         comment = templateHandler.render(CommentTemplate.UPADTE, request,
           changeset);
 
-        handler.addComment(issueId, createComment(comment), request);
+        //J-
+        handler.addComment(
+          issueId, 
+          Comments.createComment(request, comment)
+        );
+        //J+
       }
       else if (logger.isInfoEnabled())
       {
