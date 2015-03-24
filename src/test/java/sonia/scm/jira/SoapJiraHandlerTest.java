@@ -66,14 +66,6 @@ public class SoapJiraHandlerTest
     assertFalse(handler.contains(comment, "close", "TST-132"));
   }
 
-  /**
-   * Method description
-   *
-   *
-   * @param value
-   *
-   * @return
-   */
   private RemoteComment createComment(String value)
   {
     RemoteComment comment = new RemoteComment();
@@ -83,16 +75,11 @@ public class SoapJiraHandlerTest
     return comment;
   }
 
-  /**
-   * Method description
-   *
-   *
-   * @return
-   */
   private SoapJiraHandler createHandler()
   {
     JiraSoapService service = mock(JiraSoapService.class);
+    JiraIssueRequest request = mock(JiraIssueRequest.class);
 
-    return new SoapJiraHandler(service, "http://localhost", "trillian", "");
+    return new SoapJiraHandler(service, request, "trillian", "");
   }
 }
