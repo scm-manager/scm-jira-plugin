@@ -225,7 +225,7 @@ public class JiraIssueHandler
     throws IOException
   {
     Preconditions.checkArgument(!Strings.isNullOrEmpty(issueId),
-      "issue id is null");
+      "issue id is null or empty");
 
     /*
      * Preconditions.checkArgument(!Strings.isNullOrEmpty(comment),
@@ -331,7 +331,7 @@ public class JiraIssueHandler
     }
     catch (IOException ex)
     {
-      logger.error("could render template", ex);
+      logger.error("could render not template", ex);
     }
     catch (JiraException ex)
     {

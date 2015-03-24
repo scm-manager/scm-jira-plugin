@@ -41,7 +41,6 @@ import com.google.common.base.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sonia.scm.jira.secure.MessageProblemHandler;
 import sonia.scm.jira.soap.JiraSoapService;
 import sonia.scm.jira.soap.RemoteComment;
 import sonia.scm.jira.soap.RemoteFieldValue;
@@ -50,9 +49,10 @@ import sonia.scm.repository.EscapeUtil;
 
 //~--- JDK imports ------------------------------------------------------------
 
-
 import java.rmi.RemoteException;
+
 import java.text.MessageFormat;
+
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -99,11 +99,14 @@ public class SoapJiraHandler implements JiraHandler
    *
    * @param issueId
    * @param comment
+   * @param request issue request
    *
    * @throws JiraException
    */
   @Override
-  public void addComment(String issueId, Comment comment, JiraIssueRequest request) throws JiraException
+  public void addComment(String issueId, Comment comment,
+    JiraIssueRequest request)
+    throws JiraException
   {
     if (logger.isInfoEnabled())
     {
@@ -125,32 +128,10 @@ public class SoapJiraHandler implements JiraHandler
     {
       service.addComment(token, issueId, remoteComment);
     }
-    catch (Exception ex)
+    catch (RemoteException ex)
     {
-    	/* Handled in JiraIssueHandler
-        // Send mail and save comment information
-        String mailAddress = request.getConfiguration().getMailAddress();
-        String mailHost = request.getConfiguration().getMailHost();
-        String jiraUrl = request.getConfiguration().getUrl();
-        MessageProblemHandler messageProblemHandler = new MessageProblemHandler(mailAddress, mailHost);
-        messageProblemHandler.handleMessageProblem(token, issueId, remoteComment, jiraUrl); */
-        
-        // Detailed logging of the occurred exception
-        if(ex instanceof sonia.scm.jira.soap.RemotePermissionException) {
-        	logger.error("The permission was denied.");
-        } else if(ex instanceof sonia.scm.jira.soap.RemoteAuthenticationException) {
-        	logger.error("The authentication was incorrect.");
-        } else if(ex instanceof sonia.scm.jira.soap.RemoteValidationException) {
-        	logger.error("The message could not be validated.");
-        } else if(ex instanceof org.apache.axis.NoEndPointException) {
-        	logger.error(ex.getLocalizedMessage() + "  No endpoint could be found.");
-        } else if(ex instanceof java.rmi.RemoteException) {
-        	logger.error(ex.getLocalizedMessage());
-        } else {
-        	logger.error("An error occured during remote comment adding.");
-        }
-        
-        throw new JiraExceptionTokenized("add comment failed", ex, token);
+      throw JiraExceptions.propagate(ex,
+        "Failed to add comment to issue ".concat(issueId));
     }
   }
 
@@ -189,9 +170,10 @@ public class SoapJiraHandler implements JiraHandler
       service.progressWorkflowAction(token, issueId, id,
         new RemoteFieldValue[] {});
     }
-    catch (Exception ex)
+    catch (RemoteException ex)
     {
-      throw new JiraException("close issue failed", ex);
+      throw JiraExceptions.propagate(ex,
+        "Failed to close issue ".concat(issueId));
     }
   }
 
@@ -215,7 +197,7 @@ public class SoapJiraHandler implements JiraHandler
     }
     catch (RemoteException ex)
     {
-      throw new JiraException("logout failed", ex);
+      throw JiraExceptions.propagate(ex, "Failed to logout");
     }
   }
 
@@ -268,29 +250,16 @@ public class SoapJiraHandler implements JiraHandler
         }
       }
     }
-    catch (Exception ex)
+    catch (RemoteException ex)
     {
-      throw new JiraException("could not check for jira comment", ex);
+      throw JiraExceptions.propagate(ex,
+        "could not check for jira comment at issue ".concat(issueId));
     }
 
     return result;
   }
 
   //~--- methods --------------------------------------------------------------
-
-  /**
-   * Method description
-   *
-   *
-   * @param text
-   * @param value
-   *
-   * @return
-   */
-  private boolean contains(String text, String value)
-  {
-    return toLowerCase(text).contains(toLowerCase(value));
-  }
 
   /**
    * Method description
@@ -310,6 +279,7 @@ public class SoapJiraHandler implements JiraHandler
     if (!Strings.isNullOrEmpty(body))
     {
       result = true;
+
       for (String c : contains)
       {
         if (!body.contains(c))
@@ -324,6 +294,20 @@ public class SoapJiraHandler implements JiraHandler
     }
 
     return result;
+  }
+
+  /**
+   * Method description
+   *
+   *
+   * @param text
+   * @param value
+   *
+   * @return
+   */
+  private boolean contains(String text, String value)
+  {
+    return toLowerCase(text).contains(toLowerCase(value));
   }
 
   /**
@@ -369,14 +353,14 @@ public class SoapJiraHandler implements JiraHandler
   //~--- fields ---------------------------------------------------------------
 
   /** Field description */
-  private String jiraUrl;
+  private final String jiraUrl;
 
   /** Field description */
-  private JiraSoapService service;
+  private final JiraSoapService service;
 
   /** Field description */
-  private String token;
+  private final String token;
 
   /** Field description */
-  private String username;
+  private final String username;
 }
