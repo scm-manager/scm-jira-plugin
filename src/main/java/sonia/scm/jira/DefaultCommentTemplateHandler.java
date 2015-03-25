@@ -43,7 +43,6 @@ import sonia.scm.repository.Repository;
 import sonia.scm.template.Template;
 import sonia.scm.template.TemplateEngine;
 import sonia.scm.template.TemplateEngineFactory;
-import sonia.scm.util.Util;
 
 //~--- JDK imports ------------------------------------------------------------
 
@@ -53,28 +52,27 @@ import java.io.StringWriter;
 import java.util.Map;
 
 /**
+ * The DefaultCommentTemplateHandler uses the default {@link TemplateEngine} to 
+ * render the jira comments.
  *
  * @author Sebastian Sdorra
  */
 public class DefaultCommentTemplateHandler implements CommentTemplateHandler
 {
 
-  /** Field description */
-  private static final String ENV_AUTOCLOSEWORD = "autoCloseWord";
-
-  /** Field description */
+  /** env var for changeset */
   private static final String ENV_CHANGESET = "changeset";
 
-  /** Field description */
+  /** env var for diff rest url */
   private static final String ENV_DIFFRESTURL = "diffRestUrl";
 
-  /** Field description */
+  /** env var for diff url */
   private static final String ENV_DIFFURL = "diffUrl";
 
-  /** Field description */
+  /** env var for repository */
   private static final String ENV_REPOSITORY = "repository";
 
-  /** Field description */
+  /** env var for repository url */
   private static final String ENV_REPOSITORYURL = "repositoryUrl";
 
   //~--- constructors ---------------------------------------------------------
@@ -97,68 +95,47 @@ public class DefaultCommentTemplateHandler implements CommentTemplateHandler
   //~--- methods --------------------------------------------------------------
 
   /**
-   * Method description
-   *
-   *
-   * @param template
-   * @param request
-   * @param changeset
-   *
-   * @return
-   *
-   * @throws IOException
+   * {@inheritDoc}
    */
   @Override
-  public String render(CommentTemplate template, JiraIssueRequest request,
+  public Map<String, Object> createBaseEnvironment(JiraIssueRequest request,
     Changeset changeset)
-    throws IOException
   {
-    return render(template, request, changeset, null);
-  }
-
-  /**
-   * Method description
-   *
-   *
-   * @param tpl
-   * @param request
-   * @param changeset
-   * @param autoCloseWord
-   *
-   * @return
-   *
-   * @throws IOException
-   */
-  @Override
-  public String render(CommentTemplate tpl, JiraIssueRequest request,
-    Changeset changeset, String autoCloseWord)
-    throws IOException
-  {
-    Repository repository = request.getRepository();
     Map<String, Object> env = Maps.newHashMap();
+
+    Repository repository = request.getRepository();
 
     env.put(ENV_REPOSITORY, repository);
     env.put(ENV_CHANGESET, changeset);
-    env.put(ENV_AUTOCLOSEWORD, Util.nonNull(autoCloseWord));
     env.put(ENV_DIFFURL, linkHandler.getDiffUrl(repository, changeset));
     env.put(ENV_DIFFRESTURL, linkHandler.getDiffRestUrl(repository, changeset));
     env.put(ENV_REPOSITORYURL, linkHandler.getRepositoryUrl(repository));
 
+    return env;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String render(CommentTemplate tpl, Object environment)
+    throws IOException
+  {
     TemplateEngine engine = templateEngineFactory.getDefaultEngine();
     Template template = engine.getTemplate(tpl.getResource());
 
     StringWriter writer = new StringWriter();
 
-    template.execute(writer, env);
+    template.execute(writer, environment);
 
     return writer.toString();
   }
 
   //~--- fields ---------------------------------------------------------------
 
-  /** Field description */
+  /** link handler */
   private final LinkHandler linkHandler;
 
-  /** Field description */
+  /** template engine factory */
   private final TemplateEngineFactory templateEngineFactory;
 }
