@@ -46,7 +46,10 @@ public enum CommentTemplate
   UPADTE("update", "sonia/scm/jira/template/update.mustache"),
   
   /** autoclose template */
-  AUTOCLOSE("autoclose", "sonia/scm/jira/template/autoclose.mustache");
+  AUTOCLOSE("autoclose", "sonia/scm/jira/template/autoclose.mustache"),
+  
+  /** resend template */
+  RESEND("resend", "sonia/scm/jira/template/resend.mustache");
   //J+
 
   /**

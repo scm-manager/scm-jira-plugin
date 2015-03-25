@@ -43,6 +43,7 @@ import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sonia.scm.jira.CommentTemplate;
 import sonia.scm.jira.CommentTemplateHandler;
 import sonia.scm.jira.JiraConfiguration;
 import sonia.scm.jira.JiraConfigurationResolver;
@@ -56,10 +57,16 @@ import sonia.scm.repository.RepositoryException;
 import sonia.scm.repository.RepositoryManager;
 import sonia.scm.repository.api.RepositoryService;
 import sonia.scm.repository.api.RepositoryServiceFactory;
+import sonia.scm.util.Util;
 
 //~--- JDK imports ------------------------------------------------------------
 
 import java.io.IOException;
+
+import java.text.SimpleDateFormat;
+
+import java.util.Calendar;
+import java.util.Map;
 
 /**
  * Class to replay all comments saved from the {@link MessageProblemHandler}.
@@ -67,6 +74,12 @@ import java.io.IOException;
  */
 public class ReplayCommentsHandler
 {
+
+  /** Field description */
+  private static final String ENV_AUTHOR = "author";
+
+  /** Field description */
+  private static final String ENV_CREATED = "created";
 
   /** Field description */
   private static final Logger logger =
@@ -143,6 +156,19 @@ public class ReplayCommentsHandler
     }
   }
 
+  private String createContent(JiraIssueRequest request, Changeset changeset,
+    CommentData commentData)
+    throws IOException
+  {
+    Map<String, Object> env = templateHandler.createBaseEnvironment(request,
+                                changeset);
+
+    env.put(ENV_AUTHOR, commentData.getAuthor());
+    env.put(ENV_CREATED, format(commentData.getCreated()));
+
+    return templateHandler.render(CommentTemplate.RESEND, env);
+  }
+
   /**
    * Creates a request from the given comment data.
    *
@@ -164,6 +190,20 @@ public class ReplayCommentsHandler
     // todo handle npe for changeset
     return requestFactory.createRequest(cfg, repository,
       commentData.getCreated());
+  }
+
+  private String format(Calendar calendar)
+  {
+    String formatted = Util.EMPTY_STRING;
+
+    if (calendar != null)
+    {
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+      formatted = sdf.format(calendar.getTime());
+    }
+
+    return formatted;
   }
 
   /**
@@ -189,12 +229,13 @@ public class ReplayCommentsHandler
 
     //J-
     try 
-    {    
+    { 
+      String content = createContent(request, changeset, commentData);
       new JiraIssueHandler(
         messageProblemHandler, 
         templateHandler,
         request
-      ).handleIssue(commentData.getIssueId(), changeset);
+      ).updateIssue(changeset, commentData.getIssueId(), content);
     } 
     finally 
     {
