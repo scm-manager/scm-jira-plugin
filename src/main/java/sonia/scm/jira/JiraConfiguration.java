@@ -40,8 +40,8 @@ import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
 
+import sonia.scm.PropertiesAware;
 import sonia.scm.Validateable;
-import sonia.scm.repository.Repository;
 import sonia.scm.util.Util;
 
 //~--- JDK imports ------------------------------------------------------------
@@ -55,6 +55,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
+ * Basic jira configuration.
  *
  * @author Sebastian Sdorra
  */
@@ -62,37 +63,37 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 public class JiraConfiguration implements Validateable
 {
 
-  /** Field description */
+  /** default comment prefix */
   public static final String DEFAULT_COMMENT_PREFIX = "[SCM]";
 
-  /** Field description */
+  /** auto close property */
   public static final String PROPERTY_AUTOCLOSE = "jira.auto-close";
 
-  /** Field description */
+  /** auto close words property */
   public static final String PROPERTY_AUTOCLOSEWORDS = "jira.auto-close-words";
 
-  /** Field description */
+  /** comment prefix property */
   public static final String PROPERTY_COMMENT_PREFIX = "jira.comment-prefix";
 
   /** Address used in case of error */
   public static final String PROPERTY_ERROR_MAIL = "jira.mail-error-address";
 
-  /** Field description */
+  /** url property */
   public static final String PROPERTY_JIRA_URL = "jira.url";
 
-  /** Field description */
+  /** password property */
   public static final String PROPERTY_PASSWORD = "jira.password";
 
-  /** Field description */
+  /** role level property */
   public static final String PROPERTY_ROLELEVEL = "jira.role-level";
 
-  /** Field description */
+  /** update issues property */
   public static final String PROPERTY_UPDATEISSUES = "jira.update-issues";
 
-  /** Field description */
+  /** username property */
   public static final String PROPERTY_USERNAME = "jira.username";
 
-  /** Field description */
+  /** separator for set properties */
   public static final String SEPARATOR = ",";
 
   //~--- constructors ---------------------------------------------------------
@@ -104,22 +105,22 @@ public class JiraConfiguration implements Validateable
   public JiraConfiguration() {}
 
   /**
-   * Constructs ...
+   * Constructs a new JiraConfiguration.
    *
    *
-   * @param repository
+   * @param properties property holding object
    */
-  public JiraConfiguration(Repository repository)
+  public JiraConfiguration(PropertiesAware properties)
   {
-    url = repository.getProperty(PROPERTY_JIRA_URL);
-    updateIssues = getBooleanProperty(repository, PROPERTY_UPDATEISSUES);
-    autoClose = getBooleanProperty(repository, PROPERTY_AUTOCLOSE);
-    autoCloseWords = getSetProperty(repository, PROPERTY_AUTOCLOSEWORDS);
-    username = repository.getProperty(PROPERTY_USERNAME);
-    password = getEncryptedProperty(repository, PROPERTY_PASSWORD);
-    roleLevel = repository.getProperty(PROPERTY_ROLELEVEL);
-    commentPrefix = repository.getProperty(PROPERTY_COMMENT_PREFIX);
-    mailAddress = repository.getProperty(PROPERTY_ERROR_MAIL);
+    url = properties.getProperty(PROPERTY_JIRA_URL);
+    updateIssues = getBooleanProperty(properties, PROPERTY_UPDATEISSUES);
+    autoClose = getBooleanProperty(properties, PROPERTY_AUTOCLOSE);
+    autoCloseWords = getSetProperty(properties, PROPERTY_AUTOCLOSEWORDS);
+    username = properties.getProperty(PROPERTY_USERNAME);
+    password = getEncryptedProperty(properties, PROPERTY_PASSWORD);
+    roleLevel = properties.getProperty(PROPERTY_ROLELEVEL);
+    commentPrefix = properties.getProperty(PROPERTY_COMMENT_PREFIX);
+    mailAddress = properties.getProperty(PROPERTY_ERROR_MAIL);
 
     if (Strings.isNullOrEmpty(commentPrefix))
     {
@@ -130,10 +131,7 @@ public class JiraConfiguration implements Validateable
   //~--- methods --------------------------------------------------------------
 
   /**
-   * Method description
-   *
-   *
-   * @return
+   * {@inheritDoc}
    */
   @Override
   public String toString()
@@ -156,10 +154,10 @@ public class JiraConfiguration implements Validateable
   //~--- get methods ----------------------------------------------------------
 
   /**
-   * Method description
+   * Returns a set of auto close words.
    *
    *
-   * @return
+   * @return set of auto close words
    */
   public Set<String> getAutoCloseWords()
   {
@@ -167,10 +165,11 @@ public class JiraConfiguration implements Validateable
   }
 
   /**
-   * Method description
+   * Returns a prefix for the jira comments. Default is
+   * {@link #DEFAULT_COMMENT_PREFIX} used.
    *
    *
-   * @return
+   * @return comment prefix
    */
   public String getCommentPrefix()
   {
@@ -178,10 +177,11 @@ public class JiraConfiguration implements Validateable
   }
 
   /**
-   * Method description
+   * Mail address which is used in case the comment could not be attached to the
+   * jira issue.
    *
    *
-   * @return
+   * @return error notification mail address
    */
   public String getMailAddress()
   {
@@ -189,10 +189,10 @@ public class JiraConfiguration implements Validateable
   }
 
   /**
-   * Method description
+   * Returns password which is used for the connection to the jira server.
    *
    *
-   * @return
+   * @return connection password
    */
   public String getPassword()
   {
@@ -200,10 +200,11 @@ public class JiraConfiguration implements Validateable
   }
 
   /**
-   * Method description
+   * Returns the comment role level. The role level defines which type of jira
+   * user is able to see the comments.
    *
    *
-   * @return
+   * @return comment role level
    */
   public String getRoleLevel()
   {
@@ -211,10 +212,10 @@ public class JiraConfiguration implements Validateable
   }
 
   /**
-   * Method description
+   * Returns the jira server url.
    *
    *
-   * @return
+   * @return jira server url
    */
   public String getUrl()
   {
@@ -222,10 +223,10 @@ public class JiraConfiguration implements Validateable
   }
 
   /**
-   * Method description
+   * Returns the username which is used for the connection to the jira server.
    *
    *
-   * @return
+   * @return connection username
    */
   public String getUsername()
   {
@@ -233,10 +234,12 @@ public class JiraConfiguration implements Validateable
   }
 
   /**
-   * Method description
+   * Returns {@code true} if the configuration is valid, updating and auto
+   * closing issues is enabled.
    *
    *
-   * @return
+   * @return {@code true} if the configuration is valid, updating and auto
+   *   closing issues is enabled
    */
   public boolean isAutoCloseEnabled()
   {
@@ -245,10 +248,12 @@ public class JiraConfiguration implements Validateable
   }
 
   /**
-   * Method description
+   * Returns {@code true} if the configuration is valid and updating issues is
+   * enabled.
    *
    *
-   * @return
+   * @return {@code true} if updating issues is enabled and the configuration is
+   *   valid
    */
   public boolean isUpdateIssuesEnabled()
   {
@@ -256,10 +261,10 @@ public class JiraConfiguration implements Validateable
   }
 
   /**
-   * Method description
+   * Returns {@code true} if the configuration is valid.
    *
    *
-   * @return
+   * @return {@code true} if the configuration is valid
    */
   @Override
   public boolean isValid()
@@ -267,16 +272,7 @@ public class JiraConfiguration implements Validateable
     return Util.isNotEmpty(url);
   }
 
-  /**
-   * Method description
-   *
-   *
-   * @param repository
-   * @param key
-   *
-   * @return
-   */
-  private boolean getBooleanProperty(Repository repository, String key)
+  private boolean getBooleanProperty(PropertiesAware repository, String key)
   {
     boolean result = false;
     String value = repository.getProperty(key);
@@ -289,16 +285,7 @@ public class JiraConfiguration implements Validateable
     return result;
   }
 
-  /**
-   * Method description
-   *
-   *
-   * @param repository
-   * @param key
-   *
-   * @return
-   */
-  private String getEncryptedProperty(Repository repository, String key)
+  private String getEncryptedProperty(PropertiesAware repository, String key)
   {
     String value = repository.getProperty(key);
 
@@ -310,16 +297,7 @@ public class JiraConfiguration implements Validateable
     return value;
   }
 
-  /**
-   * Method description
-   *
-   *
-   * @param repository
-   * @param key
-   *
-   * @return
-   */
-  private Set<String> getSetProperty(Repository repository, String key)
+  private Set<String> getSetProperty(PropertiesAware repository, String key)
   {
     Set<String> values;
     String value = repository.getProperty(key);
@@ -342,16 +320,16 @@ public class JiraConfiguration implements Validateable
 
   //~--- fields ---------------------------------------------------------------
 
-  /** Field description */
+  /** auto close */
   @XmlElement(name = "auto-close")
   private boolean autoClose;
 
-  /** Field description */
+  /** set of auto close words */
   @XmlElement(name = "auto-close-words")
   @XmlJavaTypeAdapter(XmlStringSetAdapter.class)
   private Set<String> autoCloseWords;
 
-  /** Field description */
+  /** comment prefix */
   @XmlElement(name = "comment-prefix")
   private String commentPrefix = DEFAULT_COMMENT_PREFIX;
 
@@ -359,21 +337,21 @@ public class JiraConfiguration implements Validateable
   @XmlElement(name = "mail-error-address")
   private String mailAddress;
 
-  /** Field description */
+  /** connection password */
   @XmlJavaTypeAdapter(XmlEncryptionAdapter.class)
   private String password;
 
-  /** Field description */
+  /** comment role level */
   @XmlElement(name = "role-level")
   private String roleLevel;
 
-  /** Field description */
+  /** update jira issues */
   @XmlElement(name = "update-issues")
   private boolean updateIssues;
 
-  /** Field description */
+  /** jira server url */
   private String url;
 
-  /** Field description */
+  /** connection username */
   private String username;
 }
