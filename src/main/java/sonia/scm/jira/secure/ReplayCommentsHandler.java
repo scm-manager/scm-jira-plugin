@@ -37,6 +37,7 @@ package sonia.scm.jira.secure;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.common.collect.Ordering;
 import com.google.common.io.Closeables;
 import com.google.inject.Inject;
 
@@ -57,7 +58,6 @@ import sonia.scm.repository.RepositoryException;
 import sonia.scm.repository.RepositoryManager;
 import sonia.scm.repository.api.RepositoryService;
 import sonia.scm.repository.api.RepositoryServiceFactory;
-import sonia.scm.util.Util;
 
 //~--- JDK imports ------------------------------------------------------------
 
@@ -66,6 +66,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 
 import java.util.Calendar;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -148,9 +149,11 @@ public class ReplayCommentsHandler
    */
   public void replayAll() throws IOException, RepositoryException
   {
+    Iterable<CommentData> comments = messageProblemHandler.getAllComments();
+    List<CommentData> sorted = Ordering.natural().immutableSortedCopy(comments);
 
     // send comments to jira
-    for (CommentData commentData : messageProblemHandler.getAllComments())
+    for (CommentData commentData : sorted)
     {
       replayComment(commentData);
     }
@@ -194,16 +197,8 @@ public class ReplayCommentsHandler
 
   private String format(Calendar calendar)
   {
-    String formatted = Util.EMPTY_STRING;
-
-    if (calendar != null)
-    {
-      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-      formatted = sdf.format(calendar.getTime());
-    }
-
-    return formatted;
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    return sdf.format(calendar.getTime());
   }
 
   /**

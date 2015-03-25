@@ -42,13 +42,13 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * A CommentData instance is stored, if comment could not added to the jira 
+ * A CommentData instance is stored, if comment could not added to the jira
  * server. The CommentData class stores all informations which are needed to
  * execute the comment request again.
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "comment")
-public class CommentData
+public class CommentData implements Comparable<CommentData>
 {
 
   /**
@@ -78,6 +78,17 @@ public class CommentData
     this.author = author;
     this.body = body;
     this.created = created;
+  }
+
+  //~--- methods --------------------------------------------------------------
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int compareTo(CommentData o)
+  {
+    return created.compareTo(o.created);
   }
 
   //~--- get methods ----------------------------------------------------------
