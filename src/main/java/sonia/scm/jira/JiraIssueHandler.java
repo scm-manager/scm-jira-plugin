@@ -54,13 +54,15 @@ import java.util.GregorianCalendar;
 import java.util.Map;
 
 /**
+ * The JiraIssueHandler updates or closes the jira issues based on the 
+ * {@link Changeset} description.
  *
  * @author Sebastian Sdorra
  */
 public class JiraIssueHandler
 {
 
-  /** Field description */
+  /** env variable auto close word */
   private static final String ENV_AUTOCLOSEWORD = "autoCloseWord";
 
   /** the logger for JiraIssueHandler */
@@ -70,12 +72,12 @@ public class JiraIssueHandler
   //~--- constructors ---------------------------------------------------------
 
   /**
-   * Constructs ...
+   * Constructs a new JiraIssueHandler.
    *
    *
-   * @param problemHandler
-   * @param templateHandler
-   * @param request
+   * @param problemHandler message problem handler
+   * @param templateHandler comment template handler
+   * @param request jira issue request
    */
   public JiraIssueHandler(MessageProblemHandler problemHandler,
     CommentTemplateHandler templateHandler, JiraIssueRequest request)
@@ -88,11 +90,11 @@ public class JiraIssueHandler
   //~--- methods --------------------------------------------------------------
 
   /**
-   * Method description
+   * Updates or closes the jira issue with the given id.
    *
    *
-   * @param issueId
-   * @param changeset
+   * @param issueId jira issue id
+   * @param changeset changeset
    */
   public void handleIssue(String issueId, Changeset changeset)
   {
@@ -133,10 +135,7 @@ public class JiraIssueHandler
   }
 
   /**
-   * Method description
-   *
-   *
-   * @return
+   * {@inheritDoc}
    */
   @Override
   public String toString()
@@ -150,12 +149,12 @@ public class JiraIssueHandler
   }
 
   /**
-   * Method description
+   * Updates the jira issue with the given comment.
    *
    *
-   * @param changeset
-   * @param issueId
-   * @param comment
+   * @param changeset changeset
+   * @param issueId issue id
+   * @param comment comment content
    */
   public void updateIssue(Changeset changeset, String issueId, String comment)
   {
@@ -208,14 +207,6 @@ public class JiraIssueHandler
     }
   }
 
-  /**
-   * Method description
-   *
-   *
-   * @param changeset
-   * @param issueId
-   * @param autoCloseWord
-   */
   private void closeIssue(Changeset changeset, String issueId,
     String autoCloseWord)
   {
@@ -225,6 +216,8 @@ public class JiraIssueHandler
         changeset.getId());
     }
 
+    String comment = null;
+
     try
     {
       JiraHandler handler = request.createJiraHandler();
@@ -233,7 +226,7 @@ public class JiraIssueHandler
 
       env.put(ENV_AUTOCLOSEWORD, Strings.nullToEmpty(autoCloseWord));
 
-      String comment = templateHandler.render(CommentTemplate.AUTOCLOSE, env);
+      comment = templateHandler.render(CommentTemplate.AUTOCLOSE, env);
 
       handler.close(issueId, autoCloseWord);
       //J-
@@ -252,33 +245,39 @@ public class JiraIssueHandler
     catch (JiraException ex)
     {
 
-      // TODO use problem handler
       logger.error("could not close jira issue", ex);
+
+      try
+      {
+        handleException(issueId, comment, changeset);
+      }
+      catch (IOException e)
+      {
+
+        // do something useful
+        throw Throwables.propagate(e);
+      }
     }
   }
 
-  /**
-   * Method description
-   *
-   *
-   * @param issueId
-   * @param comment
-   * @param changeset
-   *
-   * @throws IOException
-   */
   private void handleException(String issueId, String comment,
     Changeset changeset)
     throws IOException
   {
     Preconditions.checkArgument(!Strings.isNullOrEmpty(issueId),
       "issue id is null or empty");
-    Preconditions.checkArgument(!Strings.isNullOrEmpty(comment),
-      "comment is null");
-     
     Preconditions.checkNotNull(changeset, "changeset is null");
 
     JiraConfiguration configuration = request.getConfiguration();
+
+    if (Strings.isNullOrEmpty(comment))
+    {
+      Map<String, Object> env = templateHandler.createBaseEnvironment(request,
+                                  changeset);
+
+      // use always update?
+      comment = templateHandler.render(CommentTemplate.UPADTE, env);
+    }
 
     //J-
     String body = Comments.prepareComment(
@@ -298,14 +297,6 @@ public class JiraIssueHandler
     //J+
   }
 
-  /**
-   * Method description
-   *
-   *
-   * @param changeset
-   *
-   * @return
-   */
   private String searchAutoCloseWord(Changeset changeset)
   {
     String description = changeset.getDescription();
@@ -335,13 +326,6 @@ public class JiraIssueHandler
     return autoCloseWord;
   }
 
-  /**
-   * Method description
-   *
-   *
-   * @param changeset
-   * @param issueId
-   */
   private void updateIssue(Changeset changeset, String issueId)
   {
     try
@@ -356,6 +340,7 @@ public class JiraIssueHandler
     }
     catch (IOException ex)
     {
+
       // TODO Case of rendering mistake (IO)
       logger.error("could render not template", ex);
     }
@@ -363,12 +348,12 @@ public class JiraIssueHandler
 
   //~--- fields ---------------------------------------------------------------
 
-  /** Field description */
+  /** message problem handler */
   private final MessageProblemHandler problemHandler;
 
-  /** Field description */
+  /** jira issue request */
   private final JiraIssueRequest request;
 
-  /** Field description */
+  /** comment template handler */
   private final CommentTemplateHandler templateHandler;
 }
