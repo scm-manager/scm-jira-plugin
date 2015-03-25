@@ -162,7 +162,8 @@ public class ReplayCommentsHandler
                               repository);
 
     // todo handle npe for changeset
-    return requestFactory.createRequest(cfg, repository);
+    return requestFactory.createRequest(cfg, repository,
+      commentData.getCreated());
   }
 
   /**
@@ -181,7 +182,9 @@ public class ReplayCommentsHandler
 
     // used stored configuration instead of global one
     JiraIssueRequest request = createRequest(commentData);
-    Changeset changeset = getChangeset(request.getRepository(), commentData.getChangesetId());
+    Changeset changeset = getChangeset(request.getRepository(),
+                            commentData.getChangesetId());
+
     // todo handle npe for changeset
 
     //J-

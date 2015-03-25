@@ -50,7 +50,6 @@ import sonia.scm.jira.soap.RemoteNamedObject;
 
 import java.rmi.RemoteException;
 
-import java.util.GregorianCalendar;
 import java.util.Locale;
 
 /**
@@ -105,7 +104,7 @@ public class SoapJiraHandler implements JiraHandler
     RemoteComment remoteComment = new RemoteComment();
 
     remoteComment.setAuthor(username);
-    remoteComment.setCreated(new GregorianCalendar());
+    remoteComment.setCreated(comment.getCreated());
     remoteComment.setBody(Comments.prepareComment(request, issueId, comment));
 
     if (!Strings.isNullOrEmpty(comment.getBody()))

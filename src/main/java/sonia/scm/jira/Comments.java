@@ -80,6 +80,7 @@ public final class Comments
     //J-
     return new Comment(
       Strings.nullToEmpty(prefix).concat(Strings.nullToEmpty(body)),
+      request.getCreation(),
       request.getConfiguration().getRoleLevel()
     );
     //J+

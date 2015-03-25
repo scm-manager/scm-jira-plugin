@@ -35,6 +35,7 @@ package sonia.scm.jira;
 
 //~--- non-JDK imports --------------------------------------------------------
 
+import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -50,7 +51,13 @@ import sonia.scm.repository.Repository;
 import sonia.scm.security.CipherUtil;
 import sonia.scm.util.AssertUtil;
 
+//~--- JDK imports ------------------------------------------------------------
+
+import java.util.Calendar;
+
 /**
+ * The JiraIssueRequestFactory is able to create {@link JiraIssueRequest} 
+ * instances.
  *
  * @author Sebastian Sdorra
  */
@@ -58,13 +65,7 @@ import sonia.scm.util.AssertUtil;
 public class JiraIssueRequestFactory
 {
 
-  @Override
-	public String toString() {
-		return "JiraIssueRequestFactory [handlerFactory=" + handlerFactory
-				+ "]";
-	}
-
-/** Field description */
+  /** credentials session attribute */
   public static final String SCM_CREDENTIALS = "SCM_CREDENTIALS";
 
   /**
@@ -76,13 +77,9 @@ public class JiraIssueRequestFactory
   //~--- constructors ---------------------------------------------------------
 
   /**
-   * Constructs ...
+   * Constructs a new JiraIssueRequestFactory.
    *
-   *
-   *
-   * @param handlerFactory
-   * @param requestProvider
-   * @param securityContextProvider
+   * @param handlerFactory jira handler factory
    */
   @Inject
   public JiraIssueRequestFactory(JiraHandlerFactory handlerFactory)
@@ -93,17 +90,30 @@ public class JiraIssueRequestFactory
   //~--- methods --------------------------------------------------------------
 
   /**
-   * Method description
+   * Creates a new {@link JiraIssueRequest}.
+   * 
+   * @param configuration jira configuration
+   * @param repository changed repository
    *
-   *
-   *
-   * @param configuration
-   * @param repository
-   *
-   * @return
+   * @return new {@link JiraIssueRequest}
    */
   public JiraIssueRequest createRequest(JiraConfiguration configuration,
     Repository repository)
+  {
+    return createRequest(configuration, repository, null);
+  }
+
+  /**
+   * Creates a new {@link JiraIssueRequest}.
+   * 
+   * @param configuration jira configuration
+   * @param repository changed repository
+   * @param calendar creation time
+   *
+   * @return new {@link JiraIssueRequest}
+   */
+  public JiraIssueRequest createRequest(JiraConfiguration configuration,
+    Repository repository, Calendar calendar)
   {
     String username = configuration.getUsername();
     String password = configuration.getPassword();
@@ -127,16 +137,29 @@ public class JiraIssueRequestFactory
     }
 
     return new JiraIssueRequest(handlerFactory, username, password,
-      configuration, repository);
+      configuration, repository, null);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String toString()
+  {
+    //J-
+    return Objects.toStringHelper(this)
+                  .add("handlerFactory", handlerFactory)
+                  .toString();
+    //J+
   }
 
   //~--- get methods ----------------------------------------------------------
 
   /**
-   * Method description
+   * Returns the encrypted user credentials from session.
    *
    *
-   * @return
+   * @return encrypted user credentials
    */
   private String getCredentialsString()
   {
@@ -155,10 +178,12 @@ public class JiraIssueRequestFactory
   }
 
   /**
-   * Method description
+   * Returns string array which contains the user credentials. The first element
+   * in the array contains the username and the second one contains the
+   * password.
    *
    *
-   * @return
+   * @return string which contains the user credentials
    */
   private String[] getUserCredentials()
   {
@@ -179,6 +204,6 @@ public class JiraIssueRequestFactory
 
   //~--- fields ---------------------------------------------------------------
 
-  /** Field description */
-  private JiraHandlerFactory handlerFactory;
+  /** jira handler factory */
+  private final JiraHandlerFactory handlerFactory;
 }

@@ -34,6 +34,7 @@
 package sonia.scm.jira;
 
 /**
+ * Comment templates.
  *
  * @author Sebastian Sdorra
  */
@@ -41,16 +42,19 @@ public enum CommentTemplate
 {
 
   //J-
-  UPADTE("update", "sonia/scm/jira/template/update.mustache"), 
+  /** update template */
+  UPADTE("update", "sonia/scm/jira/template/update.mustache"),
+  
+  /** autoclose template */
   AUTOCLOSE("autoclose", "sonia/scm/jira/template/autoclose.mustache");
   //J+
 
   /**
-   * Constructs ...
+   * Constructs new CommentTemplate.
    *
    *
-   * @param name
-   * @param resource
+   * @param name template name
+   * @param resource template resource
    */
   private CommentTemplate(String name, String resource)
   {
@@ -61,10 +65,10 @@ public enum CommentTemplate
   //~--- get methods ----------------------------------------------------------
 
   /**
-   * Method description
+   * Returns the name of the template.
    *
    *
-   * @return
+   * @return template name
    */
   public String getName()
   {
@@ -72,10 +76,10 @@ public enum CommentTemplate
   }
 
   /**
-   * Method description
+   * Returns the classpath path for the resource.
    *
    *
-   * @return
+   * @return classpath path
    */
   public String getResource()
   {
@@ -84,9 +88,9 @@ public enum CommentTemplate
 
   //~--- fields ---------------------------------------------------------------
 
-  /** Field description */
-  private String name;
+  /** template name */
+  private final String name;
 
-  /** Field description */
-  private String resource;
+  /** template resource */
+  private final String resource;
 }

@@ -51,16 +51,11 @@ public interface CommentTemplateHandler
   /**
    * Method description
    *
-   *
-   * @param name
-   *
    * @param template
    * @param request
    * @param changeset
    *
    * @return
-   *
-   * @throws TemplateException
    *
    * @throws IOException
    */
@@ -71,19 +66,12 @@ public interface CommentTemplateHandler
   /**
    * Method description
    *
-   *
-   *
-   * @param name
-   *
    * @param template
    * @param request
    * @param changeset
    * @param autoCloseWord
    *
    * @return
-   *
-   *
-   * @throws TemplateException
    *
    * @throws IOException
    */
