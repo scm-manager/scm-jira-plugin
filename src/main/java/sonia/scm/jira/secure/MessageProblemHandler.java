@@ -67,10 +67,10 @@ import javax.mail.Message;
 public class MessageProblemHandler
 {
 
-  /** Field description */
+  /** name of the data store */
   private static final String STORE = "jira.problem";
 
-  /** Field description */
+  /** logger for MessageProblemHandler */
   private static final Logger logger =
     LoggerFactory.getLogger(MessageProblemHandler.class);
 
@@ -94,10 +94,10 @@ public class MessageProblemHandler
   //~--- methods --------------------------------------------------------------
 
   /**
-   * Method description
+   * Deletes the comment data with the given id from the store.
    *
    *
-   * @param id
+   * @param id comment data id
    */
   public void deleteComment(String id)
   {
@@ -138,9 +138,17 @@ public class MessageProblemHandler
     String issueId, String author, String body, Calendar created,
     Changeset changeset, Repository repository)
   {
-    CommentData commentData = new CommentData(keyGenerator.createKey(),
-                                configuration, author, body, created, issueId,
-                                changeset, repository);
+    //J-
+    CommentData commentData = new CommentData(
+      keyGenerator.createKey(),
+      repository.getId(), 
+      changeset.getId(), 
+      issueId, 
+      author, 
+      body, 
+      created
+    );
+    //J+
 
     saveComment(commentData);
     sendMail(configuration.getMailAddress(), commentData);
@@ -150,8 +158,8 @@ public class MessageProblemHandler
    * Send the error mail.
    *
    *
-   * @param address
-   * @param commentData
+   * @param address recipient address
+   * @param commentData comment data
    */
   public void sendMail(String address, CommentData commentData)
   {
@@ -176,10 +184,10 @@ public class MessageProblemHandler
   //~--- get methods ----------------------------------------------------------
 
   /**
-   * Method description
+   * Returns all stored comments.
    *
    *
-   * @return
+   * @return all stored comments
    */
   public Iterable<CommentData> getAllComments()
   {
@@ -187,12 +195,13 @@ public class MessageProblemHandler
   }
 
   /**
-   * Method description
+   * Returns the stored comment data, with the given id or {@code null} if no 
+   * such comment exists.
    *
    *
-   * @param id
+   * @param id id of stored comment.
    *
-   * @return
+   * @return comment data or {@code null}
    */
   public CommentData getComment(String id)
   {
@@ -234,10 +243,10 @@ public class MessageProblemHandler
   }
 
   /**
-   * Method description
+   * Sends the email.
    *
    *
-   * @param email
+   * @param email email to send
    */
   private void sendMail(Email email)
   {
@@ -254,12 +263,12 @@ public class MessageProblemHandler
 
   //~--- fields ---------------------------------------------------------------
 
-  /** Field description */
+  /** key generator */
   private final KeyGenerator keyGenerator;
 
-  /** Field description */
+  /** mail service */
   private final MailService mailService;
 
-  /** Field description */
+  /** data store */
   private final DataStore<CommentData> store;
 }

@@ -40,10 +40,11 @@ import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sonia.scm.jira.CommentTemplateHandler;
-import sonia.scm.jira.JiraIssueRequestFactory;
+import sonia.scm.repository.RepositoryException;
 
 //~--- JDK imports ------------------------------------------------------------
+
+import java.io.IOException;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -59,7 +60,7 @@ import javax.ws.rs.core.Response;
 public class JiraRedoSendResource
 {
 
-  /** Field description */
+  /** logger for JiraRedoSendResource */
   private static final Logger logger =
     LoggerFactory.getLogger(JiraRedoSendResource.class);
 
@@ -68,18 +69,12 @@ public class JiraRedoSendResource
   /**
    * Constructs a new JiraRedoSendResource.
    *
-   * @param templateHandler template handler
-   * @param requestFactory The factory used to send an issue.
-   * @param problemHandler problem handler
+   * @param replayCommentsHandler handler which is able to replay comments
    */
   @Inject
-  public JiraRedoSendResource(CommentTemplateHandler templateHandler,
-    JiraIssueRequestFactory requestFactory,
-    MessageProblemHandler problemHandler)
+  public JiraRedoSendResource(ReplayCommentsHandler replayCommentsHandler)
   {
-    this.templateHandler = templateHandler;
-    this.requestFactory = requestFactory;
-    this.problemHandler = problemHandler;
+    this.replayCommentsHandler = replayCommentsHandler;
   }
 
   //~--- methods --------------------------------------------------------------
@@ -88,23 +83,19 @@ public class JiraRedoSendResource
    * Resent all comments that could not be sent at the last time.
    * Delete the corresponding file in success.
    *
-   * @return Response if the comments could be executed or a returned error message.
+   * @return Response if the comments could be executed or a returned error 
+   *  message.
+   *
+   * @throws IOException
+   * @throws RepositoryException
    */
   @POST
   @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-  public Response replayComments()
+  public Response replayComments() throws IOException, RepositoryException
   {
     logger.trace("redo started by POST command");
 
-    //J-
-    ReplayCommentsHandler replayCommentsHandler = new ReplayCommentsHandler(
-      requestFactory, 
-      templateHandler, 
-      problemHandler
-    );
-
     replayCommentsHandler.replayAll();
-    //J+
 
     logger.trace("redo ended command");
 
@@ -113,12 +104,6 @@ public class JiraRedoSendResource
 
   //~--- fields ---------------------------------------------------------------
 
-  /** Field description */
-  private final MessageProblemHandler problemHandler;
-
-  /** Field description */
-  private final JiraIssueRequestFactory requestFactory;
-
-  /** Field description */
-  private final CommentTemplateHandler templateHandler;
+  /** replay comments handler */
+  private final ReplayCommentsHandler replayCommentsHandler;
 }

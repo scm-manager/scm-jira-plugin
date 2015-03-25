@@ -37,6 +37,8 @@ package sonia.scm.jira;
 
 import com.google.inject.AbstractModule;
 
+import sonia.scm.jira.secure.MessageProblemHandler;
+import sonia.scm.jira.secure.ReplayCommentsHandler;
 import sonia.scm.plugin.ext.Extension;
 
 /**
@@ -56,6 +58,8 @@ public class JiraModule extends AbstractModule
   {
     bind(JiraGlobalContext.class);
     bind(JiraIssueRequestFactory.class);
+    bind(MessageProblemHandler.class);
+    bind(ReplayCommentsHandler.class);
     bind(JiraHandlerFactory.class).to(SoapJiraHandlerFactory.class);
     bind(CommentTemplateHandler.class).to(DefaultCommentTemplateHandler.class);
   }
