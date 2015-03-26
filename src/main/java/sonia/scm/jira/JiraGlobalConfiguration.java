@@ -41,6 +41,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
+ * Global jira configuration.
  *
  * @author Sebastian Sdorra
  */
@@ -50,10 +51,10 @@ public class JiraGlobalConfiguration extends JiraConfiguration
 {
 
   /**
-   * Method description
+   * Returns {@code true} if the configuration per repository is disabled.
    *
    *
-   * @return
+   * @return {@code true} if the configuration per repository is disabled
    */
   public boolean isDisableRepositoryConfiguration()
   {
@@ -62,7 +63,7 @@ public class JiraGlobalConfiguration extends JiraConfiguration
 
   //~--- fields ---------------------------------------------------------------
 
-  /** Field description */
+  /** repository configuration is disabled */
   @XmlElement(name = "disable-repository-configuration")
   private boolean disableRepositoryConfiguration = false;
 }

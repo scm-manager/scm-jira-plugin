@@ -54,7 +54,7 @@ import java.util.GregorianCalendar;
 import java.util.Map;
 
 /**
- * The JiraIssueHandler updates or closes the jira issues based on the 
+ * The JiraIssueHandler updates or closes the jira issues based on the
  * {@link Changeset} description.
  *
  * @author Sebastian Sdorra
@@ -187,23 +187,8 @@ public class JiraIssueHandler
     }
     catch (JiraException ex)
     {
-
-      // TODO: Save comment in case of login-error or existence check
-      // Possibly remove saving from soap jira handler
-
       logger.error("could not add comment to jira issue", ex);
-
-      try
-      {
-        handleException(issueId, comment, changeset);
-      }
-      catch (IOException e)
-      {
-
-        // do something useful
-        throw Throwables.propagate(e);
-      }
-
+      handleException(issueId, comment, changeset);
     }
   }
 
@@ -244,12 +229,22 @@ public class JiraIssueHandler
     }
     catch (JiraException ex)
     {
-
       logger.error("could not close jira issue", ex);
+      handleException(issueId, comment, changeset);
+    }
+  }
+
+  private void handleException(String issueId, String comment,
+    Changeset changeset)
+  {
+    if (request.getConfiguration().isResubmission())
+    {
+      logger.trace(
+        "call problem handler to store comment and send notification");
 
       try
       {
-        handleException(issueId, comment, changeset);
+        storeCommentAndSentNotification(issueId, comment, changeset);
       }
       catch (IOException e)
       {
@@ -258,9 +253,42 @@ public class JiraIssueHandler
         throw Throwables.propagate(e);
       }
     }
+    else
+    {
+      logger.trace("resubmission is disabled");
+    }
   }
 
-  private void handleException(String issueId, String comment,
+  private String searchAutoCloseWord(Changeset changeset)
+  {
+    String description = changeset.getDescription();
+    String autoCloseWord = null;
+    String[] words = description.split("\\s");
+
+    for (String w : words)
+    {
+      for (String acw : request.getConfiguration().getAutoCloseWords())
+      {
+        acw = acw.trim();
+
+        if (w.equalsIgnoreCase(acw))
+        {
+          autoCloseWord = w;
+
+          break;
+        }
+      }
+
+      if (autoCloseWord != null)
+      {
+        break;
+      }
+    }
+
+    return autoCloseWord;
+  }
+
+  private void storeCommentAndSentNotification(String issueId, String comment,
     Changeset changeset)
     throws IOException
   {
@@ -295,35 +323,6 @@ public class JiraIssueHandler
       request.getRepository()
     );
     //J+
-  }
-
-  private String searchAutoCloseWord(Changeset changeset)
-  {
-    String description = changeset.getDescription();
-    String autoCloseWord = null;
-    String[] words = description.split("\\s");
-
-    for (String w : words)
-    {
-      for (String acw : request.getConfiguration().getAutoCloseWords())
-      {
-        acw = acw.trim();
-
-        if (w.equalsIgnoreCase(acw))
-        {
-          autoCloseWord = w;
-
-          break;
-        }
-      }
-
-      if (autoCloseWord != null)
-      {
-        break;
-      }
-    }
-
-    return autoCloseWord;
   }
 
   private void updateIssue(Changeset changeset, String issueId)
