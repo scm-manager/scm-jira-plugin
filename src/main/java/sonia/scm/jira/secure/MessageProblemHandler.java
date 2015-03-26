@@ -35,6 +35,9 @@ package sonia.scm.jira.secure;
 
 //~--- non-JDK imports --------------------------------------------------------
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Ordering;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -56,6 +59,7 @@ import sonia.scm.store.DataStoreFactory;
 //~--- JDK imports ------------------------------------------------------------
 
 import java.util.Calendar;
+import java.util.List;
 
 import javax.mail.Message;
 
@@ -184,18 +188,38 @@ public class MessageProblemHandler
   //~--- get methods ----------------------------------------------------------
 
   /**
-   * Returns all stored comments.
+   * Returns all stored comments as sorted immutable list.
    *
    *
    * @return all stored comments
    */
-  public Iterable<CommentData> getAllComments()
+  public List<CommentData> getAllComments()
   {
-    return store.getAll().values();
+    return sort(store.getAll().values());
   }
 
   /**
-   * Returns the stored comment data, with the given id or {@code null} if no 
+   * Get all comments filtered by repository id as sorted immutable list.
+   *
+   *
+   * @param repositoryId repository id
+   *
+   * @return all comments from the repository
+   */
+  public List<CommentData> getAllCommentsByRepository(String repositoryId)
+  {
+    //J-
+    return sort(
+      Iterables.filter(
+        store.getAll().values(), 
+        new RepositoryPredicate(repositoryId)
+      )
+    );
+    //J+
+  }
+
+  /**
+   * Returns the stored comment data, with the given id or {@code null} if no
    * such comment exists.
    *
    *
@@ -260,6 +284,43 @@ public class MessageProblemHandler
       logger.error("could not send mail", ex);
     }
   }
+
+  private List<CommentData> sort(Iterable<CommentData> commentData)
+  {
+    return Ordering.natural().immutableSortedCopy(commentData);
+  }
+
+  //~--- inner classes --------------------------------------------------------
+
+  private static class RepositoryPredicate implements Predicate<CommentData>
+  {
+    private RepositoryPredicate(String repositoryId)
+    {
+      this.repositoryId = repositoryId;
+    }
+
+    //~--- methods ------------------------------------------------------------
+
+    /**
+     * Returns {@code true}, if the repository id is equals with the one from
+     * the stored comment.
+     *
+     *
+     * @param input
+     * @return {@code true} if the repository ids are equal
+     */
+    @Override
+    public boolean apply(CommentData input)
+    {
+      return repositoryId.equals(input.getRepositoryId());
+    }
+
+    //~--- fields -------------------------------------------------------------
+
+    /** repository id */
+    private final String repositoryId;
+  }
+
 
   //~--- fields ---------------------------------------------------------------
 

@@ -132,7 +132,7 @@ Sonia.jira.GlobalConfigPanel = Ext.extend(Sonia.config.ConfigForm, {
         xtype: 'button',
         handler: function(){
           Ext.Ajax.request({
-            url: restUrl + 'plugins/jira/redo-send.json',
+            url: restUrl + 'plugins/jira/resubmit/all.json',
             method: 'POST',
             jsonData: '',
             scope: this,

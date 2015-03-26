@@ -49,6 +49,7 @@ import java.io.IOException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -56,7 +57,7 @@ import javax.ws.rs.core.Response;
  * Resource to resent jira comments.
  *
  */
-@Path("plugins/jira/redo-send")
+@Path("plugins/jira/resubmit")
 public class JiraRedoSendResource
 {
 
@@ -80,24 +81,76 @@ public class JiraRedoSendResource
   //~--- methods --------------------------------------------------------------
 
   /**
-   * Resent all comments that could not be sent at the last time.
-   * Delete the corresponding file in success.
+   * Resubmit all comments that could not be sent at the last time.
    *
-   * @return Response if the comments could be executed or a returned error 
+   * @return response if the comments could be executed or a returned error 
    *  message.
    *
    * @throws IOException
    * @throws RepositoryException
    */
   @POST
+  @Path("all")
   @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-  public Response replayComments() throws IOException, RepositoryException
+  public Response resubmitAll() throws IOException, RepositoryException
   {
-    logger.trace("redo started by POST command");
+    logger.trace("resubmit all stored comments");
 
-    replayCommentsHandler.replayAll();
+    replayCommentsHandler.resubmitAll();
 
-    logger.trace("redo ended command");
+    logger.trace("finished sending stored comments");
+
+    return Response.noContent().build();
+  }
+  
+  /**
+   * Resubmit all comments ,which are associated with the given repository, 
+   * that could not be sent at the last time.
+   *
+   * @param repositoryId repository id
+   * 
+   * @return response if the comments could be executed or a returned error 
+   *  message.
+   *
+   * @throws IOException
+   * @throws RepositoryException
+   */
+  @POST
+  @Path("repository/{repositoryId}")
+  @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+  public Response resubmitAllFromRepository(@PathParam("repositoryId") String repositoryId) throws IOException, RepositoryException
+  {
+    logger.trace("resubmit all stored comments of repository {}", repositoryId);
+
+    replayCommentsHandler.resubmitAllFromRepository(repositoryId);
+
+    logger.trace("finished sending stored comments of repository {}", repositoryId);
+
+    return Response.noContent().build();
+  }
+  
+    /**
+   * Resubmit the comment with the given id that could not be sent at the 
+   * last time.
+   *
+   * @param commentId comment id
+   * 
+   * @return response if the comment could be executed or a returned error 
+   *  message.
+   *
+   * @throws IOException
+   * @throws RepositoryException
+   */
+  @POST
+  @Path("comment/{commentId}")
+  @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+  public Response resubmit(@PathParam("commentId") String commentId) throws IOException, RepositoryException
+  {
+    logger.trace("resubmit stored comment {}", commentId);
+
+    replayCommentsHandler.resubmit(commentId);
+
+    logger.trace("finished sending stored comment {}", commentId);
 
     return Response.noContent().build();
   }

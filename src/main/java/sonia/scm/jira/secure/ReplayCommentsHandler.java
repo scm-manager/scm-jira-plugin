@@ -37,9 +37,10 @@ package sonia.scm.jira.secure;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import com.google.common.collect.Ordering;
 import com.google.common.io.Closeables;
 import com.google.inject.Inject;
+
+import org.apache.shiro.SecurityUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,11 +54,14 @@ import sonia.scm.jira.JiraIssueHandler;
 import sonia.scm.jira.JiraIssueRequest;
 import sonia.scm.jira.JiraIssueRequestFactory;
 import sonia.scm.repository.Changeset;
+import sonia.scm.repository.PermissionType;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryException;
 import sonia.scm.repository.RepositoryManager;
 import sonia.scm.repository.api.RepositoryService;
 import sonia.scm.repository.api.RepositoryServiceFactory;
+import sonia.scm.security.RepositoryPermission;
+import sonia.scm.security.Role;
 
 //~--- JDK imports ------------------------------------------------------------
 
@@ -94,9 +98,9 @@ public class ReplayCommentsHandler
    * @param requestFactory jira request factory
    * @param templateHandler template handler
    * @param messageProblemHandler message problem handler
-   * @param context
-   * @param repositoryManager
-   * @param repositoryServiceFactory
+   * @param context jira global context
+   * @param repositoryManager repository manager
+   * @param repositoryServiceFactory repository service factory
    */
   @Inject
   public ReplayCommentsHandler(JiraIssueRequestFactory requestFactory,
@@ -116,29 +120,32 @@ public class ReplayCommentsHandler
   //~--- methods --------------------------------------------------------------
 
   /**
-   * Resend comment with the given id to jira.
+   * Resends the comment with the given id back to the jira server.
    *
    *
-   * @param id comment id
+   * @param commentId id of the comment
    *
    * @throws IOException
    * @throws RepositoryException
    */
-  public void replay(String id) throws IOException, RepositoryException
+  public void resubmit(String commentId) throws IOException, RepositoryException
   {
-    Preconditions.checkArgument(!Strings.isNullOrEmpty(id),
-      "id is null or empty");
+    CommentData commentData = messageProblemHandler.getComment(commentId);
 
-    CommentData commentData = messageProblemHandler.getComment(id);
-
-    if (commentData == null)
+    if (commentData != null)
     {
-
+      //J-
+      SecurityUtils.getSubject().checkPermission(
+        new RepositoryPermission(commentData.getRepositoryId(), PermissionType.OWNER)
+      );
+      //J+
+      resubmit(commentData);
+    }
+    else
+    {
       // TODO custom exception type?
       throw new IllegalArgumentException("id does not exists");
     }
-
-    replayComment(commentData);
   }
 
   /**
@@ -147,16 +154,32 @@ public class ReplayCommentsHandler
    * @throws IOException
    * @throws RepositoryException
    */
-  public void replayAll() throws IOException, RepositoryException
+  public void resubmitAll() throws IOException, RepositoryException
   {
-    Iterable<CommentData> comments = messageProblemHandler.getAllComments();
-    List<CommentData> sorted = Ordering.natural().immutableSortedCopy(comments);
+    SecurityUtils.getSubject().checkRole(Role.ADMIN);
 
-    // send comments to jira
-    for (CommentData commentData : sorted)
-    {
-      replayComment(commentData);
-    }
+    resubmit(messageProblemHandler.getAllComments());
+  }
+
+  /**
+   * Resends all comments which are associated with the given repository id back
+   * to the jira server.
+   *
+   * @param repositoryId repository id
+   *
+   * @throws IOException
+   * @throws RepositoryException
+   */
+  public void resubmitAllFromRepository(String repositoryId)
+    throws IOException, RepositoryException
+  {
+    //J-
+    SecurityUtils.getSubject().checkPermission(
+      new RepositoryPermission(repositoryId, PermissionType.OWNER)
+    );
+    //J+
+
+    resubmit(messageProblemHandler.getAllCommentsByRepository(repositoryId));
   }
 
   private String createContent(JiraIssueRequest request, Changeset changeset,
@@ -198,7 +221,19 @@ public class ReplayCommentsHandler
   private String format(Calendar calendar)
   {
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
     return sdf.format(calendar.getTime());
+  }
+
+  private void resubmit(List<CommentData> comments)
+    throws IOException, RepositoryException
+  {
+    logger.trace("resubmit {} comments", comments.size());
+
+    for (CommentData comment : comments)
+    {
+      resubmit(comment);
+    }
   }
 
   /**
@@ -209,7 +244,7 @@ public class ReplayCommentsHandler
    * @throws IOException
    * @throws RepositoryException
    */
-  private void replayComment(CommentData commentData)
+  private void resubmit(CommentData commentData)
     throws IOException, RepositoryException
   {
     logger.info("replay comment with id {} for issue {}", commentData.getId(),
