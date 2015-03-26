@@ -100,8 +100,22 @@ Sonia.jira.RepositoryConfigPanel = Ext.extend(Sonia.repository.PropertiesFormPan
         inputType: 'password',
         helpText: Sonia.jira.I18n.passwordHelpText
       },{
-        id: 'mail',
-        name: 'mail-error-address',
+        id: 'jiraResubmission',
+        name: 'jiraResubmission',
+        xtype: 'checkbox',
+        inputValue: 'true',
+        fieldLabel: Sonia.jira.I18n.resubmissionText,
+        property: 'jira.resubmission',
+        helpText: Sonia.jira.I18n.resubmissionHelpText,
+        listeners: {
+          check: {
+            fn: this.toogleResubmission,
+            scope: this
+          }
+        }
+      },{
+        id: 'jiraMailErrorAddress',
+        name: 'jiraMailErrorAddress',
         xtype: 'textfield',
         fieldLabel: Sonia.jira.I18n.mailText,
         property: 'jira.mail-error-address',
@@ -120,25 +134,37 @@ Sonia.jira.RepositoryConfigPanel = Ext.extend(Sonia.repository.PropertiesFormPan
   
   toggleUpdateIssues: function(checkbox){
     var autoclose = Ext.getCmp('jiraAutoClose');
+    var resubmission = Ext.getCmp('jiraResubmission');
     
     var cmps = [
       autoclose,
-      Ext.getCmp('jiraRoleLevel'), 
-      Ext.getCmp('jiraUsername'), 
-      Ext.getCmp('jiraPassword') 
+      Ext.getCmp('jiraRoleLevel'),
+      Ext.getCmp('jiraCommentPrefix'),
+      Ext.getCmp('jiraUsername'),
+      Ext.getCmp('jiraPassword'),
+      resubmission
     ];
     
     Sonia.jira.toggleFields(cmps, checkbox);
 
     if ( ! checkbox.getValue()){
       autoclose.setValue(false);
+      resubmission.setValue(false);
     }
     this.toggleAutoClose(autoclose);
+    this.toogleResubmission(resubmission);
   },
 
   toggleAutoClose : function(checkbox) {
     var cmps = [ 
       Ext.getCmp('jiraAutoCloseWords') 
+    ];
+    Sonia.jira.toggleFields(cmps, checkbox);
+  },
+  
+  toogleResubmission: function(checkbox){
+    var cmps = [ 
+      Ext.getCmp('jiraMailErrorAddress')
     ];
     Sonia.jira.toggleFields(cmps, checkbox);
   }

@@ -32,6 +32,8 @@ Ext.ns("Sonia.jira");
 
 Sonia.jira.I18n = {
   
+  usernameAndPasswordNote: '',
+  
   titleText: 'Jira Configuration',
   formTitleText: 'Jira',
   
@@ -45,49 +47,44 @@ Sonia.jira.I18n = {
   autoCloseText: 'Enable Auto-Close',
   autoCloseHelpText: 'Enables the auto close function. SCM-Manager searches for \n\
                       issue keys and auto close words in commit messages. If \n\
-                      both found in a message SCM-Manager closes the issue in \n\
-                      the jira server. <strong>Note:</strong> It is necessary \n\
-                      that users have the same name and password in SCM-Manager and Jira.',
+                      both are found in a message SCM-Manager closes the issue. \n\
+                      <b>Note:</b> If username and password are different \n\
+                      in SCM-Manager and Jira, it is necessary to configure \n\
+                      the username and password below.',
   autoCloseDefaultValues: 'fixed, fix, closed, close, resolved, resolve',
   
   updateIssuesText: 'Update Jira Issues',
   updateIssuesHelpText: 'Enable the automatic update function. SCM-Manager searches for\n\
                          issue keys in commit messages. If a issue id is found SCM-Manager\n\
-                         updates the issue with a comment. <strong>Note:</strong> It \n\
-                         is necessary that users have the same name and password in SCM-Manager \n\
-                         and Jira.',
+                         updates the issue with a comment. <b>Note:</b> If username and \n\
+                         password are different in SCM-Manager and Jira, it is necessary \n\
+                         to configure the username and password below.',
   
   autoCloseWordsText: 'Auto-Close Words',
   autoCloseWordsHelpText: 'Comma separated list of words to enable the auto close function. \n\
-                           Each commit message of a changeset is being searched for these words.',
+                           Each commit message of a changeset gets searched for these words.',
           
   roleLevelText: 'Role visibility',
   roleLevelHelpText: 'Defines for which Project Role the comments are visible. <b>Note:</b> The name must be a valid jira role name.',
   
   commentPrefixText: 'Comment prefix',
-  commentPrefixHelpText: 'The comment prefix is created in front of every jira comment created by SCM-Manager. The default prefix is [SCM].',
+  commentPrefixHelpText: 'The comment prefix is created at the beginning of every comment in Jira created by SCM-Manager. The default prefix is [SCM].',
   
   usernameText: 'Username',
   usernameHelpText: 'Jira username for connection. Leave this field empty to create the connection\n\
-                     with the credentials of the user which is logged in.',
+                     with the credentials of the user which is logged in to SCM-Manager.',
   
   passwordText: 'Password',
   passwordHelpText: 'Jira password for connection.',
   
+  resubmissionText: 'Enable resubmission',
+  resubmissionHelpText: 'By enabling this option SCM-Manager stores the comments for resubmission in case the Jira server is not available. An information about the failed submission will be sent to the e-mail configured below.',
+    
   mailText: 'E-Mail',
   mailHelpText: 'The mail address to send a message to if a jira comment fails.',
   
-  mailHostText: 'Mail host',
-  mailHostHelpText: 'The host used for sending the mail.',
-	  
-  sendmailText: 'Send Mail',
-  sendmailHelpText: 'The mail address used as the sender. This address must be valid.',
-  
-  savePathText: 'Save Path',
-  savePathHelpText: 'The path to save the lost comments.',
-  
-  redoText: 'Redo Comments',
-  redoHelpText: 'Retrys to send all stopped comments to Jira.'
+  redoText: 'Resubmit stored comments',
+  redoHelpText: 'Resubmit all stored Jira comments.'
 };
 
 Sonia.jira.toggleFields = function(cmps, scope){

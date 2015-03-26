@@ -66,10 +66,6 @@ public class JiraConfiguration implements Validateable
   /** default comment prefix */
   public static final String DEFAULT_COMMENT_PREFIX = "[SCM]";
 
-  /** account should only be used for resubmission */
-  public static final String PROPERTY_ACCOUNT_ONLY_FOR_RESUBMISSION =
-    "jira.account-only-for-resubmission";
-
   /** auto close property */
   public static final String PROPERTY_AUTOCLOSE = "jira.auto-close";
 
@@ -130,8 +126,6 @@ public class JiraConfiguration implements Validateable
     mailAddress = properties.getProperty(PROPERTY_ERROR_MAIL);
 
     resubmission = getBooleanProperty(properties, PROPERTY_RESUBMISSION);
-    accountOnlyForResubmission = getBooleanProperty(properties,
-      PROPERTY_ACCOUNT_ONLY_FOR_RESUBMISSION);
 
     if (Strings.isNullOrEmpty(commentPrefix))
     {
@@ -159,7 +153,6 @@ public class JiraConfiguration implements Validateable
                   .add("password", "xxx")
                   .add("mailAddress", mailAddress)
                   .add("resubmission", resubmission)
-                  .add("accountOnlyForResubmission", accountOnlyForResubmission)
                   .toString();
     //J+
   }
@@ -244,18 +237,6 @@ public class JiraConfiguration implements Validateable
   public String getUsername()
   {
     return username;
-  }
-
-  /**
-   * Returns {@code true} if the username and password should only be used for
-   * resubmission in case of an error.
-   *
-   *
-   * @return {@code true} if account should only be used for resubmission
-   */
-  public boolean isAccountOnlyForResubmission()
-  {
-    return accountOnlyForResubmission;
   }
 
   /**
@@ -356,10 +337,6 @@ public class JiraConfiguration implements Validateable
   }
 
   //~--- fields ---------------------------------------------------------------
-
-  /** use username and password only for resubmission */
-  @XmlElement(name = "account-only-for-resubmission")
-  private boolean accountOnlyForResubmission;
 
   /** auto close */
   @XmlElement(name = "auto-close")
