@@ -5,4 +5,4 @@
  * These files can be extracted, to resent the corresponding message to Jira.
  * After that the XML-File will be deleted.
  */
-package sonia.scm.jira.secure;
+package sonia.scm.jira.resubmit;

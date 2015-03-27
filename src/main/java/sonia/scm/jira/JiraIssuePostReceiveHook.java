@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
 
 import sonia.scm.EagerSingleton;
 import sonia.scm.event.Subscriber;
-import sonia.scm.jira.secure.MessageProblemHandler;
+import sonia.scm.jira.resubmit.MessageProblemHandler;
 import sonia.scm.plugin.ext.Extension;
 import sonia.scm.repository.Changeset;
 import sonia.scm.repository.PostReceiveRepositoryHookEvent;

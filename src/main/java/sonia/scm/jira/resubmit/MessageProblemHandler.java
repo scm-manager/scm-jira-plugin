@@ -31,7 +31,7 @@
 
 
 
-package sonia.scm.jira.secure;
+package sonia.scm.jira.resubmit;
 
 //~--- non-JDK imports --------------------------------------------------------
 

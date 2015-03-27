@@ -31,12 +31,10 @@
 
 
 
-package sonia.scm.jira.secure;
+package sonia.scm.jira.resubmit;
 
 //~--- non-JDK imports --------------------------------------------------------
 
-import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 import com.google.common.io.Closeables;
 import com.google.inject.Inject;
 
@@ -74,10 +72,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Class to replay all comments saved from the {@link MessageProblemHandler}.
+ * Class to resubmit all comments saved from the {@link MessageProblemHandler}.
  * These comments could not be sent due to network problems or other exceptions.
  */
-public class ReplayCommentsHandler
+public class ResubmitCommentsHandler
 {
 
   /** Field description */
@@ -88,12 +86,12 @@ public class ReplayCommentsHandler
 
   /** Field description */
   private static final Logger logger =
-    LoggerFactory.getLogger(ReplayCommentsHandler.class);
+    LoggerFactory.getLogger(ResubmitCommentsHandler.class);
 
   //~--- constructors ---------------------------------------------------------
 
   /**
-   * Constructs a new ReplayCommentsHandler.
+   * Constructs a new ResubmitCommentsHandler.
    *
    * @param requestFactory jira request factory
    * @param templateHandler template handler
@@ -103,7 +101,7 @@ public class ReplayCommentsHandler
    * @param repositoryServiceFactory repository service factory
    */
   @Inject
-  public ReplayCommentsHandler(JiraIssueRequestFactory requestFactory,
+  public ResubmitCommentsHandler(JiraIssueRequestFactory requestFactory,
     CommentTemplateHandler templateHandler,
     MessageProblemHandler messageProblemHandler, JiraGlobalContext context,
     RepositoryManager repositoryManager,
@@ -247,7 +245,7 @@ public class ReplayCommentsHandler
   private void resubmit(CommentData commentData)
     throws IOException, RepositoryException
   {
-    logger.info("replay comment with id {} for issue {}", commentData.getId(),
+    logger.info("resubmit comment with id {} for issue {}", commentData.getId(),
       commentData.getIssueId());
 
     // used stored configuration instead of global one

@@ -31,7 +31,7 @@
 
 
 
-package sonia.scm.jira.secure;
+package sonia.scm.jira.resubmit;
 
 //~--- non-JDK imports --------------------------------------------------------
 
@@ -54,28 +54,28 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 /**
- * Resource to resent jira comments.
+ * Resource to resubmit jira comments.
  *
  */
 @Path("plugins/jira/resubmit")
-public class JiraRedoSendResource
+public class ResubmitCommentsResource
 {
 
-  /** logger for JiraRedoSendResource */
+  /** logger for ResubmitCommentsResource */
   private static final Logger logger =
-    LoggerFactory.getLogger(JiraRedoSendResource.class);
+    LoggerFactory.getLogger(ResubmitCommentsResource.class);
 
   //~--- constructors ---------------------------------------------------------
 
   /**
-   * Constructs a new JiraRedoSendResource.
+   * Constructs a new ResubmitCommentsResource.
    *
-   * @param replayCommentsHandler handler which is able to replay comments
+   * @param resubmitCommentsHandler handler which is able to resubmit comments
    */
   @Inject
-  public JiraRedoSendResource(ReplayCommentsHandler replayCommentsHandler)
+  public ResubmitCommentsResource(ResubmitCommentsHandler resubmitCommentsHandler)
   {
-    this.replayCommentsHandler = replayCommentsHandler;
+    this.resubmitCommentsHandler = resubmitCommentsHandler;
   }
 
   //~--- methods --------------------------------------------------------------
@@ -96,7 +96,7 @@ public class JiraRedoSendResource
   {
     logger.trace("resubmit all stored comments");
 
-    replayCommentsHandler.resubmitAll();
+    resubmitCommentsHandler.resubmitAll();
 
     logger.trace("finished sending stored comments");
 
@@ -122,7 +122,7 @@ public class JiraRedoSendResource
   {
     logger.trace("resubmit all stored comments of repository {}", repositoryId);
 
-    replayCommentsHandler.resubmitAllFromRepository(repositoryId);
+    resubmitCommentsHandler.resubmitAllFromRepository(repositoryId);
 
     logger.trace("finished sending stored comments of repository {}", repositoryId);
 
@@ -148,7 +148,7 @@ public class JiraRedoSendResource
   {
     logger.trace("resubmit stored comment {}", commentId);
 
-    replayCommentsHandler.resubmit(commentId);
+    resubmitCommentsHandler.resubmit(commentId);
 
     logger.trace("finished sending stored comment {}", commentId);
 
@@ -157,6 +157,6 @@ public class JiraRedoSendResource
 
   //~--- fields ---------------------------------------------------------------
 
-  /** replay comments handler */
-  private final ReplayCommentsHandler replayCommentsHandler;
+  /** resubmit comments handler */
+  private final ResubmitCommentsHandler resubmitCommentsHandler;
 }
