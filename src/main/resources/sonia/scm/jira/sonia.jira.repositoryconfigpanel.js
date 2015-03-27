@@ -134,7 +134,7 @@ Sonia.jira.RepositoryConfigPanel = Ext.extend(Sonia.repository.PropertiesFormPan
         scope: this,
         text: Sonia.jira.I18n.resubmitText,
         fieldLabel: Sonia.jira.I18n.resubmitText, 
-        helpText: Sonia.jira.I18n.resubmitHelpText,
+        helpText: Sonia.jira.I18n.resubmitHelpText
       }]
     };
     

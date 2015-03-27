@@ -136,7 +136,7 @@ Sonia.jira.GlobalConfigPanel = Ext.extend(Sonia.config.ConfigForm, {
         scope: this,
         text: Sonia.jira.I18n.resubmitText,
         fieldLabel: Sonia.jira.I18n.resubmitText, 
-        helpText: Sonia.jira.I18n.resubmitHelpText,
+        helpText: Sonia.jira.I18n.resubmitHelpText
       }]
     };
 
