@@ -120,6 +120,21 @@ Sonia.jira.RepositoryConfigPanel = Ext.extend(Sonia.repository.PropertiesFormPan
         fieldLabel: Sonia.jira.I18n.mailText,
         property: 'jira.mail-error-address',
         helpText: Sonia.jira.I18n.mailHelpText
+      },{
+        id: 'resubmit',
+        name: 'resubmitButton',
+        xtype: 'button',
+        handler: function(){
+          Sonia.jira.resubmit(
+            this.el, 
+            this, 
+            'plugins/jira/resubmit/repository/' + this.item.id + '.json'
+          );
+        },
+        scope: this,
+        text: Sonia.jira.I18n.resubmitText,
+        fieldLabel: Sonia.jira.I18n.resubmitText, 
+        helpText: Sonia.jira.I18n.resubmitHelpText,
       }]
     };
     

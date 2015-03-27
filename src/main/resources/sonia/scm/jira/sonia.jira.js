@@ -32,8 +32,6 @@ Ext.ns("Sonia.jira");
 
 Sonia.jira.I18n = {
   
-  usernameAndPasswordNote: '',
-  
   titleText: 'Jira Configuration',
   formTitleText: 'Jira',
   
@@ -83,8 +81,12 @@ Sonia.jira.I18n = {
   mailText: 'E-Mail',
   mailHelpText: 'The mail address to send a message to if a jira comment fails.',
   
-  redoText: 'Resubmit stored comments',
-  redoHelpText: 'Resubmit all stored Jira comments.'
+  resubmitText: 'Resubmit stored comments',
+  resubmitHelpText: 'Resubmit all stored Jira comments.',
+  
+  resubmitWaitText: 'Resubmit comments ...',
+  resubmitFailureTitleText: 'Resubmit failed',
+  resubmitFailureDescriptionText: 'Unknown error occurred durring comment resubmission. SCM-Manager returned error code {0}.'
 };
 
 Sonia.jira.toggleFields = function(cmps, scope){
@@ -110,4 +112,36 @@ Sonia.jira.toggleFields = function(cmps, scope){
       cmp.setReadOnly(!checked);
     }
   }, scope);
+};
+
+Sonia.jira.resubmit = function(el, scope, url){
+  var tid = setTimeout(function(){
+    el.mask(Sonia.jira.I18n.resubmitWaitText);
+  }, 100);
+  Ext.Ajax.request({
+    url: restUrl + url,
+    method: 'POST',
+    jsonData: '',
+    scope: scope,
+    disableCaching: true,
+    success: function(){
+      // clear loading mask timeout
+      clearTimeout(tid);
+      // remove loading mask
+      el.unmask();
+    },
+    failure: function(result){
+      // clear loading mask timeout
+      clearTimeout(tid);
+      // remove loading mask
+      el.unmask();
+      
+      // display error message
+      main.handleFailure(
+        result.status,
+        Sonia.jira.I18n.resubmitFailureTitleText,
+        Sonia.jira.I18n.resubmitFailureDescriptionText
+      );
+    }
+  });
 };

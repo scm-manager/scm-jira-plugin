@@ -127,25 +127,16 @@ Sonia.jira.GlobalConfigPanel = Ext.extend(Sonia.config.ConfigForm, {
         fieldLabel: Sonia.jira.I18n.mailText,
         helpText: Sonia.jira.I18n.mailHelpText
       },{
-        id: 'redo',
-        name: 'redoButton',
+        id: 'resubmit',
+        name: 'resubmitButton',
         xtype: 'button',
         handler: function(){
-          Ext.Ajax.request({
-            url: restUrl + 'plugins/jira/resubmit/all.json',
-            method: 'POST',
-            jsonData: '',
-            scope: this,
-            disableCaching: true,
-            success: function(){
-            },
-            failure: function(){
-                alert('failure');
-            }
-          });
+          Sonia.jira.resubmit(this.el, this, 'plugins/jira/resubmit/all.json');
         },
-        text: Sonia.jira.I18n.redoText,
-        fieldLabel: Sonia.jira.I18n.redoHelpText 
+        scope: this,
+        text: Sonia.jira.I18n.resubmitText,
+        fieldLabel: Sonia.jira.I18n.resubmitText, 
+        helpText: Sonia.jira.I18n.resubmitHelpText,
       }]
     };
 
