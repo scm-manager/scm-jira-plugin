@@ -108,12 +108,12 @@ public class JiraIssueRequestFactory
    * 
    * @param configuration jira configuration
    * @param repository changed repository
-   * @param calendar creation time
+   * @param creation creation time
    *
    * @return new {@link JiraIssueRequest}
    */
   public JiraIssueRequest createRequest(JiraConfiguration configuration,
-    Repository repository, Calendar calendar)
+    Repository repository, Calendar creation)
   {
     String username = configuration.getUsername();
     String password = configuration.getPassword();
@@ -137,7 +137,7 @@ public class JiraIssueRequestFactory
     }
 
     return new JiraIssueRequest(handlerFactory, username, password,
-      configuration, repository, null);
+      configuration, repository, creation);
   }
 
   /**

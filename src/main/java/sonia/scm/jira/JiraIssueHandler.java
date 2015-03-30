@@ -50,7 +50,6 @@ import sonia.scm.repository.Changeset;
 
 import java.io.IOException;
 
-import java.util.GregorianCalendar;
 import java.util.Map;
 
 /**
@@ -311,18 +310,10 @@ public class JiraIssueHandler
     String body = Comments.prepareComment(
       configuration.getUrl(), issueId, Comments.createComment(request, comment)
     );
+    //J+
 
     // Send mail and save comment information
-    problemHandler.handleMessageProblem(
-      configuration,
-      issueId, 
-      request.getUsername(), 
-      body, 
-      new GregorianCalendar(),
-      changeset, 
-      request.getRepository()
-    );
-    //J+
+    problemHandler.handleMessageProblem(request, issueId, body, changeset);
   }
 
   private void updateIssue(Changeset changeset, String issueId)

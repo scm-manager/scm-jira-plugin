@@ -46,22 +46,19 @@ import org.codemonkey.simplejavamail.Email;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sonia.scm.jira.JiraConfiguration;
-import sonia.scm.jira.soap.RemoteComment;
 import sonia.scm.mail.api.MailSendBatchException;
 import sonia.scm.mail.api.MailService;
 import sonia.scm.repository.Changeset;
-import sonia.scm.repository.Repository;
 import sonia.scm.security.KeyGenerator;
 import sonia.scm.store.DataStore;
 import sonia.scm.store.DataStoreFactory;
 
 //~--- JDK imports ------------------------------------------------------------
 
-import java.util.Calendar;
 import java.util.List;
 
 import javax.mail.Message;
+import sonia.scm.jira.JiraIssueRequest;
 
 /**
  * A class to handle problems of message sending.
@@ -109,53 +106,33 @@ public class MessageProblemHandler
     store.remove(id);
   }
 
-  /**
-   * Handles a problem with a comment that could not be sent to the Jira-Server.
-   *
-   * @param configuration jira configuration
-   * @param issueId IssueId of the comment in Jira.
-   * @param remoteComment Packaged Information about the corresponding comment(author, comment-body, author-role-level, date of creation).
-   * @param changeset changeset containing the issue key
-   * @param repository changed repository
-   */
-  public void handleMessageProblem(JiraConfiguration configuration,
-    String issueId, RemoteComment remoteComment, Changeset changeset,
-    Repository repository)
-  {
-    handleMessageProblem(configuration, issueId, remoteComment.getAuthor(),
-      remoteComment.getBody(), remoteComment.getCreated(), changeset,
-      repository);
-  }
 
   /**
    * Handles a problem with a comment that could not be sent to the Jira-Server.
    *
-   * @param configuration jira configuration
+   * @param request jira issue request
    * @param issueId IssueId of the comment in Jira.
-   * @param author Author of the comment used in Jira.
    * @param body Body of the Jira comment.
-   * @param created Date the jira comment was created.
    * @param changeset changeset containing the issue key
-   * @param repository changed repository
    */
-  public void handleMessageProblem(JiraConfiguration configuration,
-    String issueId, String author, String body, Calendar created,
-    Changeset changeset, Repository repository)
+  public void handleMessageProblem(JiraIssueRequest request,
+    String issueId, String body,
+    Changeset changeset)
   {
     //J-
     CommentData commentData = new CommentData(
       keyGenerator.createKey(),
-      repository.getId(), 
+      request.getRepository().getId(), 
       changeset.getId(), 
       issueId, 
-      author, 
+      request.getUsername(), 
       body, 
-      created
+      request.getCreation()
     );
     //J+
 
     saveComment(commentData);
-    sendMail(configuration.getMailAddress(), commentData);
+    sendMail(request.getConfiguration().getMailAddress(), commentData);
   }
 
   /**
