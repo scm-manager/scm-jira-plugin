@@ -50,13 +50,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * The JiraChangesetPreProcessor searches for issue keys in the description of
+ * changesets and notifies the {@link JiraIssueHandler} about found issue keys.
  *
  * @author Sebastian Sdorra
  */
 public class JiraChangesetPreProcessor implements ChangesetPreProcessor
 {
 
-  /** Field description */
+  /** jira issue key pattern */
   private static final Pattern KEY_PATTERN =
     Pattern.compile("\\b([A-Z]+-\\d+)");
 
@@ -69,14 +71,11 @@ public class JiraChangesetPreProcessor implements ChangesetPreProcessor
   //~--- constructors ---------------------------------------------------------
 
   /**
-   * Constructs ...
+   * Constructs a new JiraChangesetPreProcessor
    *
-   *
-   *
-   *
-   * @param context
-   * @param repository
-   * @param keyReplacementPattern
+   * @param context jira global context
+   * @param repository changed repository
+   * @param keyReplacementPattern key replacement pattern
    */
   public JiraChangesetPreProcessor(JiraGlobalContext context,
     Repository repository, String keyReplacementPattern)
@@ -89,10 +88,12 @@ public class JiraChangesetPreProcessor implements ChangesetPreProcessor
   //~--- methods --------------------------------------------------------------
 
   /**
-   * Method description
+   * Checks the changeset description for issue keys and calls 
+   * {@link JiraIssueHandler#handleIssue(String, Changeset)} for each found
+   * issue key.
    *
    *
-   * @param changeset
+   * @param changeset changeset
    */
   @Override
   public void process(Changeset changeset)
@@ -137,10 +138,10 @@ public class JiraChangesetPreProcessor implements ChangesetPreProcessor
   //~--- set methods ----------------------------------------------------------
 
   /**
-   * Method description
+   * Sets the {@link JiraIssueHandler}.
    *
    *
-   * @param issueHandler
+   * @param issueHandler jira issue handler
    */
   public void setJiraIssueHandler(JiraIssueHandler issueHandler)
   {
@@ -149,15 +150,15 @@ public class JiraChangesetPreProcessor implements ChangesetPreProcessor
 
   //~--- fields ---------------------------------------------------------------
 
-  /** Field description */
-  private JiraGlobalContext context;
+  /** jira global context */
+  private final JiraGlobalContext context;
 
-  /** Field description */
+  /** jira issue handler */
   private JiraIssueHandler issueHandler;
 
-  /** Field description */
-  private String keyReplacementPattern;
+  /** key replacement pattern */
+  private final String keyReplacementPattern;
 
-  /** Field description */
-  private Repository repository;
+  /** changed repository */
+  private final Repository repository;
 }
