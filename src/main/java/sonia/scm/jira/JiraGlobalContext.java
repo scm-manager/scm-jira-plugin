@@ -49,6 +49,7 @@ import sonia.scm.store.Store;
 import sonia.scm.store.StoreFactory;
 
 /**
+ * Global jira context.
  *
  * @author Sebastian Sdorra
  */
@@ -56,7 +57,7 @@ import sonia.scm.store.StoreFactory;
 public class JiraGlobalContext
 {
 
-  /** Field description */
+  /** configuration store name */
   private static final String NAME = "jira";
 
   /**
@@ -68,11 +69,11 @@ public class JiraGlobalContext
   //~--- constructors ---------------------------------------------------------
 
   /**
-   * Constructs ...
+   * Constructs a new JiraGlobalContext
    *
    *
-   * @param storeFactory
-   * @param dataStoreFactory
+   * @param storeFactory store factory
+   * @param dataStoreFactory data store factory
    */
   @Inject
   public JiraGlobalContext(StoreFactory storeFactory,
@@ -91,11 +92,11 @@ public class JiraGlobalContext
   //~--- methods --------------------------------------------------------------
 
   /**
-   * Method description
+   * Marks an changeset as handled.
    *
    *
-   * @param repository
-   * @param changeset
+   * @param repository changed repository
+   * @param changeset changeset
    */
   public void markAsHandled(Repository repository, Changeset changeset)
   {
@@ -111,10 +112,10 @@ public class JiraGlobalContext
   //~--- get methods ----------------------------------------------------------
 
   /**
-   * Method description
+   * Returns the global jira configuration.
    *
    *
-   * @return
+   * @return global jira configuration
    */
   public JiraGlobalConfiguration getConfiguration()
   {
@@ -122,13 +123,13 @@ public class JiraGlobalContext
   }
 
   /**
-   * Method description
+   * Returns {@code true} if the changeset is already handled.
    *
    *
-   * @param repository
-   * @param changeset
+   * @param repository changed repository
+   * @param changeset changeset
    *
-   * @return
+   * @return {@code true} if the changeset is already handled
    */
   public boolean isHandled(Repository repository, Changeset changeset)
   {
@@ -140,10 +141,10 @@ public class JiraGlobalContext
   //~--- set methods ----------------------------------------------------------
 
   /**
-   * Method description
+   * Sets and stores the global jira configuration.
    *
    *
-   * @param configuration
+   * @param configuration global jira configuration
    */
   public void setConfiguration(JiraGlobalConfiguration configuration)
   {
@@ -154,14 +155,6 @@ public class JiraGlobalContext
 
   //~--- get methods ----------------------------------------------------------
 
-  /**
-   * Method description
-   *
-   *
-   * @param repository
-   *
-   * @return
-   */
   private JiraData getData(Repository repository)
   {
     JiraData data = dataStore.get(repository.getId());
@@ -176,12 +169,12 @@ public class JiraGlobalContext
 
   //~--- fields ---------------------------------------------------------------
 
-  /** Field description */
+  /** global jira configuration */
   private JiraGlobalConfiguration configuration;
 
-  /** Field description */
-  private DataStore<JiraData> dataStore;
+  /** data store */
+  private final DataStore<JiraData> dataStore;
 
-  /** Field description */
-  private Store<JiraGlobalConfiguration> store;
+  /** global configuration store */
+  private final Store<JiraGlobalConfiguration> store;
 }
