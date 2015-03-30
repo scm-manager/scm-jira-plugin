@@ -34,6 +34,7 @@
 package sonia.scm.jira;
 
 /**
+ * Factory for {@link JiraHandler}.
  *
  * @author Sebastian Sdorra
  */
@@ -41,14 +42,14 @@ public interface JiraHandlerFactory
 {
 
   /**
-   * Method description
+   * Creates a new {@link JiraHandler}.
    *
    *
-   * @param request
-   * @param username
-   * @param password
+   * @param request jira issue request
+   * @param username connection username
+   * @param password connection password
    *
-   * @return
+   * @return new {@link JiraHandler}.
    *
    * @throws JiraConnectException
    */
