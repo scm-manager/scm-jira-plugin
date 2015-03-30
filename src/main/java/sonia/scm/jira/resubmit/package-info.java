@@ -1,8 +1,8 @@
 /**
- * This package provides additional functionality.
- * The classes are used in case of network problems.
- * Then a generated comment can be saved as an XML-File.
- * These files can be extracted, to resent the corresponding message to Jira.
- * After that the XML-File will be deleted.
+ * The resubmit package provide store and resubmit functionalities.
+ * The resubmit package provide functionalities to store and resubmit JIRA 
+ * comments, which could not be added to JIRA, because of an error. Failed 
+ * comments are stored with DataStore and could later be send again by calling
+ * the {@link ResubmitCommentsResource}.
  */
 package sonia.scm.jira.resubmit;

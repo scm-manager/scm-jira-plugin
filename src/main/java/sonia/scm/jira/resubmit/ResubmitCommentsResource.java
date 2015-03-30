@@ -118,7 +118,8 @@ public class ResubmitCommentsResource
   @POST
   @Path("repository/{repositoryId}")
   @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-  public Response resubmitAllFromRepository(@PathParam("repositoryId") String repositoryId) throws IOException, RepositoryException
+  public Response resubmitAllFromRepository(
+    @PathParam("repositoryId") String repositoryId) throws IOException, RepositoryException
   {
     logger.trace("resubmit all stored comments of repository {}", repositoryId);
 
@@ -129,7 +130,7 @@ public class ResubmitCommentsResource
     return Response.noContent().build();
   }
   
-    /**
+  /**
    * Resubmit the comment with the given id that could not be sent at the 
    * last time.
    *
