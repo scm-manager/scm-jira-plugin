@@ -224,9 +224,10 @@ public class MessageProblemHandler
 
     c.append("The following comment could not be sent to the jira server:");
     c.append("<br/>");
-    c.append("<br/> Author: ").append(commentData.getAuthor());
+    c.append("<br/>Author: ").append(commentData.getAuthor());
     c.append("<br/> IssueId: ").append(commentData.getIssueId());
-    c.append("<br/> Body: <br/>").append(commentData.getBody());
+    c.append("<br/> Body: <br/>");
+    c.append("<pre>").append(commentData.getBody()).append("</pre>");
 
     return c.toString();
   }
