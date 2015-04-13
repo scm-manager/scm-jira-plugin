@@ -100,7 +100,7 @@ public class JiraIssueRequestFactory
   public JiraIssueRequest createRequest(JiraConfiguration configuration,
     Repository repository)
   {
-    return createRequest(configuration, repository, null);
+    return createRequest(configuration, repository, null, null);
   }
 
   /**
@@ -108,12 +108,13 @@ public class JiraIssueRequestFactory
    * 
    * @param configuration jira configuration
    * @param repository changed repository
+   * @param author name of user which has done the push/commit
    * @param creation creation time
    *
    * @return new {@link JiraIssueRequest}
    */
   public JiraIssueRequest createRequest(JiraConfiguration configuration,
-    Repository repository, Calendar creation)
+    Repository repository, String author, Calendar creation)
   {
     String username = configuration.getUsername();
     String password = configuration.getPassword();
@@ -137,7 +138,7 @@ public class JiraIssueRequestFactory
     }
 
     return new JiraIssueRequest(handlerFactory, username, password,
-      configuration, repository, creation);
+      configuration, repository, author, creation);
   }
 
   /**

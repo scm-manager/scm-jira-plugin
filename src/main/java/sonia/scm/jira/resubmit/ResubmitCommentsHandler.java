@@ -213,7 +213,7 @@ public class ResubmitCommentsHandler
 
     // todo handle npe for changeset
     return requestFactory.createRequest(cfg, repository,
-      commentData.getCreated());
+      commentData.getAuthor(), commentData.getCreated());
   }
 
   private String format(Calendar calendar)

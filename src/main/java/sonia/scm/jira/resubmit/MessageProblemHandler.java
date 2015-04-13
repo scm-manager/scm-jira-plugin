@@ -125,7 +125,7 @@ public class MessageProblemHandler
       request.getRepository().getId(), 
       changeset.getId(), 
       issueId, 
-      request.getUsername(), 
+      request.getAuthor(), 
       body, 
       request.getCreation()
     );
