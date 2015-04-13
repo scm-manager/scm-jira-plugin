@@ -33,6 +33,10 @@
 
 package sonia.scm.jira.resubmit;
 
+//~--- non-JDK imports --------------------------------------------------------
+
+import com.google.common.base.Objects;
+
 //~--- JDK imports ------------------------------------------------------------
 
 import java.util.Calendar;
@@ -89,6 +93,25 @@ public class CommentData implements Comparable<CommentData>
   public int compareTo(CommentData o)
   {
     return created.compareTo(o.created);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String toString()
+  {
+    //J-
+    return Objects.toStringHelper(this)
+                  .add("id", id)
+                  .add("repositoryid", repositoryId)
+                  .add("changesetId", changesetId)
+                  .add("issueId", issueId)
+                  .add("author", author)
+                  .add("body", body)
+                  .add("created", created)
+                  .toString();
+    //J+
   }
 
   //~--- get methods ----------------------------------------------------------

@@ -142,6 +142,8 @@ public class ResubmitCommentsHandler
    */
   public void remove(String commentId) throws CommentNotFoundException{
     CommentData commentData = getCommentChecked(commentId);
+    logger.warn("user {} removed comment {} for issue {} from resubmit queue, comment details: {}", 
+      SecurityUtils.getSubject().getPrincipal(), commentId, commentData.getIssueId(), commentData);
     messageProblemHandler.deleteComment(commentId);
   }
   
