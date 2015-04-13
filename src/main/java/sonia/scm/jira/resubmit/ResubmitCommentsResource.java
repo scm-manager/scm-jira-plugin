@@ -47,9 +47,11 @@ import sonia.scm.repository.RepositoryException;
 import java.io.IOException;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -164,6 +166,38 @@ public class ResubmitCommentsResource
 
     logger.trace("finished sending stored comment {}", commentId);
 
+    return response;
+  }
+  
+  /**
+   * Remove comment with the given id from the resubmit queue. This method is 
+   * triggered from the remove link in the failure e-mail.
+   *
+   * @param commentId comment id
+   * 
+   * @return text message response
+   */
+  @GET
+  @Produces(MediaType.TEXT_PLAIN)
+  @Path("comment/{commentId}/remove")
+  public Response remove(@PathParam("commentId") String commentId){
+    logger.trace("remove stored comment {}", commentId);
+    Response response;
+
+    try 
+    {
+      CommentData data = resubmitCommentsHandler.remove(commentId);
+      StringBuilder msg = new StringBuilder("successfully removed comment ");
+      msg.append(data.getId()).append(" for jira issue ").append(data.getIssueId());
+      
+      response = Response.ok(msg.toString()).build();
+    } 
+    catch (CommentNotFoundException ex)
+    {
+      String message = "could not find comment with id ".concat(commentId);
+      logger.warn(message);
+      response = Response.status(Status.NOT_FOUND).entity(message).build();
+    }
     return response;
   }
 

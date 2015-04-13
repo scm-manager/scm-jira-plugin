@@ -44,6 +44,7 @@ import java.util.Calendar;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import sonia.scm.jira.Comments;
 
 /**
  * A CommentData instance is stored, if comment could not added to the jira
@@ -109,7 +110,7 @@ public class CommentData implements Comparable<CommentData>
                   .add("issueId", issueId)
                   .add("author", author)
                   .add("body", body)
-                  .add("created", created)
+                  .add("created", Comments.format(created))
                   .toString();
     //J+
   }
