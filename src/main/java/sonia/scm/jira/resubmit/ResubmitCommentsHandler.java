@@ -125,8 +125,9 @@ public class ResubmitCommentsHandler
    *
    * @throws IOException
    * @throws RepositoryException
+   * @throws CommentNotFoundException
    */
-  public void resubmit(String commentId) throws IOException, RepositoryException
+  public void resubmit(String commentId) throws IOException, RepositoryException, CommentNotFoundException
   {
     resubmit(getCommentChecked(commentId));
   }
@@ -136,13 +137,15 @@ public class ResubmitCommentsHandler
    *
    *
    * @param commentId id of the comment
+   * 
+   * @throws CommentNotFoundException
    */
-  public void remove(String commentId){
+  public void remove(String commentId) throws CommentNotFoundException{
     CommentData commentData = getCommentChecked(commentId);
     messageProblemHandler.deleteComment(commentId);
   }
   
-  private CommentData getCommentChecked(String commentId)
+  private CommentData getCommentChecked(String commentId) throws CommentNotFoundException
   {
     CommentData commentData = messageProblemHandler.getComment(commentId);
 
@@ -157,7 +160,7 @@ public class ResubmitCommentsHandler
     else
     {
       // TODO custom exception type?
-      throw new IllegalArgumentException("id does not exists");
+      throw new CommentNotFoundException("id does not exists");
     }
     return commentData;
   }

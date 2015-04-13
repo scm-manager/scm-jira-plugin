@@ -52,6 +52,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 /**
  * Resource to resubmit jira comments.
@@ -149,11 +150,21 @@ public class ResubmitCommentsResource
   {
     logger.trace("resubmit stored comment {}", commentId);
 
-    resubmitCommentsHandler.resubmit(commentId);
+    Response response;
+    try 
+    {
+      resubmitCommentsHandler.resubmit(commentId);
+      response = Response.noContent().build();
+    } 
+    catch (CommentNotFoundException ex)
+    {
+      logger.warn("could not find comment with id ".concat(commentId));
+      response = Response.status(Status.NOT_FOUND).build();
+    }
 
     logger.trace("finished sending stored comment {}", commentId);
 
-    return Response.noContent().build();
+    return response;
   }
 
   //~--- fields ---------------------------------------------------------------
