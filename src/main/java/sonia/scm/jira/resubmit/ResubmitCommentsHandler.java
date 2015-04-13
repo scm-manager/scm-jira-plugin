@@ -128,6 +128,22 @@ public class ResubmitCommentsHandler
    */
   public void resubmit(String commentId) throws IOException, RepositoryException
   {
+    resubmit(getCommentChecked(commentId));
+  }
+  
+  /**
+   * Removes the stored comment with the given id.
+   *
+   *
+   * @param commentId id of the comment
+   */
+  public void remove(String commentId){
+    CommentData commentData = getCommentChecked(commentId);
+    messageProblemHandler.deleteComment(commentId);
+  }
+  
+  private CommentData getCommentChecked(String commentId)
+  {
     CommentData commentData = messageProblemHandler.getComment(commentId);
 
     if (commentData != null)
@@ -137,13 +153,13 @@ public class ResubmitCommentsHandler
         new RepositoryPermission(commentData.getRepositoryId(), PermissionType.OWNER)
       );
       //J+
-      resubmit(commentData);
     }
     else
     {
       // TODO custom exception type?
       throw new IllegalArgumentException("id does not exists");
     }
+    return commentData;
   }
 
   /**
