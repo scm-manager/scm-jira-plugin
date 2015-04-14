@@ -43,21 +43,26 @@ import com.google.common.base.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sonia.scm.jira.secure.MessageProblemHandler;
+import sonia.scm.jira.resubmit.MessageProblemHandler;
 import sonia.scm.repository.Changeset;
 
 //~--- JDK imports ------------------------------------------------------------
 
 import java.io.IOException;
 
-import java.util.GregorianCalendar;
+import java.util.Map;
 
 /**
+ * The JiraIssueHandler updates or closes the jira issues based on the
+ * {@link Changeset} description.
  *
  * @author Sebastian Sdorra
  */
 public class JiraIssueHandler
 {
+
+  /** env variable auto close word */
+  private static final String ENV_AUTOCLOSEWORD = "autoCloseWord";
 
   /** the logger for JiraIssueHandler */
   private static final Logger logger =
@@ -66,12 +71,12 @@ public class JiraIssueHandler
   //~--- constructors ---------------------------------------------------------
 
   /**
-   * Constructs ...
+   * Constructs a new JiraIssueHandler.
    *
    *
-   * @param problemHandler
-   * @param templateHandler
-   * @param request
+   * @param problemHandler message problem handler
+   * @param templateHandler comment template handler
+   * @param request jira issue request
    */
   public JiraIssueHandler(MessageProblemHandler problemHandler,
     CommentTemplateHandler templateHandler, JiraIssueRequest request)
@@ -84,11 +89,11 @@ public class JiraIssueHandler
   //~--- methods --------------------------------------------------------------
 
   /**
-   * Method description
+   * Updates or closes the jira issue with the given id.
    *
    *
-   * @param issueId
-   * @param changeset
+   * @param issueId jira issue id
+   * @param changeset changeset
    */
   public void handleIssue(String issueId, Changeset changeset)
   {
@@ -129,10 +134,7 @@ public class JiraIssueHandler
   }
 
   /**
-   * Method description
-   *
-   *
-   * @return
+   * {@inheritDoc}
    */
   @Override
   public String toString()
@@ -146,13 +148,49 @@ public class JiraIssueHandler
   }
 
   /**
-   * Method description
+   * Updates the jira issue with the given comment.
    *
    *
-   * @param changeset
-   * @param issueId
-   * @param autoCloseWord
+   * @param changeset changeset
+   * @param issueId issue id
+   * @param comment comment content
    */
+  public void updateIssue(Changeset changeset, String issueId, String comment)
+  {
+    logger.debug("try to update issue {} because of changeset {}", issueId,
+      changeset.getId());
+
+    try
+    {
+
+      JiraHandler handler = request.createJiraHandler();
+
+      if (!handler.isCommentAlreadyExists(issueId, changeset.getId(),
+        changeset.getDescription()))
+      {
+
+        //J-
+        handler.addComment(
+          issueId, 
+          Comments.createComment(request, comment)
+        );
+        //J+
+
+      }
+      else if (logger.isInfoEnabled())
+      {
+        logger.info("comment for changeset {} already exists at issue {}",
+          changeset.getId(), issueId);
+      }
+
+    }
+    catch (JiraException ex)
+    {
+      logger.error("could not add comment to jira issue", ex);
+      handleException(issueId, comment, changeset);
+    }
+  }
+
   private void closeIssue(Changeset changeset, String issueId,
     String autoCloseWord)
   {
@@ -162,14 +200,25 @@ public class JiraIssueHandler
         changeset.getId());
     }
 
+    String comment = null;
+
     try
     {
       JiraHandler handler = request.createJiraHandler();
-      String comment = templateHandler.render(CommentTemplate.AUTOCLOSE,
-                         request, changeset, autoCloseWord);
+      Map<String, Object> env = templateHandler.createBaseEnvironment(request,
+                                  changeset);
+
+      env.put(ENV_AUTOCLOSEWORD, Strings.nullToEmpty(autoCloseWord));
+
+      comment = templateHandler.render(CommentTemplate.AUTOCLOSE, env);
 
       handler.close(issueId, autoCloseWord);
-      handler.addComment(issueId, createComment(comment), request);
+      //J-
+      handler.addComment(
+        issueId, 
+        Comments.createComment(request, comment)
+      );
+      //J+
     }
     catch (IOException ex)
     {
@@ -179,95 +228,36 @@ public class JiraIssueHandler
     }
     catch (JiraException ex)
     {
-
-      // TODO use problem handler
       logger.error("could not close jira issue", ex);
+      handleException(issueId, comment, changeset);
     }
   }
 
-  /**
-   * Method description
-   *
-   *
-   * @param body
-   *
-   * @return
-   */
-  private Comment createComment(String body)
-  {
-    String prefix = request.getConfiguration().getCommentPrefix();
-
-    if (!Strings.isNullOrEmpty(prefix))
-    {
-      prefix = prefix.concat(" ");
-    }
-
-    //J-
-    return new Comment(
-      Strings.nullToEmpty(prefix).concat(Strings.nullToEmpty(body)),
-      request.getConfiguration().getRoleLevel()
-    );
-    //J+
-  }
-
-  /**
-   * Method description
-   *
-   *
-   * @param issueId
-   * @param comment
-   * @param changeset
-   *
-   * @throws IOException
-   */
   private void handleException(String issueId, String comment,
     Changeset changeset)
-    throws IOException
   {
-    Preconditions.checkArgument(!Strings.isNullOrEmpty(issueId),
-      "issue id is null");
-
-    /*
-     * Preconditions.checkArgument(!Strings.isNullOrEmpty(comment),
-     * "comment is null");
-     */
-    Preconditions.checkNotNull(changeset, "changeset is null");
-
-    JiraConfiguration configuration = request.getConfiguration();
-
-    if (comment == null)
+    if (request.getConfiguration().isResubmission())
     {
-      comment = templateHandler.render(CommentTemplate.UPADTE, request,
-        changeset);
+      logger.trace(
+        "call problem handler to store comment and send notification");
+
+      try
+      {
+        storeCommentAndSentNotification(issueId, comment, changeset);
+      }
+      catch (IOException e)
+      {
+
+        // do something useful
+        throw Throwables.propagate(e);
+      }
     }
-
-    CommentPreparation commentPreparation =
-      new CommentPreparation(configuration.getUrl());
-    String body = commentPreparation.prepareComment(issueId,
-                    createComment(comment));
-
-    // Send mail and save comment information
-    //J-
-    problemHandler.handleMessageProblem(
-      configuration,
-      issueId, 
-      request.getUsername(), 
-      body, 
-      new GregorianCalendar(),
-      changeset, 
-      request.getRepository()
-    );
-    //J+
+    else
+    {
+      logger.trace("resubmission is disabled");
+    }
   }
 
-  /**
-   * Method description
-   *
-   *
-   * @param changeset
-   *
-   * @return
-   */
   private String searchAutoCloseWord(Changeset changeset)
   {
     String description = changeset.getDescription();
@@ -297,73 +287,63 @@ public class JiraIssueHandler
     return autoCloseWord;
   }
 
-  /**
-   * Method description
-   *
-   *
-   * @param changeset
-   * @param issueId
-   */
+  private void storeCommentAndSentNotification(String issueId, String comment,
+    Changeset changeset)
+    throws IOException
+  {
+    Preconditions.checkArgument(!Strings.isNullOrEmpty(issueId),
+      "issue id is null or empty");
+    Preconditions.checkNotNull(changeset, "changeset is null");
+
+    JiraConfiguration configuration = request.getConfiguration();
+
+    if (Strings.isNullOrEmpty(comment))
+    {
+      Map<String, Object> env = templateHandler.createBaseEnvironment(request,
+                                  changeset);
+
+      // use always update?
+      comment = templateHandler.render(CommentTemplate.UPADTE, env);
+    }
+
+    //J-
+    String body = Comments.prepareComment(
+      configuration.getUrl(), issueId, Comments.createComment(request, comment)
+    );
+    //J+
+
+    // Send mail and save comment information
+    problemHandler.handleMessageProblem(request, issueId, body, changeset);
+  }
+
   private void updateIssue(Changeset changeset, String issueId)
   {
-    logger.debug("try to update issue {} because of changeset {}", issueId,
-      changeset.getId());
-
-    String comment = null;
-
     try
     {
-      JiraHandler handler = request.createJiraHandler();
 
-      if (!handler.isCommentAlreadyExists(issueId, changeset.getId(),
-        changeset.getDescription()))
-      {
-        comment = templateHandler.render(CommentTemplate.UPADTE, request,
-          changeset);
+      Map<String, Object> env = templateHandler.createBaseEnvironment(request,
+                                  changeset);
 
-        handler.addComment(issueId, createComment(comment), request);
-      }
-      else if (logger.isInfoEnabled())
-      {
-        logger.info("comment for changeset {} already exists at issue {}",
-          changeset.getId(), issueId);
-      }
+      String comment = templateHandler.render(CommentTemplate.UPADTE, env);
+
+      updateIssue(changeset, issueId, comment);
     }
     catch (IOException ex)
     {
-      logger.error("could render template", ex);
-    }
-    catch (JiraException ex)
-    {
-
-      // TODO: Save comment in case of login-error or existence check
-      // Possibly remove saving from soap jira handler
 
       // TODO Case of rendering mistake (IO)
-      logger.error("could not add comment to jira issue", ex);
-
-      try
-      {
-        handleException(issueId, comment, changeset);
-      }
-      catch (IOException e)
-      {
-
-        // do something useful
-        throw Throwables.propagate(e);
-      }
-
+      logger.error("could render not template", ex);
     }
   }
 
   //~--- fields ---------------------------------------------------------------
 
-  /** Field description */
+  /** message problem handler */
   private final MessageProblemHandler problemHandler;
 
-  /** Field description */
+  /** jira issue request */
   private final JiraIssueRequest request;
 
-  /** Field description */
+  /** comment template handler */
   private final CommentTemplateHandler templateHandler;
 }

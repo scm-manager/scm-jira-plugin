@@ -45,55 +45,54 @@ Sonia.jira.I18n = {
   autoCloseText: 'Enable Auto-Close',
   autoCloseHelpText: 'Enables the auto close function. SCM-Manager searches for \n\
                       issue keys and auto close words in commit messages. If \n\
-                      both found in a message SCM-Manager closes the issue in \n\
-                      the jira server. <strong>Note:</strong> It is necessary \n\
-                      that users have the same name and password in SCM-Manager and Jira.',
+                      both are found in a message SCM-Manager closes the issue. \n\
+                      <b>Note:</b> If username and password are different \n\
+                      in SCM-Manager and Jira, it is necessary to configure \n\
+                      the username and password below.',
   autoCloseDefaultValues: 'fixed, fix, closed, close, resolved, resolve',
   
   updateIssuesText: 'Update Jira Issues',
   updateIssuesHelpText: 'Enable the automatic update function. SCM-Manager searches for\n\
                          issue keys in commit messages. If a issue id is found SCM-Manager\n\
-                         updates the issue with a comment. <strong>Note:</strong> It \n\
-                         is necessary that users have the same name and password in SCM-Manager \n\
-                         and Jira.',
+                         updates the issue with a comment. <b>Note:</b> If username and \n\
+                         password are different in SCM-Manager and Jira, it is necessary \n\
+                         to configure the username and password below.',
   
   autoCloseWordsText: 'Auto-Close Words',
   autoCloseWordsHelpText: 'Comma separated list of words to enable the auto close function. \n\
-                           Each commit message of a changeset is being searched for these words.',
+                           Each commit message of a changeset gets searched for these words.',
           
   roleLevelText: 'Role visibility',
   roleLevelHelpText: 'Defines for which Project Role the comments are visible. <b>Note:</b> The name must be a valid jira role name.',
   
   commentPrefixText: 'Comment prefix',
-  commentPrefixHelpText: 'The comment prefix is created in front of every jira comment created by SCM-Manager. The default prefix is [SCM].',
+  commentPrefixHelpText: 'The comment prefix is created at the beginning of every comment in Jira created by SCM-Manager. The default prefix is [SCM].',
   
   usernameText: 'Username',
   usernameHelpText: 'Jira username for connection. Leave this field empty to create the connection\n\
-                     with the credentials of the user which is logged in.',
+                     with the credentials of the user which is logged in to SCM-Manager.',
   
   passwordText: 'Password',
   passwordHelpText: 'Jira password for connection.',
   
+  resubmissionText: 'Enable resubmission',
+  resubmissionHelpText: 'By enabling this option SCM-Manager stores the comments for resubmission in case the Jira server is not available. An information about the failed submission will be sent to the e-mail configured below.',
+    
   mailText: 'E-Mail',
   mailHelpText: 'The mail address to send a message to if a jira comment fails.',
   
-  mailHostText: 'Mail host',
-  mailHostHelpText: 'The host used for sending the mail.',
-	  
-  sendmailText: 'Send Mail',
-  sendmailHelpText: 'The mail address used as the sender. This address must be valid.',
+  resubmitText: 'Resubmit stored comments',
+  resubmitHelpText: 'Resubmit all stored Jira comments.',
   
-  savePathText: 'Save Path',
-  savePathHelpText: 'The path to save the lost comments.',
+  resubmitWaitText: 'Resubmit comments ...',
+  resubmitFailureTitleText: 'Resubmit failed',
+  resubmitFailureDescriptionText: 'Unknown error occurred durring comment resubmission. SCM-Manager returned error code {0}.'
 
   commentWrapText: 'Wrap Comment With',
   commentWrapHelpText: 'Text to place around the changeset description in the Jira comment. The default is no wrapping.  Examples:  {quote} or {noformat}.  See https://jira.atlassian.com/secure/WikiRendererHelpAction.jspa?section=all',
 
   commentMonospaceText: 'Monospace',
   commentMonospaceHelpText: 'Should the comment include the mono-space wrapper?  {{ }}.  Note:  Jira handling for this is not consistant.',
-
-  redoText: 'Redo Comments',
-  redoHelpText: 'Retrys to send all stopped comments to Jira.'
 };
 
 Sonia.jira.toggleFields = function(cmps, scope){
@@ -119,4 +118,36 @@ Sonia.jira.toggleFields = function(cmps, scope){
       cmp.setReadOnly(!checked);
     }
   }, scope);
+};
+
+Sonia.jira.resubmit = function(el, scope, url){
+  var tid = setTimeout(function(){
+    el.mask(Sonia.jira.I18n.resubmitWaitText);
+  }, 100);
+  Ext.Ajax.request({
+    url: restUrl + url,
+    method: 'POST',
+    jsonData: '',
+    scope: scope,
+    disableCaching: true,
+    success: function(){
+      // clear loading mask timeout
+      clearTimeout(tid);
+      // remove loading mask
+      el.unmask();
+    },
+    failure: function(result){
+      // clear loading mask timeout
+      clearTimeout(tid);
+      // remove loading mask
+      el.unmask();
+      
+      // display error message
+      main.handleFailure(
+        result.status,
+        Sonia.jira.I18n.resubmitFailureTitleText,
+        Sonia.jira.I18n.resubmitFailureDescriptionText
+      );
+    }
+  });
 };

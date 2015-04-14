@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
 
 import sonia.scm.EagerSingleton;
 import sonia.scm.event.Subscriber;
-import sonia.scm.jira.secure.MessageProblemHandler;
+import sonia.scm.jira.resubmit.MessageProblemHandler;
 import sonia.scm.plugin.ext.Extension;
 import sonia.scm.repository.Changeset;
 import sonia.scm.repository.PostReceiveRepositoryHookEvent;
@@ -55,6 +55,8 @@ import sonia.scm.repository.api.HookFeature;
 import sonia.scm.util.IOUtil;
 
 /**
+ * Post receive repository hook, which updates jira issue if an issue key is 
+ * found in the description of changeset.
  *
  * @author Sebastian Sdorra
  */
@@ -71,15 +73,13 @@ public final class JiraIssuePostReceiveHook
   //~--- constructors ---------------------------------------------------------
 
   /**
-   * Constructs ...
+   * Constructs a new JiraIssuePostReceiveHook.
    *
    *
-   *
-   *
-   * @param context
-   * @param requestFactory
-   * @param templateHandlerProvider
-   * @param messageProblemHandler
+   * @param context jira global context
+   * @param requestFactory jira request factory
+   * @param templateHandlerProvider comment template handler
+   * @param messageProblemHandler message problem handler
    */
   @Inject
   public JiraIssuePostReceiveHook(JiraGlobalContext context,
@@ -98,10 +98,11 @@ public final class JiraIssuePostReceiveHook
   //~--- methods --------------------------------------------------------------
 
   /**
-   * Method description
-   *
-   *
-   * @param event
+   * This method is called whenever new data is pushed to a repository. The 
+   * method delegates to {@link JiraChangesetPreProcessor} if valid jira 
+   * configuration is available.
+   * 
+   * @param event post receive repository hook event
    */
   @Subscribe
   public void onEvent(PostReceiveRepositoryHookEvent event)
@@ -137,14 +138,6 @@ public final class JiraIssuePostReceiveHook
     }
   }
 
-  /**
-   * Method description
-   *
-   *
-   * @param event
-   * @param repository
-   * @param configuration
-   */
   private void handleIssueEvent(PostReceiveRepositoryHookEvent event,
     Repository repository, JiraConfiguration configuration)
   {
@@ -188,14 +181,6 @@ public final class JiraIssuePostReceiveHook
 
   //~--- get methods ----------------------------------------------------------
 
-  /**
-   * Method description
-   *
-   *
-   * @param event
-   *
-   * @return
-   */
   private Iterable<Changeset> getChangesetsFromEvent(
     PostReceiveRepositoryHookEvent event)
   {
@@ -232,18 +217,18 @@ public final class JiraIssuePostReceiveHook
 
   //~--- fields ---------------------------------------------------------------
 
-  /** Field description */
+  /** changeset pre processor factory */
   private final JiraChangesetPreProcessorFactory changesetPreProcessorFactory;
 
-  /** Field description */
+  /** global jira context */
   private final JiraGlobalContext context;
 
-  /** Field description */
+  /** message problem handler */
   private final MessageProblemHandler messageProblemHandler;
 
-  /** Field description */
+  /** jira request factory */
   private final JiraIssueRequestFactory requestFactory;
 
-  /** Field description */
+  /** comment template handler */
   private final Provider<CommentTemplateHandler> templateHandlerProvider;
 }

@@ -35,7 +35,12 @@ package sonia.scm.jira;
 
 import com.google.common.base.Objects;
 
+//~--- JDK imports ------------------------------------------------------------
+
+import java.util.Calendar;
+
 /**
+ * A jira comment.
  *
  * @author Sebastian Sdorra
  */
@@ -43,28 +48,24 @@ public final class Comment
 {
 
   /**
-   * Constructs ...
+   * Constructs a new comment
    *
    *
-   * @param body
-   * @param roleVisibility
-   * @param roleLevel
+   * @param body comment body
+   * @param created creation time
+   * @param roleLevel role level
    */
-  public Comment(String body, String roleLevel)
+  public Comment(String body, Calendar created, String roleLevel)
   {
     this.body = body;
+    this.created = created;
     this.roleLevel = roleLevel;
   }
 
   //~--- methods --------------------------------------------------------------
 
   /**
-   * Method description
-   *
-   *
-   * @param obj
-   *
-   * @return
+   * {@inheritDoc}
    */
   @Override
   public boolean equals(Object obj)
@@ -82,26 +83,21 @@ public final class Comment
     final Comment other = (Comment) obj;
 
     return Objects.equal(body, other.body)
+      && Objects.equal(created, other.created)
       && Objects.equal(roleLevel, other.roleLevel);
   }
 
   /**
-   * Method description
-   *
-   *
-   * @return
+   * {@inheritDoc}
    */
   @Override
   public int hashCode()
   {
-    return Objects.hashCode(body, roleLevel);
+    return Objects.hashCode(body, created, roleLevel);
   }
 
   /**
-   * Method description
-   *
-   *
-   * @return
+   * {@inheritDoc}
    */
   @Override
   public String toString()
@@ -109,6 +105,7 @@ public final class Comment
     //J-
     return Objects.toStringHelper(this)
                   .add("body", body)
+                  .add("created", created)
                   .add("roleLevel", roleLevel)
                   .toString();
     //J+
@@ -117,10 +114,10 @@ public final class Comment
   //~--- get methods ----------------------------------------------------------
 
   /**
-   * Method description
+   * Returns the body of the comment.
    *
    *
-   * @return
+   * @return comment body
    */
   public String getBody()
   {
@@ -128,10 +125,22 @@ public final class Comment
   }
 
   /**
-   * Method description
+   * Returns the creation time of the comment.
    *
    *
-   * @return
+   * @return creation time
+   */
+  public Calendar getCreated()
+  {
+    return created;
+  }
+
+  /**
+   * Returns the role level of the comment. The role level defines which jira
+   * users can view the comment.
+   *
+   *
+   * @return role level
    */
   public String getRoleLevel()
   {
@@ -140,9 +149,12 @@ public final class Comment
 
   //~--- fields ---------------------------------------------------------------
 
-  /** Field description */
-  private String body;
+  /** body of the comment */
+  private final String body;
 
-  /** Field description */
-  private String roleLevel;
+  /** creation time */
+  private final Calendar created;
+
+  /** role level */
+  private final String roleLevel;
 }

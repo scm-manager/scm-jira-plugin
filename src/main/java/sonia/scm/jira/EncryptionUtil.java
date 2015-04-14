@@ -30,32 +30,39 @@
  */
 
 
+
 package sonia.scm.jira;
 
 //~--- non-JDK imports --------------------------------------------------------
 
 import com.google.common.base.Strings;
+
 import sonia.scm.security.CipherUtil;
 
 /**
+ * Util class to handle encrypted values.
  *
  * @author Sebastian Sdorra
  */
-public class EncryptionUtil
+public final class EncryptionUtil
 {
 
   /** Field description */
   private static final String PREFIX = "{enc}";
 
+  //~--- constructors ---------------------------------------------------------
+
+  private EncryptionUtil() {}
+
   //~--- methods --------------------------------------------------------------
 
   /**
-   * Method description
+   * Decrypts the given value.
    *
    *
-   * @param value
+   * @param value encrypted value
    *
-   * @return
+   * @return decrypted value
    */
   public static String decrypt(String value)
   {
@@ -70,12 +77,12 @@ public class EncryptionUtil
   }
 
   /**
-   * Method description
+   * Encrypts the given value.
    *
    *
-   * @param value
+   * @param value value to encrypt
    *
-   * @return
+   * @return encrypted value
    */
   public static String encrypt(String value)
   {
@@ -87,15 +94,15 @@ public class EncryptionUtil
   //~--- get methods ----------------------------------------------------------
 
   /**
-   * Method description
+   * Returns {@code true} if the value is encrypted.
    *
    *
-   * @param value
+   * @param value value
    *
-   * @return
+   * @return {@code true} if the value is encrypted
    */
   public static boolean isEncrypted(String value)
   {
-    return ! Strings.isNullOrEmpty(value) && value.startsWith(PREFIX);
+    return !Strings.isNullOrEmpty(value) && value.startsWith(PREFIX);
   }
 }

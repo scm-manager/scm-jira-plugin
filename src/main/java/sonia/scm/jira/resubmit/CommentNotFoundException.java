@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010, Sebastian Sdorra All rights reserved.
+ * Copyright (c) 2014, Sebastian Sdorra All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -29,57 +29,33 @@
 
 
 
-package sonia.scm.jira;
+package sonia.scm.jira.resubmit;
 
 //~--- non-JDK imports --------------------------------------------------------
 
-import org.junit.Test;
-
-import sonia.scm.jira.soap.JiraSoapService;
-import sonia.scm.jira.soap.RemoteComment;
-
-import static org.junit.Assert.*;
-
-import static org.mockito.Mockito.*;
+import sonia.scm.jira.JiraException;
 
 /**
+ * Exception is thrown if a store comment could not be found.
  *
  * @author Sebastian Sdorra
  */
-public class SoapJiraHandlerTest
+public class CommentNotFoundException extends JiraException
 {
 
+  /** Field description */
+  private static final long serialVersionUID = -7146303867605549850L;
+
+  //~--- constructors ---------------------------------------------------------
+
   /**
-   * Method description
+   * Constructs new CommentNotFoundException.
    *
+   *
+   * @param message message of the exception
    */
-  @Test
-  public void testContains()
+  public CommentNotFoundException(String message)
   {
-    SoapJiraHandler handler = createHandler();
-    RemoteComment comment = createComment("close issue TST-12");
-
-    assertTrue(handler.contains(comment, "close"));
-    assertTrue(handler.contains(comment, "TST-12"));
-    assertTrue(handler.contains(comment, "close", "TST-12"));
-    assertFalse(handler.contains(comment, "trillian"));
-    assertFalse(handler.contains(comment, "close", "TST-132"));
-  }
-
-  private RemoteComment createComment(String value)
-  {
-    RemoteComment comment = new RemoteComment();
-
-    comment.setBody(value);
-
-    return comment;
-  }
-
-  private SoapJiraHandler createHandler()
-  {
-    JiraSoapService service = mock(JiraSoapService.class);
-    JiraIssueRequest request = mock(JiraIssueRequest.class);
-
-    return new SoapJiraHandler(service, request, "trillian", "");
+    super(message);
   }
 }

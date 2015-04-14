@@ -40,8 +40,10 @@ import sonia.scm.repository.Changeset;
 //~--- JDK imports ------------------------------------------------------------
 
 import java.io.IOException;
+import java.util.Map;
 
 /**
+ * The CommentTemplateHandler renders templates.
  *
  * @author Sebastian Sdorra
  */
@@ -49,45 +51,24 @@ public interface CommentTemplateHandler
 {
 
   /**
-   * Method description
+   * Returns the rendered template.
    *
+   * @param template template
+   * @param model model which is used within the template
    *
-   * @param name
-   *
-   * @param template
-   * @param request
-   * @param changeset
-   *
-   * @return
-   *
-   * @throws TemplateException
+   * @return rendered template
    *
    * @throws IOException
    */
-  public String render(CommentTemplate template, JiraIssueRequest request,
-    Changeset changeset)
-    throws IOException;
+  public String render(CommentTemplate template, Object model) throws IOException;
 
   /**
-   * Method description
+   * Creates a base environment for the rendering of a {@link CommentTemplate}.
    *
-   *
-   *
-   * @param name
-   *
-   * @param template
-   * @param request
-   * @param changeset
-   * @param autoCloseWord
+   * @param request jira issue request
+   * @param changeset changeset
    *
    * @return
-   *
-   *
-   * @throws TemplateException
-   *
-   * @throws IOException
    */
-  public String render(CommentTemplate template, JiraIssueRequest request,
-    Changeset changeset, String autoCloseWord)
-    throws IOException;
+  public Map<String,Object> createBaseEnvironment(JiraIssueRequest request, Changeset changeset);
 }

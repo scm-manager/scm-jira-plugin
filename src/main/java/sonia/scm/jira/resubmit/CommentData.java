@@ -31,13 +31,11 @@
 
 
 
-package sonia.scm.jira.secure;
+package sonia.scm.jira.resubmit;
 
 //~--- non-JDK imports --------------------------------------------------------
 
-import sonia.scm.jira.JiraConfiguration;
-import sonia.scm.repository.Changeset;
-import sonia.scm.repository.Repository;
+import com.google.common.base.Objects;
 
 //~--- JDK imports ------------------------------------------------------------
 
@@ -46,52 +44,84 @@ import java.util.Calendar;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import sonia.scm.jira.Comments;
 
 /**
- * Class description
+ * A CommentData instance is stored, if comment could not added to the jira
+ * server. The CommentData class stores all informations which are needed to
+ * execute the comment request again.
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "comment")
-public class CommentData
+public class CommentData implements Comparable<CommentData>
 {
 
   /**
-   * Constructs ...
+   * Constructor is only visible for JAXB.
    *
    */
   CommentData() {}
 
   /**
    * A class containing all data needed for a comment on a jira issue.
+   *
    * @param id unique comment id
-   * @param configuration jira configuration used at the time of comment try
+   * @param repositoryId id of the repository
+   * @param changesetId id of the changeset
+   * @param issueId The issue the comment is referring to.
    * @param author The author of the comment.
    * @param body The body of the comment.
    * @param created The date and time the comment was created.
-   * @param issueId The issue the comment is referring to.
-   * @param changeset
-   * @param repository
    */
-  public CommentData(String id, JiraConfiguration configuration, String author,
-    String body, Calendar created, String issueId, Changeset changeset,
-    Repository repository)
+  public CommentData(String id, String repositoryId, String changesetId,
+    String issueId, String author, String body, Calendar created)
   {
-    this.configuration = configuration;
+    this.id = id;
+    this.repositoryId = repositoryId;
+    this.changesetId = changesetId;
+    this.issueId = issueId;
     this.author = author;
     this.body = body;
     this.created = created;
-    this.issueId = issueId;
-    this.changeset = changeset;
-    this.repository = repository;
+  }
+
+  //~--- methods --------------------------------------------------------------
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int compareTo(CommentData o)
+  {
+    return created.compareTo(o.created);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String toString()
+  {
+    //J-
+    return Objects.toStringHelper(this)
+                  .add("id", id)
+                  .add("repositoryid", repositoryId)
+                  .add("changesetId", changesetId)
+                  .add("issueId", issueId)
+                  .add("author", author)
+                  .add("body", body)
+                  .add("created", Comments.format(created))
+                  .toString();
+    //J+
   }
 
   //~--- get methods ----------------------------------------------------------
 
   /**
-   * Method description
+   * Returns comment author,
    *
    *
-   * @return
+   * @return comment author
    */
   public String getAuthor()
   {
@@ -99,10 +129,10 @@ public class CommentData
   }
 
   /**
-   * Method description
+   * Returns content of comment.
    *
    *
-   * @return
+   * @return content
    */
   public String getBody()
   {
@@ -110,32 +140,21 @@ public class CommentData
   }
 
   /**
-   * Method description
+   * Returns changeset id.
    *
    *
-   * @return
+   * @return changeset id
    */
-  public Changeset getChangeset()
+  public String getChangesetId()
   {
-    return changeset;
+    return changesetId;
   }
 
   /**
-   * Method description
+   * Returns comment creation date.
    *
    *
-   * @return
-   */
-  public JiraConfiguration getConfiguration()
-  {
-    return configuration;
-  }
-
-  /**
-   * Method description
-   *
-   *
-   * @return
+   * @return creation date
    */
   public Calendar getCreated()
   {
@@ -143,10 +162,10 @@ public class CommentData
   }
 
   /**
-   * Method description
+   * Returns id of comment.
    *
    *
-   * @return
+   * @return id
    */
   public String getId()
   {
@@ -154,10 +173,10 @@ public class CommentData
   }
 
   /**
-   * Method description
+   * Returns id of issue.
    *
    *
-   * @return
+   * @return id of issue
    */
   public String getIssueId()
   {
@@ -165,39 +184,36 @@ public class CommentData
   }
 
   /**
-   * Method description
+   * Returns repository id.
    *
    *
-   * @return
+   * @return repository id
    */
-  public Repository getRepository()
+  public String getRepositoryId()
   {
-    return repository;
+    return repositoryId;
   }
 
   //~--- fields ---------------------------------------------------------------
 
-  /** Field description */
+  /** comment author */
   private String author;
 
-  /** Field description */
+  /** content of comment */
   private String body;
 
-  /** Field description */
-  private Changeset changeset;
+  /** changeset id */
+  private String changesetId;
 
-  /** Field description */
-  private JiraConfiguration configuration;
-
-  /** Field description */
+  /** creation date */
   private Calendar created;
 
-  /** Field description */
+  /** comment id */
   private String id;
 
-  /** Field description */
+  /** issue id */
   private String issueId;
 
-  /** Field description */
-  private Repository repository;
+  /** repository id */
+  private String repositoryId;
 }

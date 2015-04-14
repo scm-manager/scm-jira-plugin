@@ -34,6 +34,8 @@
 package sonia.scm.jira;
 
 /**
+ * The jira handler is the main component for communication between scm-manager 
+ * and jira.
  *
  * @author Sebastian Sdorra
  */
@@ -41,29 +43,30 @@ public interface JiraHandler
 {
 
   /**
-   * Method description
+   * Adds a comment to the issue.
    *
    *
-   * @param issueId
-   * @param comment
+   * @param issueId id of the issue
+   * @param comment comment
    *
    * @throws JiraException
    */
-  public void addComment(String issueId, Comment comment, JiraIssueRequest request) throws JiraException;
+  public void addComment(String issueId, Comment comment) throws JiraException;
 
   /**
-   * Method description
+   * Closes the issue with the given id.
    *
    *
-   * @param issueId
-   * @param autoCloseWord
+   * @param issueId id of the issue
+   * @param autoCloseWord word of the commit message which has caused the close 
+   *    request
    *
    * @throws JiraException
    */
   public void close(String issueId, String autoCloseWord) throws JiraException;
 
   /**
-   * Method description
+   * Logs the user out of jira. 
    *
    *
    * @throws JiraException
@@ -73,11 +76,12 @@ public interface JiraHandler
   //~--- get methods ----------------------------------------------------------
 
   /**
-   * Method description
+   * Returns {@code true} if the comment already exists on the issue. The method
+   * checks every comment which is associated with the issue id for the given 
+   * strings.
    *
-   *
-   * @param issueId
-   * @param contains
+   * @param issueId id of the issue
+   * @param contains strings which are able to uniquely identify the comment
    *
    * @return
    *
