@@ -58,7 +58,9 @@ import sonia.scm.store.DataStoreFactory;
 import java.util.List;
 
 import javax.mail.Message;
+import sonia.scm.config.ScmConfiguration;
 import sonia.scm.jira.JiraIssueRequest;
+import sonia.scm.util.HttpUtil;
 
 /**
  * A class to handle problems of message sending.
@@ -79,14 +81,18 @@ public class MessageProblemHandler
 
   /**
    * Creates class to handle problems with message to a corresponding comment.
+   * 
+   * @param configuration main configuration
    * @param mailService mail service
    * @param keyGenerator generate comment ids
    * @param dataStoreFactory data store factory
    */
   @Inject
-  public MessageProblemHandler(MailService mailService,
-    KeyGenerator keyGenerator, DataStoreFactory dataStoreFactory)
+  public MessageProblemHandler(ScmConfiguration configuration, 
+    MailService mailService, KeyGenerator keyGenerator, 
+    DataStoreFactory dataStoreFactory)
   {
+    this.configuration = configuration;
     this.mailService = mailService;
     this.keyGenerator = keyGenerator;
     this.store = dataStoreFactory.getStore(CommentData.class, STORE);
@@ -125,7 +131,7 @@ public class MessageProblemHandler
       request.getRepository().getId(), 
       changeset.getId(), 
       issueId, 
-      request.getUsername(), 
+      request.getAuthor(), 
       body, 
       request.getCreation()
     );
@@ -228,8 +234,22 @@ public class MessageProblemHandler
     c.append("<br/> IssueId: ").append(commentData.getIssueId());
     c.append("<br/> Body: <br/>");
     c.append("<pre>").append(commentData.getBody()).append("</pre>");
+    c.append("<br/>");
+    c.append("<a href='");
+    appendRemoveLink(c, commentData);
+    c.append("'>");
+    c.append("remove comment from resubmit queue");
+    c.append("</a>");
 
     return c.toString();
+  }
+  
+  private static final String REMOVE_LINK = "api/rest/plugins/jira/resubmit/comment/%s/remove";
+  
+  private void appendRemoveLink(StringBuilder c, CommentData data){
+    c.append(
+      HttpUtil.getCompleteUrl(configuration, String.format(REMOVE_LINK, data.getId()))
+    );
   }
 
   /**
@@ -302,6 +322,9 @@ public class MessageProblemHandler
 
   //~--- fields ---------------------------------------------------------------
 
+  /** scm-manager main configuration */
+  private final ScmConfiguration configuration;
+  
   /** key generator */
   private final KeyGenerator keyGenerator;
 

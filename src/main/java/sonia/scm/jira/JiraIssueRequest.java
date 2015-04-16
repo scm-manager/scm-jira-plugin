@@ -64,17 +64,19 @@ public class JiraIssueRequest implements Closeable
    * @param password connection password
    * @param configuration jira configuration
    * @param repository modified repository
+   * @param author name of user which has done the push/commit
    * @param creation creation time
    */
   public JiraIssueRequest(JiraHandlerFactory handlerFactory, String username,
     String password, JiraConfiguration configuration, Repository repository,
-    Calendar creation)
+    String author, Calendar creation)
   {
     this.handlerFactory = handlerFactory;
     this.username = username;
     this.password = password;
     this.configuration = configuration;
     this.repository = repository;
+    this.author = author;
     this.creation = creation;
   }
 
@@ -130,12 +132,25 @@ public class JiraIssueRequest implements Closeable
                   .add("password", "xxx")
                   .add("configuration", configuration)
                   .add("repository", repository)
+                  .add("author", author)
                   .add("creation", creation)
                   .toString();
     //J+
   }
 
   //~--- get methods ----------------------------------------------------------
+
+  /**
+   * Returns name of the user which has done the push/commit, if the author is 
+   * {@code null} the method will return the username.
+   *
+   *
+   * @return author name
+   */
+  public String getAuthor()
+  {
+    return Objects.firstNonNull(author, username);
+  }
 
   /**
    * Returns jira configuration.
@@ -149,7 +164,7 @@ public class JiraIssueRequest implements Closeable
   }
 
   /**
-   * Returns the creation time. If the creation time is {@code null} the method 
+   * Returns the creation time. If the creation time is {@code null} the method
    * will create a new creation time on every call.
    *
    *
@@ -157,7 +172,9 @@ public class JiraIssueRequest implements Closeable
    */
   public Calendar getCreation()
   {
-    return creation != null ? creation : new GregorianCalendar();
+    return (creation != null)
+      ? creation
+      : new GregorianCalendar();
   }
 
   /**
@@ -194,6 +211,9 @@ public class JiraIssueRequest implements Closeable
   }
 
   //~--- fields ---------------------------------------------------------------
+
+  /** the user which has done the push/commit */
+  private final String author;
 
   /** jira configuration */
   private final JiraConfiguration configuration;

@@ -65,11 +65,9 @@ import sonia.scm.security.Role;
 
 import java.io.IOException;
 
-import java.text.SimpleDateFormat;
-
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
+import sonia.scm.jira.Comments;
 
 /**
  * Class to resubmit all comments saved from the {@link MessageProblemHandler}.
@@ -125,8 +123,34 @@ public class ResubmitCommentsHandler
    *
    * @throws IOException
    * @throws RepositoryException
+   * @throws CommentNotFoundException
    */
-  public void resubmit(String commentId) throws IOException, RepositoryException
+  public void resubmit(String commentId) throws IOException, RepositoryException, CommentNotFoundException
+  {
+    resubmit(getCommentChecked(commentId));
+  }
+  
+  /**
+   * Removes the stored comment with the given id.
+   *
+   *
+   * @param commentId id of the comment
+   * 
+   * @return removed comment
+   * 
+   * @throws CommentNotFoundException
+   */
+  public CommentData remove(String commentId) throws CommentNotFoundException{
+    CommentData commentData = getCommentChecked(commentId);
+    
+    logger.warn("user {} removed comment {} for issue {} from resubmit queue, comment details: {}", 
+      SecurityUtils.getSubject().getPrincipal(), commentId, commentData.getIssueId(), commentData);
+    messageProblemHandler.deleteComment(commentId);
+    
+    return commentData;
+  }
+  
+  private CommentData getCommentChecked(String commentId) throws CommentNotFoundException
   {
     CommentData commentData = messageProblemHandler.getComment(commentId);
 
@@ -137,13 +161,13 @@ public class ResubmitCommentsHandler
         new RepositoryPermission(commentData.getRepositoryId(), PermissionType.OWNER)
       );
       //J+
-      resubmit(commentData);
     }
     else
     {
       // TODO custom exception type?
-      throw new IllegalArgumentException("id does not exists");
+      throw new CommentNotFoundException("id does not exists");
     }
+    return commentData;
   }
 
   /**
@@ -188,7 +212,7 @@ public class ResubmitCommentsHandler
                                 changeset);
 
     env.put(ENV_AUTHOR, commentData.getAuthor());
-    env.put(ENV_CREATED, format(commentData.getCreated()));
+    env.put(ENV_CREATED, Comments.format(commentData.getCreated()));
 
     return templateHandler.render(CommentTemplate.RESEND, env);
   }
@@ -213,14 +237,7 @@ public class ResubmitCommentsHandler
 
     // todo handle npe for changeset
     return requestFactory.createRequest(cfg, repository,
-      commentData.getCreated());
-  }
-
-  private String format(Calendar calendar)
-  {
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-    return sdf.format(calendar.getTime());
+      commentData.getAuthor(), commentData.getCreated());
   }
 
   private void resubmit(List<CommentData> comments)

@@ -36,11 +36,14 @@ package sonia.scm.jira;
 import com.google.common.base.Strings;
 
 import sonia.scm.repository.EscapeUtil;
+import sonia.scm.util.Util;
 
 //~--- JDK imports ------------------------------------------------------------
 
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 
+import java.util.Calendar;
 import java.util.regex.Matcher;
 
 /**
@@ -148,5 +151,28 @@ public final class Comments
     body = body.replaceAll(EscapeUtil.escape(link), issueId);
 
     return body;
+  }
+
+  /**
+   * Returns formatted date string or an empty string if the calendar object is
+   * {@code null}.
+   *
+   *
+   * @param calendar calendar object
+   *
+   * @return formatted date string
+   */
+  public static String format(Calendar calendar)
+  {
+    String formatted = Util.EMPTY_STRING;
+
+    if (calendar != null)
+    {
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+      formatted = sdf.format(calendar.getTime());
+    }
+
+    return formatted;
   }
 }
