@@ -31,15 +31,18 @@
 
 
 
-package sonia.scm.jira;
+package sonia.scm.jira.soap;
 
 //~--- non-JDK imports --------------------------------------------------------
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sonia.scm.jira.soap.JiraSoapService;
-import sonia.scm.jira.soap.JiraSoapServiceServiceLocator;
+import sonia.scm.jira.JiraConnectException;
+import sonia.scm.jira.JiraExceptions;
+import sonia.scm.jira.JiraHandler;
+import sonia.scm.jira.JiraHandlerFactory;
+import sonia.scm.jira.JiraIssueRequest;
 import sonia.scm.util.HttpUtil;
 
 //~--- JDK imports ------------------------------------------------------------

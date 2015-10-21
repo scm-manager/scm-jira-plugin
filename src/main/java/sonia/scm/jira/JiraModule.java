@@ -35,6 +35,7 @@ package sonia.scm.jira;
 
 //~--- non-JDK imports --------------------------------------------------------
 
+import sonia.scm.jira.soap.SoapJiraHandlerFactory;
 import com.google.inject.AbstractModule;
 
 import sonia.scm.jira.resubmit.MessageProblemHandler;

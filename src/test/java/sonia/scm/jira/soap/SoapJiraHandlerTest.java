@@ -29,11 +29,13 @@
 
 
 
-package sonia.scm.jira;
+package sonia.scm.jira.soap;
 
 //~--- non-JDK imports --------------------------------------------------------
 
+import sonia.scm.jira.soap.SoapJiraHandler;
 import org.junit.Test;
+import sonia.scm.jira.JiraIssueRequest;
 
 import sonia.scm.jira.soap.JiraSoapService;
 import sonia.scm.jira.soap.RemoteComment;

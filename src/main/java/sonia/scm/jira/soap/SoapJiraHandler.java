@@ -31,7 +31,7 @@
 
 
 
-package sonia.scm.jira;
+package sonia.scm.jira.soap;
 
 //~--- non-JDK imports --------------------------------------------------------
 
@@ -41,10 +41,12 @@ import com.google.common.base.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sonia.scm.jira.soap.JiraSoapService;
-import sonia.scm.jira.soap.RemoteComment;
-import sonia.scm.jira.soap.RemoteFieldValue;
-import sonia.scm.jira.soap.RemoteNamedObject;
+import sonia.scm.jira.Comment;
+import sonia.scm.jira.Comments;
+import sonia.scm.jira.JiraException;
+import sonia.scm.jira.JiraExceptions;
+import sonia.scm.jira.JiraHandler;
+import sonia.scm.jira.JiraIssueRequest;
 
 //~--- JDK imports ------------------------------------------------------------
 
@@ -217,7 +219,7 @@ public class SoapJiraHandler implements JiraHandler
   //~--- methods --------------------------------------------------------------
 
   /**
-   * Returns {@code true} if the body of the comment contains one of the given 
+   * Returns {@code true} if the body of the comment contains one of the given
    * strings.
    *
    * @param comment comment
