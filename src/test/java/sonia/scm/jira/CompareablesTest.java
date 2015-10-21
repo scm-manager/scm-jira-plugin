@@ -29,26 +29,19 @@
 
 
 
-package sonia.scm.jira.soap;
+package sonia.scm.jira;
 
 //~--- non-JDK imports --------------------------------------------------------
 
-import sonia.scm.jira.soap.SoapJiraHandler;
 import org.junit.Test;
-import sonia.scm.jira.JiraIssueRequest;
-
-import sonia.scm.jira.soap.JiraSoapService;
-import sonia.scm.jira.soap.RemoteComment;
 
 import static org.junit.Assert.*;
-
-import static org.mockito.Mockito.*;
 
 /**
  *
  * @author Sebastian Sdorra
  */
-public class SoapJiraHandlerTest
+public class CompareablesTest
 {
 
   /**
@@ -58,30 +51,12 @@ public class SoapJiraHandlerTest
   @Test
   public void testContains()
   {
-    SoapJiraHandler handler = createHandler();
-    RemoteComment comment = createComment("close issue TST-12");
+    String value = "close issue TST-12";
 
-    assertTrue(handler.contains(comment, "close"));
-    assertTrue(handler.contains(comment, "TST-12"));
-    assertTrue(handler.contains(comment, "close", "TST-12"));
-    assertFalse(handler.contains(comment, "trillian"));
-    assertFalse(handler.contains(comment, "close", "TST-132"));
-  }
-
-  private RemoteComment createComment(String value)
-  {
-    RemoteComment comment = new RemoteComment();
-
-    comment.setBody(value);
-
-    return comment;
-  }
-
-  private SoapJiraHandler createHandler()
-  {
-    JiraSoapService service = mock(JiraSoapService.class);
-    JiraIssueRequest request = mock(JiraIssueRequest.class);
-
-    return new SoapJiraHandler(service, request, "trillian", "");
+    assertTrue(Compareables.contains(value, "close"));
+    assertTrue(Compareables.contains(value, "TST-12"));
+    assertTrue(Compareables.contains(value, "close", "TST-12"));
+    assertFalse(Compareables.contains(value, "trillian"));
+    assertFalse(Compareables.contains(value, "close", "TST-132"));
   }
 }

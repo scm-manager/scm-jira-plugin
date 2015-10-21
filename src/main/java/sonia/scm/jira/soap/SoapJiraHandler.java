@@ -35,7 +35,6 @@ package sonia.scm.jira.soap;
 
 //~--- non-JDK imports --------------------------------------------------------
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 
 import org.slf4j.Logger;
@@ -43,6 +42,7 @@ import org.slf4j.LoggerFactory;
 
 import sonia.scm.jira.Comment;
 import sonia.scm.jira.Comments;
+import sonia.scm.jira.Compareables;
 import sonia.scm.jira.JiraException;
 import sonia.scm.jira.JiraExceptions;
 import sonia.scm.jira.JiraHandler;
@@ -51,8 +51,6 @@ import sonia.scm.jira.JiraIssueRequest;
 //~--- JDK imports ------------------------------------------------------------
 
 import java.rmi.RemoteException;
-
-import java.util.Locale;
 
 /**
  * Implementation of the {@link JiraHandler} which uses the SOAP protocol to
@@ -67,8 +65,7 @@ public class SoapJiraHandler implements JiraHandler
   public static final String ACTION_DEFAULT_CLOSE = "2";
 
   /** the logger for SoapJiraHandler */
-  private static final Logger logger =
-    LoggerFactory.getLogger(SoapJiraHandler.class);
+  private static final Logger logger = LoggerFactory.getLogger(SoapJiraHandler.class);
 
   //~--- constructors ---------------------------------------------------------
 
@@ -81,8 +78,7 @@ public class SoapJiraHandler implements JiraHandler
    * @param token authentication token
    * @param username connection username
    */
-  public SoapJiraHandler(JiraSoapService service, JiraIssueRequest request,
-    String token, String username)
+  public SoapJiraHandler(JiraSoapService service, JiraIssueRequest request, String token, String username)
   {
     this.service = service;
     this.request = request;
@@ -120,8 +116,7 @@ public class SoapJiraHandler implements JiraHandler
     }
     catch (RemoteException ex)
     {
-      throw JiraExceptions.propagate(ex,
-        "Failed to add comment to issue ".concat(issueId));
+      throw JiraExceptions.propagate(ex, "Failed to add comment to issue ".concat(issueId));
     }
   }
 
@@ -143,7 +138,7 @@ public class SoapJiraHandler implements JiraHandler
 
       for (RemoteNamedObject rnm : rnms)
       {
-        if (contains(rnm.getName(), autoCloseWord))
+        if (Compareables.contains(rnm.getName(), autoCloseWord))
         {
           id = rnm.getId();
 
@@ -151,13 +146,11 @@ public class SoapJiraHandler implements JiraHandler
         }
       }
 
-      service.progressWorkflowAction(token, issueId, id,
-        new RemoteFieldValue[] {});
+      service.progressWorkflowAction(token, issueId, id, new RemoteFieldValue[] {});
     }
     catch (RemoteException ex)
     {
-      throw JiraExceptions.propagate(ex,
-        "Failed to close issue ".concat(issueId));
+      throw JiraExceptions.propagate(ex, "Failed to close issue ".concat(issueId));
     }
   }
 
@@ -188,8 +181,7 @@ public class SoapJiraHandler implements JiraHandler
    * {@inheritDoc}
    */
   @Override
-  public boolean isCommentAlreadyExists(String issueId, String... contains)
-    throws JiraException
+  public boolean isCommentAlreadyExists(String issueId, String... contains) throws JiraException
   {
     boolean result = false;
 
@@ -199,7 +191,7 @@ public class SoapJiraHandler implements JiraHandler
 
       for (RemoteComment comment : comments)
       {
-        if (contains(comment, contains))
+        if (Compareables.contains(comment.getBody(), contains))
         {
           result = true;
 
@@ -209,58 +201,10 @@ public class SoapJiraHandler implements JiraHandler
     }
     catch (RemoteException ex)
     {
-      throw JiraExceptions.propagate(ex,
-        "could not check for jira comment at issue ".concat(issueId));
+      throw JiraExceptions.propagate(ex, "could not check for jira comment at issue ".concat(issueId));
     }
 
     return result;
-  }
-
-  //~--- methods --------------------------------------------------------------
-
-  /**
-   * Returns {@code true} if the body of the comment contains one of the given
-   * strings.
-   *
-   * @param comment comment
-   * @param contains string for the contains check
-   *
-   * @return {@code true} if the comment contains one of the strings
-   */
-  @VisibleForTesting
-  boolean contains(RemoteComment comment, String... contains)
-  {
-    boolean result = false;
-    String body = comment.getBody();
-
-    if (!Strings.isNullOrEmpty(body))
-    {
-      result = true;
-
-      for (String c : contains)
-      {
-        if (!body.contains(c))
-        {
-          result = false;
-
-          break;
-
-        }
-
-      }
-    }
-
-    return result;
-  }
-
-  private boolean contains(String text, String value)
-  {
-    return toLowerCase(text).contains(toLowerCase(value));
-  }
-
-  private String toLowerCase(String value)
-  {
-    return Strings.nullToEmpty(value).toLowerCase(Locale.ENGLISH);
   }
 
   //~--- fields ---------------------------------------------------------------
