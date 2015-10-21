@@ -1,5 +1,6 @@
 /**
- * Copyright (c) 2014, Sebastian Sdorra All rights reserved.
+ * Copyright (c) 2014, Sebastian Sdorra 
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
  * following conditions are met:
@@ -24,88 +25,57 @@
 
 
 
-package sonia.scm.jira;
+package sonia.scm.jira.rest;
 
 //~--- non-JDK imports --------------------------------------------------------
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Strings;
+import com.google.inject.Inject;
 
-//~--- JDK imports ------------------------------------------------------------
-
-import java.util.Locale;
+import sonia.scm.jira.JiraConnectException;
+import sonia.scm.jira.JiraHandlerFactory;
+import sonia.scm.jira.JiraIssueRequest;
+import sonia.scm.net.ahc.AdvancedHttpClient;
+import sonia.scm.util.HttpUtil;
 
 /**
- * Util class for compare operations.
+ * The {@link RestJiraHandlerFactory} is able to create a new instance of a
+ * {@link JiraHandler} which uses the Jira Rest v2 protocol to communicate with jira.
  *
  * @author Sebastian Sdorra
  */
-public final class Compareables
+public class RestJiraHandlerFactory implements JiraHandlerFactory
 {
+  private static final String PATH_REST_API = "/rest/api/2/issue/";
+
+  //~--- constructors ---------------------------------------------------------
+
   /**
-   * Private util constructor.
+   * Constructs a new {@link RestJiraHandlerFactory}.
+   *
+   * @param client http client
    */
-  private Compareables() {}
+  @Inject
+  public RestJiraHandlerFactory(AdvancedHttpClient client)
+  {
+    this.client = client;
+  }
 
   //~--- methods --------------------------------------------------------------
 
-  /**
-   * Returns {@code true} if the value contains one of the given strings.
-   *
-   * @param value value
-   * @param contains string for the contains check
-   *
-   * @return {@code true} if the comment contains one of the strings
-   */
-  @VisibleForTesting
-  public static boolean contains(String value, String... contains)
+  @Override
+  public RestJiraHandler createJiraHandler(JiraIssueRequest request, String username, String password)
+    throws JiraConnectException
   {
-    boolean result = false;
-
-    if (!Strings.isNullOrEmpty(value))
-    {
-      result = true;
-
-      for (String c : contains)
-      {
-        if (!value.contains(c))
-        {
-          result = false;
-
-          break;
-
-        }
-
-      }
-    }
-
-    return result;
+    return new RestJiraHandler(client, request, createUrl(request), username, password);
   }
 
-  /**
-   * Returns {@code true} if the given text contains the value.
-   *
-   *
-   * @param text text
-   * @param value value
-   *
-   * @return {@code true} if the text contains the value
-   */
-  public static boolean contains(String text, String value)
+  private String createUrl(JiraIssueRequest request)
   {
-    return toLowerCase(text).contains(toLowerCase(value));
+    return HttpUtil.getUriWithoutEndSeperator(request.getConfiguration().getUrl()).concat(PATH_REST_API);
   }
 
-  /**
-   * Returns the given value as lower case.
-   *
-   *
-   * @param value value
-   *
-   * @return value as lower case
-   */
-  public static String toLowerCase(String value)
-  {
-    return Strings.nullToEmpty(value).toLowerCase(Locale.ENGLISH);
-  }
+  //~--- fields ---------------------------------------------------------------
+
+  /** http client */
+  private final AdvancedHttpClient client;
 }

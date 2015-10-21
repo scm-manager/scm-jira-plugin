@@ -35,9 +35,9 @@ package sonia.scm.jira;
 
 //~--- non-JDK imports --------------------------------------------------------
 
-import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import org.apache.shiro.SecurityUtils;
@@ -47,6 +47,9 @@ import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sonia.scm.jira.rest.RestJiraHandlerFactory;
+import sonia.scm.jira.soap.SoapJiraHandlerFactory;
+import sonia.scm.net.ahc.AdvancedHttpClient;
 import sonia.scm.repository.Repository;
 import sonia.scm.security.CipherUtil;
 import sonia.scm.util.AssertUtil;
@@ -56,7 +59,7 @@ import sonia.scm.util.AssertUtil;
 import java.util.Calendar;
 
 /**
- * The JiraIssueRequestFactory is able to create {@link JiraIssueRequest} 
+ * The JiraIssueRequestFactory is able to create {@link JiraIssueRequest}
  * instances.
  *
  * @author Sebastian Sdorra
@@ -71,41 +74,39 @@ public class JiraIssueRequestFactory
   /**
    * the logger for JiraIssueRequestFactory
    */
-  private static final Logger logger =
-    LoggerFactory.getLogger(JiraIssueRequestFactory.class);
+  private static final Logger logger = LoggerFactory.getLogger(JiraIssueRequestFactory.class);
 
   //~--- constructors ---------------------------------------------------------
 
   /**
    * Constructs a new JiraIssueRequestFactory.
    *
-   * @param handlerFactory jira handler factory
+   * @param ahcProvider provider for {@link AdvancedHttpClient}
    */
   @Inject
-  public JiraIssueRequestFactory(JiraHandlerFactory handlerFactory)
+  public JiraIssueRequestFactory(Provider<AdvancedHttpClient> ahcProvider)
   {
-    this.handlerFactory = handlerFactory;
+    this.ahcProvider = ahcProvider;
   }
 
   //~--- methods --------------------------------------------------------------
 
   /**
    * Creates a new {@link JiraIssueRequest}.
-   * 
+   *
    * @param configuration jira configuration
    * @param repository changed repository
    *
    * @return new {@link JiraIssueRequest}
    */
-  public JiraIssueRequest createRequest(JiraConfiguration configuration,
-    Repository repository)
+  public JiraIssueRequest createRequest(JiraConfiguration configuration, Repository repository)
   {
     return createRequest(configuration, repository, null, null);
   }
 
   /**
    * Creates a new {@link JiraIssueRequest}.
-   * 
+   *
    * @param configuration jira configuration
    * @param repository changed repository
    * @param author name of user which has done the push/commit
@@ -113,18 +114,15 @@ public class JiraIssueRequestFactory
    *
    * @return new {@link JiraIssueRequest}
    */
-  public JiraIssueRequest createRequest(JiraConfiguration configuration,
-    Repository repository, String author, Calendar creation)
+  public JiraIssueRequest createRequest(JiraConfiguration configuration, Repository repository, String author,
+    Calendar creation)
   {
     String username = configuration.getUsername();
     String password = configuration.getPassword();
 
     if (Strings.isNullOrEmpty(username))
     {
-      if (logger.isTraceEnabled())
-      {
-        logger.trace("no username configured, use current credentials");
-      }
+      logger.trace("no username configured, use current credentials");
 
       String[] credentials = getUserCredentials();
 
@@ -132,26 +130,28 @@ public class JiraIssueRequestFactory
       password = credentials[1];
     }
 
-    if (logger.isDebugEnabled())
-    {
-      logger.debug("create jira issue request for user {}", username);
-    }
+    logger.debug("create jira issue request for user {}", username);
 
-    return new JiraIssueRequest(handlerFactory, username, password,
-      configuration, repository, author, creation);
+    return new JiraIssueRequest(createJiraHandlerFactory(configuration), username, password, configuration, repository,
+      author, creation);
   }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public String toString()
+  private JiraHandlerFactory createJiraHandlerFactory(JiraConfiguration configuration)
   {
-    //J-
-    return Objects.toStringHelper(this)
-                  .add("handlerFactory", handlerFactory)
-                  .toString();
-    //J+
+    JiraHandlerFactory factory;
+
+    if (configuration.isRestApiEnabled())
+    {
+      logger.debug("use rest api for jira communication");
+      factory = new RestJiraHandlerFactory(ahcProvider.get());
+    }
+    else
+    {
+      logger.debug("use soap api for jira communication");
+      factory = new SoapJiraHandlerFactory();
+    }
+
+    return factory;
   }
 
   //~--- get methods ----------------------------------------------------------
@@ -205,6 +205,6 @@ public class JiraIssueRequestFactory
 
   //~--- fields ---------------------------------------------------------------
 
-  /** jira handler factory */
-  private final JiraHandlerFactory handlerFactory;
+  /** provider for AdvancedHttpClient */
+  private final Provider<AdvancedHttpClient> ahcProvider;
 }

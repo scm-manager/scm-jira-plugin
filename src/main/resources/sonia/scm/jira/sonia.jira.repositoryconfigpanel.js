@@ -114,6 +114,14 @@ Sonia.jira.RepositoryConfigPanel = Ext.extend(Sonia.repository.PropertiesFormPan
           }
         }
       },{
+        id: 'jiraRestApiEnabled',
+        name: 'jiraRestApiEnabled',
+        xtype: 'checkbox',
+        inputValue: 'true',
+        fieldLabel: Sonia.jira.I18n.restApiEnabledText,
+        property: 'jira.rest-api-enabled',
+        helpText: Sonia.jira.I18n.restApiEnabledHelpText
+      },{
         id: 'jiraMailErrorAddress',
         name: 'jiraMailErrorAddress',
         xtype: 'textfield',

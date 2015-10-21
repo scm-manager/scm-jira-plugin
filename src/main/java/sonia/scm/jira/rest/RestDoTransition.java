@@ -24,88 +24,60 @@
 
 
 
-package sonia.scm.jira;
+package sonia.scm.jira.rest;
 
 //~--- non-JDK imports --------------------------------------------------------
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Strings;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 //~--- JDK imports ------------------------------------------------------------
 
-import java.util.Locale;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * Util class for compare operations.
+ * Wrapper object to handle transition changes.
  *
  * @author Sebastian Sdorra
+ *
+ * TODO remove the JsonIgnoreProperties, with the release of SCM-Manager 1.47.
  */
-public final class Compareables
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class RestDoTransition
 {
+  
   /**
-   * Private util constructor.
+   * Constructs a new {@link RestDoTransition}.
    */
-  private Compareables() {}
-
-  //~--- methods --------------------------------------------------------------
+  RestDoTransition() {}
 
   /**
-   * Returns {@code true} if the value contains one of the given strings.
-   *
-   * @param value value
-   * @param contains string for the contains check
-   *
-   * @return {@code true} if the comment contains one of the strings
+   * Constructs a new {@link RestDoTransition}.
+   * 
+   * @param id transition id
    */
-  @VisibleForTesting
-  public static boolean contains(String value, String... contains)
+  public RestDoTransition(String id)
   {
-    boolean result = false;
-
-    if (!Strings.isNullOrEmpty(value))
-    {
-      result = true;
-
-      for (String c : contains)
-      {
-        if (!value.contains(c))
-        {
-          result = false;
-
-          break;
-
-        }
-
-      }
-    }
-
-    return result;
+    this.transition = new RestTransition(id);
   }
 
-  /**
-   * Returns {@code true} if the given text contains the value.
-   *
-   *
-   * @param text text
-   * @param value value
-   *
-   * @return {@code true} if the text contains the value
-   */
-  public static boolean contains(String text, String value)
-  {
-    return toLowerCase(text).contains(toLowerCase(value));
-  }
+  //~--- get methods ----------------------------------------------------------
 
   /**
-   * Returns the given value as lower case.
-   *
-   *
-   * @param value value
-   *
-   * @return value as lower case
+   * Returns jira rest transition.
+   * 
+   * @return jira rest transitions
    */
-  public static String toLowerCase(String value)
+  public RestTransition getTransition()
   {
-    return Strings.nullToEmpty(value).toLowerCase(Locale.ENGLISH);
+    return transition;
   }
+
+  //~--- fields ---------------------------------------------------------------
+
+  /** wrapped transition */
+  private RestTransition transition;
 }

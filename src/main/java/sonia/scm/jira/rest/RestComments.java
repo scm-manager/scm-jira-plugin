@@ -24,88 +24,86 @@
 
 
 
-package sonia.scm.jira;
+package sonia.scm.jira.rest;
 
 //~--- non-JDK imports --------------------------------------------------------
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Strings;
+import com.google.common.base.Objects;
+import com.google.common.collect.Lists;
+
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 //~--- JDK imports ------------------------------------------------------------
 
-import java.util.Locale;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * Util class for compare operations.
+ * Wrapper object for jira rest comments.
  *
  * @author Sebastian Sdorra
+ *
+ * TODO remove the JsonIgnoreProperties, with the release of SCM-Manager 1.47.
  */
-public final class Compareables
+@XmlRootElement(name = "comments")
+@XmlAccessorType(XmlAccessType.FIELD)
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class RestComments implements Iterable<RestComment>
 {
+
   /**
-   * Private util constructor.
+   * Constructs a new {@link RestComment}.
    */
-  private Compareables() {}
+  RestComments() {}
 
   //~--- methods --------------------------------------------------------------
 
   /**
-   * Returns {@code true} if the value contains one of the given strings.
+   * Returns {@link Iterator} for comments.
    *
-   * @param value value
-   * @param contains string for the contains check
    *
-   * @return {@code true} if the comment contains one of the strings
+   * @return iterator for the list of comments
    */
-  @VisibleForTesting
-  public static boolean contains(String value, String... contains)
+  @Override
+  public Iterator<RestComment> iterator()
   {
-    boolean result = false;
+    return getComments().iterator();
+  }
 
-    if (!Strings.isNullOrEmpty(value))
+  @Override
+  public String toString()
+  {
+    //J-
+    return Objects.toStringHelper(this)
+                  .add("comments", comments)
+                  .toString();
+    //J+
+  }
+
+  //~--- get methods ----------------------------------------------------------
+
+  /**
+   * Returns list of jira comments.
+   *
+   *
+   * @return list of comments
+   */
+  public List<RestComment> getComments()
+  {
+    if (comments == null)
     {
-      result = true;
-
-      for (String c : contains)
-      {
-        if (!value.contains(c))
-        {
-          result = false;
-
-          break;
-
-        }
-
-      }
+      comments = Lists.newArrayList();
     }
 
-    return result;
+    return comments;
   }
 
-  /**
-   * Returns {@code true} if the given text contains the value.
-   *
-   *
-   * @param text text
-   * @param value value
-   *
-   * @return {@code true} if the text contains the value
-   */
-  public static boolean contains(String text, String value)
-  {
-    return toLowerCase(text).contains(toLowerCase(value));
-  }
+  //~--- fields ---------------------------------------------------------------
 
-  /**
-   * Returns the given value as lower case.
-   *
-   *
-   * @param value value
-   *
-   * @return value as lower case
-   */
-  public static String toLowerCase(String value)
-  {
-    return Strings.nullToEmpty(value).toLowerCase(Locale.ENGLISH);
-  }
+  /** list of comments */
+  private List<RestComment> comments;
 }

@@ -86,6 +86,9 @@ public class JiraConfiguration implements Validateable
 
   /** resubmission */
   public static final String PROPERTY_RESUBMISSION = "jira.resubmission";
+  
+  /** use jira rest api v2 */
+  public static final String PROPERTY_REST_API = "jira.rest-api-enabled";
 
   /** role level property */
   public static final String PROPERTY_ROLELEVEL = "jira.role-level";
@@ -126,6 +129,7 @@ public class JiraConfiguration implements Validateable
     mailAddress = properties.getProperty(PROPERTY_ERROR_MAIL);
 
     resubmission = getBooleanProperty(properties, PROPERTY_RESUBMISSION);
+    restApiEnabled = getBooleanProperty(properties, PROPERTY_REST_API);
 
     if (Strings.isNullOrEmpty(commentPrefix))
     {
@@ -153,6 +157,7 @@ public class JiraConfiguration implements Validateable
                   .add("password", "xxx")
                   .add("mailAddress", mailAddress)
                   .add("resubmission", resubmission)
+                  .add("restApiEnabled", restApiEnabled)
                   .toString();
     //J+
   }
@@ -249,8 +254,17 @@ public class JiraConfiguration implements Validateable
    */
   public boolean isAutoCloseEnabled()
   {
-    return isUpdateIssuesEnabled() && autoClose
-      && Util.isNotEmpty(autoCloseWords);
+    return isUpdateIssuesEnabled() && autoClose && Util.isNotEmpty(autoCloseWords);
+  }
+
+  /**
+   * Returns {@code true} if the jira rest api v2 is enabled.
+   *
+   * @return {@code true} if the jira rest api
+   */
+  public boolean isRestApiEnabled()
+  {
+    return restApiEnabled;
   }
 
   /**
@@ -347,10 +361,6 @@ public class JiraConfiguration implements Validateable
   @XmlJavaTypeAdapter(XmlStringSetAdapter.class)
   private Set<String> autoCloseWords;
 
-  /** comment prefix */
-  @XmlElement(name = "comment-prefix")
-  private String commentPrefix = DEFAULT_COMMENT_PREFIX;
-
   /** Address to send Error-Message to */
   @XmlElement(name = "mail-error-address")
   private String mailAddress;
@@ -358,6 +368,14 @@ public class JiraConfiguration implements Validateable
   /** connection password */
   @XmlJavaTypeAdapter(XmlEncryptionAdapter.class)
   private String password;
+
+  /** use jira rest api */
+  @XmlElement(name = "rest-api-enabled")
+  private boolean restApiEnabled = false;
+
+  /** comment prefix */
+  @XmlElement(name = "comment-prefix")
+  private String commentPrefix = DEFAULT_COMMENT_PREFIX;
 
   /** use resubmission */
   @XmlElement(name = "resubmission")

@@ -24,88 +24,87 @@
 
 
 
-package sonia.scm.jira;
+package sonia.scm.jira.rest;
 
 //~--- non-JDK imports --------------------------------------------------------
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Strings;
+import com.google.common.base.Objects;
+
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 //~--- JDK imports ------------------------------------------------------------
 
-import java.util.Locale;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * Util class for compare operations.
+ * Jira rest api comment.
  *
  * @author Sebastian Sdorra
+ *
+ * TODO remove the JsonIgnoreProperties, with the release of SCM-Manager 1.47.
  */
-public final class Compareables
+@XmlRootElement(name = "comment")
+@XmlAccessorType(XmlAccessType.FIELD)
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class RestComment
 {
   /**
-   * Private util constructor.
+   * Constructs a new {@link RestComment}.
    */
-  private Compareables() {}
+  RestComment() {}
+
+  /**
+   * Constructs a new {@link RestComment}.
+   * 
+   * @param body comment body
+   */
+  public RestComment(String body)
+  {
+    this.body = body;
+  }
 
   //~--- methods --------------------------------------------------------------
 
-  /**
-   * Returns {@code true} if the value contains one of the given strings.
-   *
-   * @param value value
-   * @param contains string for the contains check
-   *
-   * @return {@code true} if the comment contains one of the strings
-   */
-  @VisibleForTesting
-  public static boolean contains(String value, String... contains)
+  @Override
+  public String toString()
   {
-    boolean result = false;
+    //J-
+    return Objects.toStringHelper(this)
+                  .add("id", id)
+                  .add("body", body)
+                  .toString();
+    //J+
+  }
 
-    if (!Strings.isNullOrEmpty(value))
-    {
-      result = true;
+  //~--- get methods ----------------------------------------------------------
 
-      for (String c : contains)
-      {
-        if (!value.contains(c))
-        {
-          result = false;
-
-          break;
-
-        }
-
-      }
-    }
-
-    return result;
+  /**
+   * Returns body of the comment.
+   *
+   * @return body comment
+   */
+  public String getBody()
+  {
+    return body;
   }
 
   /**
-   * Returns {@code true} if the given text contains the value.
+   * Returns the id of the comment.
    *
-   *
-   * @param text text
-   * @param value value
-   *
-   * @return {@code true} if the text contains the value
+   * @return comment id
    */
-  public static boolean contains(String text, String value)
+  public String getId()
   {
-    return toLowerCase(text).contains(toLowerCase(value));
+    return id;
   }
 
-  /**
-   * Returns the given value as lower case.
-   *
-   *
-   * @param value value
-   *
-   * @return value as lower case
-   */
-  public static String toLowerCase(String value)
-  {
-    return Strings.nullToEmpty(value).toLowerCase(Locale.ENGLISH);
-  }
+  //~--- fields ---------------------------------------------------------------
+
+  /** comment body */
+  private String body;
+
+  /** id of comment */
+  private String id;
 }

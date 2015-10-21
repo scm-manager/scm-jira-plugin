@@ -86,7 +86,10 @@ Sonia.jira.I18n = {
   
   resubmitWaitText: 'Resubmit comments ...',
   resubmitFailureTitleText: 'Resubmit failed',
-  resubmitFailureDescriptionText: 'Unknown error occurred durring comment resubmission. SCM-Manager returned error code {0}.'
+  resubmitFailureDescriptionText: 'Unknown error occurred durring comment resubmission. SCM-Manager returned error code {0}.',
+  
+  restApiEnabledText: 'Rest API v2',
+  restApiEnabledHelpText: 'Use Jira Rest API v2 to communicate with Jira.'
 };
 
 Sonia.jira.toggleFields = function(cmps, scope){

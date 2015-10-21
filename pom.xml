@@ -32,6 +32,21 @@
       <scope>provided</scope>
     </dependency>
     
+    <!--
+    The jackson dependency is only introduced for the JsonIgnoreProperties annotation and
+    can be removed, if the parent dependency is updated to version 1.47:
+    
+    https://bitbucket.org/sdorra/scm-manager/commits/ac3255aa807d6d97f6198ca6dda483152d44d511
+    -->
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-mapper-asl</artifactId>
+      <version>1.9.2</version>
+      <scope>provided</scope>
+    </dependency>
+    
+    
+    <!-- Jira SOAP/RPC connection -->
     <dependency>
       <groupId>axis</groupId>
       <artifactId>axis</artifactId>

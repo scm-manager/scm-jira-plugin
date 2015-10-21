@@ -35,7 +35,6 @@ package sonia.scm.jira;
 
 //~--- non-JDK imports --------------------------------------------------------
 
-import sonia.scm.jira.soap.SoapJiraHandlerFactory;
 import com.google.inject.AbstractModule;
 
 import sonia.scm.jira.resubmit.MessageProblemHandler;
@@ -61,7 +60,6 @@ public class JiraModule extends AbstractModule
     bind(JiraIssueRequestFactory.class);
     bind(MessageProblemHandler.class);
     bind(ResubmitCommentsHandler.class);
-    bind(JiraHandlerFactory.class).to(SoapJiraHandlerFactory.class);
     bind(CommentTemplateHandler.class).to(DefaultCommentTemplateHandler.class);
   }
 }

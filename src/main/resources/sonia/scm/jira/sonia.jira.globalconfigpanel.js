@@ -121,6 +121,13 @@ Sonia.jira.GlobalConfigPanel = Ext.extend(Sonia.config.ConfigForm, {
           }
         }
       },{
+        id: 'rest-api-enabled',
+        name: 'rest-api-enabled',
+        xtype: 'checkbox',
+        inputValue: 'true',
+        fieldLabel: Sonia.jira.I18n.restApiEnabledText,
+        helpText: Sonia.jira.I18n.restApiEnabledHelpText
+      },{
         id: 'mail',
         name: 'mail-error-address',
         xtype: 'textfield',
