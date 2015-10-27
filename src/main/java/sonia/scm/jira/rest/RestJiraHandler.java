@@ -92,9 +92,9 @@ public class RestJiraHandler implements JiraHandler
     logger.info("add comment to issue {}", issueId);
 
     String body = Comments.prepareComment(request, issueId, comment);
-
-    // TODO add visibility
-    RestComment restComment = new RestComment(body);
+    RestComment restComment = new RestComment(body, Strings.emptyToNull(comment.getRoleLevel()));
+    
+    logger.info("comment: {}", restComment);
 
     try
     {

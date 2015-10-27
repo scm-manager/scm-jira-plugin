@@ -29,6 +29,7 @@ package sonia.scm.jira.rest;
 //~--- non-JDK imports --------------------------------------------------------
 
 import com.google.common.base.Objects;
+import com.google.common.base.Strings;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
@@ -62,9 +63,23 @@ public class RestComment
    */
   public RestComment(String body)
   {
-    this.body = body;
+    this(body, null);
   }
 
+  /**
+   * Constructs a new {@link RestComment}.
+   * 
+   * @param body comment body
+   * @param role name of role for visibility
+   */
+  public RestComment(String body, String role)
+  {
+    this.body = body;
+    if (!Strings.isNullOrEmpty(role)){
+      this.visibility = new RestVisibility(role);
+    }
+  }
+  
   //~--- methods --------------------------------------------------------------
 
   @Override
@@ -74,6 +89,7 @@ public class RestComment
     return Objects.toStringHelper(this)
                   .add("id", id)
                   .add("body", body)
+                  .add("visibility", visibility)
                   .toString();
     //J+
   }
@@ -100,6 +116,16 @@ public class RestComment
     return id;
   }
 
+  /**
+   * Returns visibility of comment.
+   * 
+   * @return visibility of comment
+   */
+  public RestVisibility getVisibility()
+  {
+    return visibility;
+  }
+
   //~--- fields ---------------------------------------------------------------
 
   /** comment body */
@@ -107,4 +133,7 @@ public class RestComment
 
   /** id of comment */
   private String id;
+  
+  /** visibility of comment */
+  private RestVisibility visibility;
 }
