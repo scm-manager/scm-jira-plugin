@@ -93,8 +93,6 @@ public class RestJiraHandler implements JiraHandler
 
     String body = Comments.prepareComment(request, issueId, comment);
     RestComment restComment = new RestComment(body, Strings.emptyToNull(comment.getRoleLevel()));
-    
-    logger.info("comment: {}", restComment);
 
     try
     {
