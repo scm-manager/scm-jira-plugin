@@ -131,6 +131,7 @@ public class RestJiraHandler implements JiraHandler
                                           .basicAuth(username, password)
                                           .request()
                                           .contentFromJson(RestTransitions.class);
+      //J+
       
       String id = null;
       
@@ -144,10 +145,12 @@ public class RestJiraHandler implements JiraHandler
       }
       
       if (!Strings.isNullOrEmpty(id)){
+        //J-
         AdvancedHttpResponse response = client.post(url)
                                               .basicAuth(username, password)
                                               .jsonContent(new RestDoTransition(id))
                                               .request();
+        //J+
         
         if (!response.isSuccessful())
         {
@@ -161,9 +164,12 @@ public class RestJiraHandler implements JiraHandler
       } 
       else 
       {
-        // could not find transition, throw exception?
+        //J-
+        throw new JiraException(
+          String.format("could not find transition/close word %s on issue %s", autoCloseWord, issueId)
+        );
+        //J+
       }
-      //J+
     }
     catch (IOException ex)
     {
@@ -175,7 +181,7 @@ public class RestJiraHandler implements JiraHandler
   public void logout() throws JiraException
   {
 
-    // we need no logout
+    // we need no logout for rest api
   }
 
   //~--- get methods ----------------------------------------------------------
@@ -192,6 +198,7 @@ public class RestJiraHandler implements JiraHandler
                                     .basicAuth(username, password)
                                     .request()
                                     .contentFromJson(RestComments.class);
+      //J+
       
       for (RestComment comment : comments) 
       {
@@ -202,7 +209,6 @@ public class RestJiraHandler implements JiraHandler
           break;
         }
       }
-      //J+
     }
     catch (IOException ex)
     {
