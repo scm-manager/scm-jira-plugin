@@ -50,7 +50,6 @@ import sonia.scm.repository.Changeset;
 //~--- JDK imports ------------------------------------------------------------
 
 import java.io.IOException;
-import java.util.Locale;
 
 import java.util.Map;
 
@@ -259,31 +258,17 @@ public class JiraIssueHandler
       logger.trace("resubmission is disabled");
     }
   }
-
+  
   @VisibleForTesting
   String searchAutoCloseWord(Changeset changeset)
   {
-    String description = changeset.getDescription();
     String autoCloseWord = null;
-    String[] words = Strings.nullToEmpty(description).toLowerCase(Locale.ENGLISH).split("\\s");
-
-    for (String w : words)
+    String description = changeset.getDescription();
+    for (String acw : request.getConfiguration().getAutoCloseWords())
     {
-      for (String acw : request.getConfiguration().getAutoCloseWords())
-      {
-        acw = acw.trim().toLowerCase(Locale.ENGLISH);
-
-        if (w.equals(acw))
-        {
-          autoCloseWord = w;
-
+      if ( AutoCloseWords.find(description, acw) ){
+          autoCloseWord = acw;
           break;
-        }
-      }
-
-      if (autoCloseWord != null)
-      {
-        break;
       }
     }
 

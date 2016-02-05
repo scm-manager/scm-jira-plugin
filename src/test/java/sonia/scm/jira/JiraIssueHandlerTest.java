@@ -36,7 +36,6 @@ import java.util.Set;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-import static org.hamcrest.Matchers.*;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -46,7 +45,8 @@ import sonia.scm.jira.resubmit.MessageProblemHandler;
 import sonia.scm.repository.Changeset;
 
 /**
- *
+ * Unit tests for {@link JiraIssueHandler}.
+ * 
  * @author Sebastian Sdorra <sebastian.sdorra@triology.de>
  */
 @RunWith(MockitoJUnitRunner.class)
@@ -63,29 +63,39 @@ public class JiraIssueHandlerTest {
 
     @Mock
     private JiraConfiguration configuration;
-    
+
     @InjectMocks
     private JiraIssueHandler issueHandler;
 
+    /**
+     * Set up mocks for testing.
+     */
     @Before
-    public void setUp(){
+    public void setUp() {
         when(request.getConfiguration()).thenReturn(configuration);
     }
-    
+
+    /**
+     * Tests {@link JiraIssueHandler#searchAutoCloseWord(Changeset)}.
+     */
     @Test
     public void testSearchAutoCloseWords() {
+        assertEquals("close", autoCloseWord("close the issue", "close"));
+        assertEquals("close", autoCloseWord("the word to close the issue is in the middle", "close"));
         assertEquals("close", autoCloseWord("description with auto close", "close"));
+        assertEquals("close", autoCloseWord("description with auto close", "other", "close"));
         assertEquals("close", autoCloseWord("description with auto Close", "close"));
-        assertEquals("close", autoCloseWord("description with auto close", "Close"));
+        assertEquals("Close", autoCloseWord("description with auto close", "Close"));
+        assertEquals("auto Close", autoCloseWord("description with auto close", "auto Close"));
     }
-    
-    private String autoCloseWord(String description, String... autoCloseWords){
+
+    private String autoCloseWord(String description, String... autoCloseWords) {
         Set<String> autoCloseWordSet = Sets.newHashSet(autoCloseWords);
         when(configuration.getAutoCloseWords()).thenReturn(autoCloseWordSet);
         return issueHandler.searchAutoCloseWord(changeset(description));
     }
 
-    private Changeset changeset(String description){
+    private Changeset changeset(String description) {
         Changeset changeset = new Changeset();
         changeset.setDescription(description);
         return changeset;
