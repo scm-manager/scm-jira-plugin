@@ -31,6 +31,8 @@
 
 package sonia.scm.jira;
 
+import com.google.common.collect.Maps;
+import java.util.Map;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -52,6 +54,33 @@ public class AutoCloseWordsTest {
         assertTrue(AutoCloseWords.find("issue is fixed", "fixed"));
         assertTrue(AutoCloseWords.find("fixed the issue", "fixed"));
         assertTrue(AutoCloseWords.find("auto close the issue", "auto close"));
+    }
+    
+   /**
+     * Tests {@link AutoCloseWords#format(Map)}.
+     */
+    @Test
+    public void testFormat(){
+        Map<String,String> map = Maps.newLinkedHashMap();
+        map.put("auto close", "auto close");
+        map.put("close", "close");
+        map.put("fixed", "fixed");
+        map.put("fix", "fixed");
+        String value = AutoCloseWords.format(map);
+        assertEquals("auto close, close, fixed, fix=fixed", value);
+    }
+
+    /**
+     * Tests {@link AutoCloseWords#parse(String)}.
+     */    
+    @Test
+    public void testParse() {
+        String value = "auto close, close, fixed, fix=fixed";
+        Map<String,String> map = AutoCloseWords.parse(value);
+        assertEquals("auto close", map.get("auto close"));
+        assertEquals("close", map.get("close"));
+        assertEquals("fixed", map.get("fixed"));
+        assertEquals("fixed", map.get("fix"));
     }
 
 }

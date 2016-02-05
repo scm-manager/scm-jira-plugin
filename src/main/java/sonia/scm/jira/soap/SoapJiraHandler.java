@@ -136,9 +136,11 @@ public class SoapJiraHandler implements JiraHandler
       RemoteNamedObject[] rnms = service.getAvailableActions(token, issueId);
       String id = ACTION_DEFAULT_CLOSE;
 
+      String mappedAcw = request.getConfiguration().getMappedAutoCloseWord(autoCloseWord);
+      
       for (RemoteNamedObject rnm : rnms)
       {
-        if (Compareables.contains(rnm.getName(), autoCloseWord))
+        if (Compareables.contains(rnm.getName(), mappedAcw) || rnm.getId().equals(mappedAcw))
         {
           id = rnm.getId();
 

@@ -135,9 +135,11 @@ public class RestJiraHandler implements JiraHandler
       
       String id = null;
       
+      String mappedAcw = request.getConfiguration().getMappedAutoCloseWord(autoCloseWord);
+      
       for (RestTransition transition : transitions) 
       {
-        if (Compareables.contains(transition.getName(), autoCloseWord))
+        if (Compareables.contains(transition.getName(), mappedAcw) || transition.getId().equals(mappedAcw))
         {
           id = transition.getId();
           break;

@@ -36,9 +36,7 @@ package sonia.scm.jira;
 //~--- non-JDK imports --------------------------------------------------------
 
 import com.google.common.base.Objects;
-import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableSet;
 
 import sonia.scm.PropertiesAware;
 import sonia.scm.Validateable;
@@ -47,6 +45,7 @@ import sonia.scm.util.Util;
 //~--- JDK imports ------------------------------------------------------------
 
 import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -121,7 +120,7 @@ public class JiraConfiguration implements Validateable
     url = properties.getProperty(PROPERTY_JIRA_URL);
     updateIssues = getBooleanProperty(properties, PROPERTY_UPDATEISSUES);
     autoClose = getBooleanProperty(properties, PROPERTY_AUTOCLOSE);
-    autoCloseWords = getSetProperty(properties, PROPERTY_AUTOCLOSEWORDS);
+    autoCloseWords = getAutoCloseWordProperty(properties, PROPERTY_AUTOCLOSEWORDS);
     username = properties.getProperty(PROPERTY_USERNAME);
     password = getEncryptedProperty(properties, PROPERTY_PASSWORD);
     roleLevel = properties.getProperty(PROPERTY_ROLELEVEL);
@@ -172,7 +171,19 @@ public class JiraConfiguration implements Validateable
    */
   public Set<String> getAutoCloseWords()
   {
-    return autoCloseWords;
+    return autoCloseWords.keySet();
+  }
+  
+  /**
+   * Returns a mapped auto close word.
+   *
+   * @param acw auto close word
+   * 
+   * @return mapped auto close word
+   */
+  public String getMappedAutoCloseWord(String acw)
+  {
+    return autoCloseWords.get(acw);
   }
 
   /**
@@ -329,25 +340,21 @@ public class JiraConfiguration implements Validateable
     return value;
   }
 
-  private Set<String> getSetProperty(PropertiesAware repository, String key)
+  private Map<String,String> getAutoCloseWordProperty(PropertiesAware repository, String key)
   {
-    Set<String> values;
+    Map<String,String> map;
     String value = repository.getProperty(key);
 
     if (!Strings.isNullOrEmpty(value))
     {
-      //J-
-      values = ImmutableSet.copyOf(
-        Splitter.on(SEPARATOR).trimResults().omitEmptyStrings().split(value)
-      );
-      //J+
+      map = AutoCloseWords.parse(value);
     }
     else
     {
-      values = Collections.EMPTY_SET;
+      map = Collections.EMPTY_MAP;
     }
 
-    return values;
+    return map;
   }
 
   //~--- fields ---------------------------------------------------------------
@@ -358,8 +365,8 @@ public class JiraConfiguration implements Validateable
 
   /** set of auto close words */
   @XmlElement(name = "auto-close-words")
-  @XmlJavaTypeAdapter(XmlStringSetAdapter.class)
-  private Set<String> autoCloseWords;
+  @XmlJavaTypeAdapter(XmlStringMapAdapter.class)
+  private Map<String,String> autoCloseWords;
 
   /** Address to send Error-Message to */
   @XmlElement(name = "mail-error-address")
