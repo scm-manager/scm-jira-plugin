@@ -35,6 +35,7 @@ package sonia.scm.jira;
 
 //~--- non-JDK imports --------------------------------------------------------
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -49,6 +50,7 @@ import sonia.scm.repository.Changeset;
 //~--- JDK imports ------------------------------------------------------------
 
 import java.io.IOException;
+import java.util.Locale;
 
 import java.util.Map;
 
@@ -258,19 +260,20 @@ public class JiraIssueHandler
     }
   }
 
-  private String searchAutoCloseWord(Changeset changeset)
+  @VisibleForTesting
+  String searchAutoCloseWord(Changeset changeset)
   {
     String description = changeset.getDescription();
     String autoCloseWord = null;
-    String[] words = description.split("\\s");
+    String[] words = Strings.nullToEmpty(description).toLowerCase(Locale.ENGLISH).split("\\s");
 
     for (String w : words)
     {
       for (String acw : request.getConfiguration().getAutoCloseWords())
       {
-        acw = acw.trim();
+        acw = acw.trim().toLowerCase(Locale.ENGLISH);
 
-        if (w.equalsIgnoreCase(acw))
+        if (w.equals(acw))
         {
           autoCloseWord = w;
 
