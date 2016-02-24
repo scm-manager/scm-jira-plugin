@@ -11,7 +11,7 @@
 
   <groupId>sonia.scm.plugins</groupId>
   <artifactId>scm-jira-plugin</artifactId>
-  <version>1.18</version>
+  <version>1.19-SNAPSHOT</version>
   <name>scm-jira-plugin</name>
   <url>https://bitbucket.org/sdorra/scm-jira-plugin</url>
   <description>This plugin integrates Atlassian JIRA to SCM-Manager.</description>
@@ -20,7 +20,7 @@
     <connection>scm:hg:https://bitbucket.org/sdorra/scm-jira-plugin</connection>
     <developerConnection>scm:hg:https://bitbucket.org/sdorra/scm-jira-plugin</developerConnection>
     <url>https://bitbucket.org/sdorra/scm-jira-plugin</url>
-    <tag>1.18</tag>
+    <tag>HEAD</tag>
   </scm>
   
   <dependencies>
