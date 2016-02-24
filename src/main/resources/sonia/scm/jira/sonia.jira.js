@@ -42,14 +42,15 @@ Sonia.jira.I18n = {
   repositoryConfigurationHelpText: 'Do not allow repository owners to configure jira instances. \n\
     You have to restart your application server after changing this value.',
   
-  autoCloseText: 'Enable Auto-Close',
-  autoCloseHelpText: 'Enables the auto close function. SCM-Manager searches for \n\
-                      issue keys and auto close words in commit messages. If \n\
-                      both are found in a message SCM-Manager closes the issue. \n\
+  autoCloseText: 'Enable Status Modification',
+  autoCloseHelpText: 'Enable the status modification function. SCM-Manager searches for \n\
+                      issue keys and status modification words in commit messages. If \n\
+                      both are found in a message SCM-Manager changes the status of the issue. \n\
                       <b>Note:</b> If username and password are different \n\
                       in SCM-Manager and Jira, it is necessary to configure \n\
                       the username and password below.',
-  autoCloseDefaultValues: 'fixed, fix, closed, close, resolved, resolve',
+
+  autoCloseDefaultValues: 'fix=done, reopen=reopen and start progress, start=start progress',
   
   updateIssuesText: 'Update Jira Issues',
   updateIssuesHelpText: 'Enable the automatic update function. SCM-Manager searches for\n\
@@ -58,8 +59,11 @@ Sonia.jira.I18n = {
                          password are different in SCM-Manager and Jira, it is necessary \n\
                          to configure the username and password below.',
   
-  autoCloseWordsText: 'Auto-Close Words',
-  autoCloseWordsHelpText: 'Comma separated list of words to enable the auto close function. \n\
+  autoCloseWordsText: 'Status Modification Words',
+  autoCloseWordsHelpText: 'Comma separated list of terms to enable the status modification function. \n\
+                           Add the transitions name (e.g. start progress, stop progress, ...) or configure a mapping \n\
+                           (e.g. start = start progress, beginn = start progress, stop = stop progress,...). The \n\
+                           transition names depend on your jira workflow. \n\
                            Each commit message of a changeset gets searched for these words.',
           
   roleLevelText: 'Role visibility',
