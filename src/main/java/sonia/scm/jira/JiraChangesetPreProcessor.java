@@ -35,6 +35,7 @@ package sonia.scm.jira;
 
 //~--- non-JDK imports --------------------------------------------------------
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 
 import org.slf4j.Logger;
@@ -59,7 +60,8 @@ public class JiraChangesetPreProcessor implements ChangesetPreProcessor
 {
 
   /** jira issue key pattern */
-  private static final Pattern KEY_PATTERN =
+  @VisibleForTesting
+  static final Pattern KEY_PATTERN =
     Pattern.compile("\\b([A-Z]+-\\d+)");
 
   /**
@@ -92,7 +94,6 @@ public class JiraChangesetPreProcessor implements ChangesetPreProcessor
    * {@link JiraIssueHandler#handleIssue(String, Changeset)} for each found
    * issue key.
    *
-   *
    * @param changeset changeset
    */
   @Override
@@ -107,32 +108,37 @@ public class JiraChangesetPreProcessor implements ChangesetPreProcessor
 
       while (m.find())
       {
+        String issueId = m.group();
+        logger.trace("found issue id {} in commit message: {}", issueId, description);
+        
         m.appendReplacement(sb, keyReplacementPattern);
 
         if (issueHandler != null)
         {
           if (!context.isHandled(repository, changeset))
           {
-            issueHandler.handleIssue(m.group(), changeset);
+            issueHandler.handleIssue(issueId, changeset);
           }
           else if (logger.isDebugEnabled())
           {
-            logger.debug("changeset {} of repository {} is already handled",
-              changeset.getId(), repository.getId());
+            logger.debug("changeset {} of repository {} is already handled, ignoring action for {}",
+              changeset.getId(), repository.getId(), issueId);
           }
         }
       }
 
       m.appendTail(sb);
-      description = sb.toString();
-    }
-
-    if (!context.isHandled(repository, changeset))
+      changeset.setDescription(sb.toString());
+      
+      if (!context.isHandled(repository, changeset))
+      {
+        context.markAsHandled(repository, changeset);
+      }
+    } 
+    else 
     {
-      context.markAsHandled(repository, changeset);
+      logger.warn("received changeset {} without description", changeset.getId());
     }
-
-    changeset.setDescription(description);
   }
 
   //~--- set methods ----------------------------------------------------------
