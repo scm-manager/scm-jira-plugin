@@ -43,6 +43,7 @@ import sonia.scm.jira.JiraHandler;
 import sonia.scm.jira.JiraIssueRequest;
 import sonia.scm.net.ahc.AdvancedHttpClient;
 import sonia.scm.net.ahc.AdvancedHttpResponse;
+import sonia.scm.net.ahc.ContentTransformerException;
 
 //~--- JDK imports ------------------------------------------------------------
 
@@ -211,6 +212,10 @@ public class RestJiraHandler implements JiraHandler
           break;
         }
       }
+    }
+    catch (ContentTransformerException ex)
+    {
+      throw JiraExceptions.propagate(ex, "failed to transform response from ".concat(issueId));
     }
     catch (IOException ex)
     {
