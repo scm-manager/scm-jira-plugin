@@ -43,7 +43,6 @@ import org.slf4j.LoggerFactory;
 
 import sonia.scm.repository.Changeset;
 import sonia.scm.repository.ChangesetPreProcessor;
-import sonia.scm.repository.Repository;
 
 //~--- JDK imports ------------------------------------------------------------
 
@@ -52,7 +51,7 @@ import java.util.regex.Pattern;
 
 /**
  * The JiraChangesetPreProcessor searches for issue keys in the description of
- * changesets and notifies the {@link JiraIssueHandler} about found issue keys.
+ * changesets and replaces it with a link to the issue.
  *
  * @author Sebastian Sdorra
  */
@@ -75,96 +74,38 @@ public class JiraChangesetPreProcessor implements ChangesetPreProcessor
   /**
    * Constructs a new JiraChangesetPreProcessor
    *
-   * @param context jira global context
-   * @param repository changed repository
    * @param keyReplacementPattern key replacement pattern
    */
-  public JiraChangesetPreProcessor(JiraGlobalContext context,
-    Repository repository, String keyReplacementPattern)
+  public JiraChangesetPreProcessor(String keyReplacementPattern)
   {
-    this.context = context;
-    this.repository = repository;
     this.keyReplacementPattern = keyReplacementPattern;
   }
 
   //~--- methods --------------------------------------------------------------
 
   /**
-   * Checks the changeset description for issue keys and calls 
-   * {@link JiraIssueHandler#handleIssue(String, Changeset)} for each found
-   * issue key.
+   * Checks the changeset description for issue keys and and replaces the keys,
+   * with a link.
    *
    * @param changeset changeset
    */
   @Override
   public void process(Changeset changeset)
   {
-    String description = changeset.getDescription();
+    StringBuffer sb = new StringBuffer();
+    Matcher m = KEY_PATTERN.matcher(Strings.nullToEmpty(changeset.getDescription()));
 
-    if (!Strings.isNullOrEmpty(description))
-    {
-      StringBuffer sb = new StringBuffer();
-      Matcher m = KEY_PATTERN.matcher(description);
-
-      while (m.find())
-      {
-        String issueId = m.group();
-        logger.trace("found issue id {} in commit message: {}", issueId, description);
-        
-        m.appendReplacement(sb, keyReplacementPattern);
-
-        if (issueHandler != null)
-        {
-          if (!context.isHandled(repository, changeset))
-          {
-            issueHandler.handleIssue(issueId, changeset);
-          }
-          else if (logger.isDebugEnabled())
-          {
-            logger.debug("changeset {} of repository {} is already handled, ignoring action for {}",
-              changeset.getId(), repository.getId(), issueId);
-          }
-        }
-      }
-
-      m.appendTail(sb);
-      changeset.setDescription(sb.toString());
-      
-      if (!context.isHandled(repository, changeset))
-      {
-        context.markAsHandled(repository, changeset);
-      }
-    } 
-    else 
-    {
-      logger.warn("received changeset {} without description", changeset.getId());
+    while (m.find())
+    {        
+      m.appendReplacement(sb, keyReplacementPattern);
     }
-  }
 
-  //~--- set methods ----------------------------------------------------------
-
-  /**
-   * Sets the {@link JiraIssueHandler}.
-   *
-   *
-   * @param issueHandler jira issue handler
-   */
-  public void setJiraIssueHandler(JiraIssueHandler issueHandler)
-  {
-    this.issueHandler = issueHandler;
+    m.appendTail(sb);
+    changeset.setDescription(sb.toString());   
   }
 
   //~--- fields ---------------------------------------------------------------
 
-  /** jira global context */
-  private final JiraGlobalContext context;
-
-  /** jira issue handler */
-  private JiraIssueHandler issueHandler;
-
   /** key replacement pattern */
   private final String keyReplacementPattern;
-
-  /** changed repository */
-  private final Repository repository;
 }

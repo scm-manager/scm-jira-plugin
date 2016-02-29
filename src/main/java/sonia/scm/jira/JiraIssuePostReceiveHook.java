@@ -80,19 +80,20 @@ public final class JiraIssuePostReceiveHook
    * @param requestFactory jira request factory
    * @param templateHandlerProvider comment template handler
    * @param messageProblemHandler message problem handler
+   * @param hookProcessor hook processor
    */
   @Inject
   public JiraIssuePostReceiveHook(JiraGlobalContext context,
     JiraIssueRequestFactory requestFactory,
     Provider<CommentTemplateHandler> templateHandlerProvider,
-    MessageProblemHandler messageProblemHandler)
+    MessageProblemHandler messageProblemHandler,
+    JiraHookProcessor hookProcessor)
   {
     this.context = context;
     this.requestFactory = requestFactory;
     this.templateHandlerProvider = templateHandlerProvider;
-    this.changesetPreProcessorFactory =
-      new JiraChangesetPreProcessorFactory(context);
     this.messageProblemHandler = messageProblemHandler;
+    this.hookProcessor = hookProcessor;
   }
 
   //~--- methods --------------------------------------------------------------
@@ -145,27 +146,23 @@ public final class JiraIssuePostReceiveHook
 
     if (changesets != null)
     {
-      JiraChangesetPreProcessor jcpp =
-        changesetPreProcessorFactory.createPreProcessor(repository);
       JiraIssueRequest request = null;
 
       try
       {
-        //J-
         request = requestFactory.createRequest(configuration, repository);
         
-        jcpp.setJiraIssueHandler(
-          new JiraIssueHandler(
+        //J-
+        JiraIssueHandler issueHandler = new JiraIssueHandler(
             messageProblemHandler, 
-            templateHandlerProvider.get(),
+            templateHandlerProvider.get(), 
             request
-          )
         );
         //J+
 
         for (Changeset c : changesets)
         {
-          jcpp.process(c);
+          hookProcessor.process(issueHandler, request, c);
         }
       }
       finally
@@ -217,9 +214,8 @@ public final class JiraIssuePostReceiveHook
 
   //~--- fields ---------------------------------------------------------------
 
-  /** changeset pre processor factory */
-  private final JiraChangesetPreProcessorFactory changesetPreProcessorFactory;
-
+  private final JiraHookProcessor hookProcessor;
+  
   /** global jira context */
   private final JiraGlobalContext context;
 

@@ -31,84 +31,74 @@
  */
 package sonia.scm.jira;
 
-import java.util.regex.Matcher;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import org.junit.Before;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import sonia.scm.repository.Changeset;
 
 /**
- * Unit tests for {@link JiraChangesetPreProcessor}.
- *
+ * Unit tests for {@link JiraHookProcessor}.
+ * 
  * @author Sebastian Sdorra <sebastian.sdorra@triology.de>
  */
 @RunWith(MockitoJUnitRunner.class)
-public class JiraChangesetPreProcessorTest extends JiraTestBase {
+public class JiraHookProcessorTest extends JiraTestBase {
 
-  private JiraChangesetPreProcessor processor;
+  @Mock
+  private JiraGlobalContext context;
+  
+  @Mock
+  private JiraIssueRequest request;
+  
+  @Mock
+  private JiraIssueHandler issueHandler;
 
-  /**
-   * Set up mocks for tests.
-   */
+  @InjectMocks
+  private JiraHookProcessor processor;
+  
   @Before
-  public void setUpMocks() {
-    processor = new JiraChangesetPreProcessor("_$0_");
+  public void setUpMocks(){
+    when(request.getRepository()).thenReturn(repository);
   }
-
+  
   /**
-   * Unit tests for the key pattern.
-   */
-  @Test
-  public void testKeyPattern() {
-    assertTrue(matcher("TST-1").find());
-    assertTrue(matcher("TST-1 and some string").find());
-    assertTrue(matcher("some string TST-1").find());
-    assertTrue(matcher("some string TST-1 more string").find());
-    Matcher m = matcher("TST-1 and TST-2 are equal with TST-3");
-    assertTrue(m.find());
-    assertEquals("TST-1", m.group());
-    assertTrue(m.find());
-    assertEquals("TST-2", m.group());
-    assertTrue(m.find());
-    assertEquals("TST-3", m.group());
-    assertFalse(m.find());
-  }
-
-  /*
-   * Testing {@link JiraChangesetPreProcessor#process(Changeset)}.
+   * Testing {@link JiraHookProcessor#process(JiraIssueHandler, JiraIssueRequest, Changeset)}.
    */
   @Test
   public void testProcess() {
     description("TST-1 are ready to review");
-    processor.process(changeset);
-    verify(changeset).setDescription("_TST-1_ are ready to review");
-  }
-  
-  /*
-   * Testing {@link JiraChangesetPreProcessor#process(Changeset)}.
-   */
-  @Test
-  public void testProcessWithMultipleKeys() {
-    description("TST-1, TST-2 and TST-3 are ready to review");
-    processor.process(changeset);
-    verify(changeset).setDescription("_TST-1_, _TST-2_ and _TST-3_ are ready to review");
-  }
-  
-  /*
-   * Testing {@link JiraChangesetPreProcessor#process(Changeset)} without issue key.
-   */
-  @Test
-  public void testProcessWithoutKey() {
-    description("description without key");
-    processor.process(changeset);
-    verify(changeset).setDescription("description without key");
+    processor.process(issueHandler, request, changeset);
+    verify(issueHandler).handleIssue("TST-1", changeset);
+    verify(context).markAsHandled(repository, changeset);
   }
 
-  private Matcher matcher(String description) {
-    return JiraChangesetPreProcessor.KEY_PATTERN.matcher(description);
+  /**
+   * Testing {@link JiraHookProcessor#process(JiraIssueHandler, JiraIssueRequest, Changeset)} with multiple issue ids.
+   */
+  @Test
+  public void testProcessWithMultipleIssueIds() {
+    description("TST-1 and TST-2 are ready to review and we have fixed TST-3");
+    processor.process(issueHandler, request, changeset);
+    verify(issueHandler).handleIssue("TST-1", changeset);
+    verify(issueHandler).handleIssue("TST-2", changeset);
+    verify(issueHandler).handleIssue("TST-3", changeset);
+    verify(context).markAsHandled(repository, changeset);
   }
+
+  /**
+   * Testing {@link JiraHookProcessor#process(JiraIssueHandler, JiraIssueRequest, Changeset)} with already handled changeset.
+   */
+  @Test
+  public void testProcessWithAlreadyHandledChangeset() {
+    description("TST-1");
+    when(context.isHandled(repository, changeset)).thenReturn(true);
+    processor.process(issueHandler, request, changeset);
+    verify(issueHandler, never()).handleIssue("TST-1", changeset);
+    verify(context, never()).markAsHandled(repository, changeset);
+  }
+
 }
