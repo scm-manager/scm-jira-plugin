@@ -313,7 +313,9 @@ public class ResubmitCommentsHandler
     try
     {
       service = repositoryServiceFactory.create(repository);
-      changeset = service.getLogCommand().getChangeset(changesetId);
+      changeset = service.getLogCommand()
+                         .setDisablePreProcessors(true)
+                         .getChangeset(changesetId);
     }
     finally
     {
