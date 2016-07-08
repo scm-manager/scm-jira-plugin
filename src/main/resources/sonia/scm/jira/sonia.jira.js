@@ -93,7 +93,14 @@ Sonia.jira.I18n = {
   resubmitFailureDescriptionText: 'Unknown error occurred durring comment resubmission. SCM-Manager returned error code {0}.',
   
   restApiEnabledText: 'Rest API v2',
-  restApiEnabledHelpText: 'Use Jira Rest API v2 to communicate with Jira.'
+  restApiEnabledHelpText: 'Use Jira Rest API v2 to communicate with Jira.',
+
+
+  commentWrapText: 'Wrap Comment With',
+  commentWrapHelpText: 'Text to place around the changeset description in the Jira comment. The default is no wrapping.  Examples:  {quote} or {noformat}.  See https://jira.atlassian.com/secure/WikiRendererHelpAction.jspa?section=all',
+
+  commentMonospaceText: 'Monospace',
+  commentMonospaceHelpText: 'Should the comment include the mono-space wrapper?  {{ }}.  Note:  Jira handling for this is not consistant.'
 };
 
 Sonia.jira.toggleFields = function(cmps, scope){

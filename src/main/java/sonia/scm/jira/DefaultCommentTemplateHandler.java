@@ -35,6 +35,7 @@ package sonia.scm.jira;
 
 //~--- non-JDK imports --------------------------------------------------------
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 
@@ -43,12 +44,15 @@ import sonia.scm.repository.Repository;
 import sonia.scm.template.Template;
 import sonia.scm.template.TemplateEngine;
 import sonia.scm.template.TemplateEngineFactory;
+import sonia.scm.util.Util;
 
 //~--- JDK imports ------------------------------------------------------------
 
 import java.io.IOException;
 import java.io.StringWriter;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -60,8 +64,13 @@ import java.util.Map;
 public class DefaultCommentTemplateHandler implements CommentTemplateHandler
 {
 
+  private static final String LINE_SEPARATOR = System.getProperty("line.separator", "\n");
+    
   /** env var for changeset */
   private static final String ENV_CHANGESET = "changeset";
+
+  /** Field description */
+  private static final String ENV_DESCRIPTION_LINE = "descriptionLine";
 
   /** env var for diff rest url */
   private static final String ENV_DIFFRESTURL = "diffRestUrl";
@@ -74,6 +83,12 @@ public class DefaultCommentTemplateHandler implements CommentTemplateHandler
 
   /** env var for repository url */
   private static final String ENV_REPOSITORYURL = "repositoryUrl";
+
+  private static final String ENV_COMMENTWRAP_PRE = "commentWrapPre";
+  private static final String ENV_COMMENTWRAP_POST = "commentWrapPost";
+
+  private static final String ENV_BRANCHES = "branches";
+  private static final String ENV_BOOKMARKS = "bookmarks";
 
   //~--- constructors ---------------------------------------------------------
 
@@ -107,9 +122,25 @@ public class DefaultCommentTemplateHandler implements CommentTemplateHandler
 
     env.put(ENV_REPOSITORY, repository);
     env.put(ENV_CHANGESET, changeset);
+    // Mustache is pretty annoying, in that it escapes HTML.  Thus any lovely line-feeds in the changeset
+    // description get eaten, and don't show up in Jira.  Thus, we split the description by the line separator,
+    // and make mustache put each line on its own line.
+    env.put(ENV_DESCRIPTION_LINE, Arrays.asList(changeset.getDescription().split(LINE_SEPARATOR)));
     env.put(ENV_DIFFURL, linkHandler.getDiffUrl(repository, changeset));
     env.put(ENV_DIFFRESTURL, linkHandler.getDiffRestUrl(repository, changeset));
     env.put(ENV_REPOSITORYURL, linkHandler.getRepositoryUrl(repository));
+    env.put(ENV_BRANCHES, changeset.getBranches()); // TODO:  Mercurial has empty branches for "default" ...
+    env.put(ENV_BOOKMARKS, changeset.getProperty("hg.bookmarks"));
+
+    final JiraConfiguration configuration = request.getConfiguration();
+    final boolean commentMonospace = configuration.getCommentMonospace();
+    final String commentWrap = Strings.nullToEmpty(configuration.getCommentWrap());
+
+    final String commentWrapPre = (commentMonospace ? "{{" : "") + commentWrap;
+    final String commentWrapPost = commentWrap + (commentMonospace ? "}}" : "");
+
+    env.put(ENV_COMMENTWRAP_PRE, commentWrapPre);
+    env.put(ENV_COMMENTWRAP_POST, commentWrapPost);
 
     return env;
   }

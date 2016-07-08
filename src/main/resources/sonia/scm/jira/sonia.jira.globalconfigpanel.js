@@ -134,6 +134,18 @@ Sonia.jira.GlobalConfigPanel = Ext.extend(Sonia.config.ConfigForm, {
         fieldLabel: Sonia.jira.I18n.mailText,
         helpText: Sonia.jira.I18n.mailHelpText
       },{
+        id: 'commentWrap',
+        name: 'comment-wrap',
+        xtype: 'textfield',
+        fieldLabel: Sonia.jira.I18n.commentWrapText,
+        helpText: Sonia.jira.I18n.commentWrapHelpText
+      },{
+        name: 'comment-monospace',
+        inputValue: 'true',
+        xtype: 'checkbox',
+        fieldLabel: Sonia.jira.I18n.commentMonospaceText,
+        helpText: Sonia.jira.I18n.commentMonospaceHelpText
+      },{
         id: 'resubmit',
         name: 'resubmitButton',
         xtype: 'button',

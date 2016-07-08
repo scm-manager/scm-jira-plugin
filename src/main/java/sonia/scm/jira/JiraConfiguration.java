@@ -37,6 +37,7 @@ package sonia.scm.jira;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableSet;
 
 import sonia.scm.PropertiesAware;
 import sonia.scm.Validateable;
@@ -52,6 +53,10 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.util.Collections;
+import java.util.Set;
+
+//~--- JDK imports ------------------------------------------------------------
 
 /**
  * Local or per repository jira configuration.
@@ -64,6 +69,8 @@ public class JiraConfiguration implements Validateable
 
   /** default comment prefix */
   public static final String DEFAULT_COMMENT_PREFIX = "[SCM]";
+
+  public static final String DEFAULT_COMMENT_WRAP = "";
 
   /** auto close property */
   public static final String PROPERTY_AUTOCLOSE = "jira.auto-close";
@@ -98,6 +105,12 @@ public class JiraConfiguration implements Validateable
   /** username property */
   public static final String PROPERTY_USERNAME = "jira.username";
 
+  /** wrap property */
+  public static final String PROPERTY_WRAP_FORMAT = "jira.comment-wrap";
+
+  /** monospace property */
+  public static final String PROPERTY_MONOSPACE = "jira.comment-monospace";
+
   /** separator for set properties */
   public static final String SEPARATOR = ",";
 
@@ -130,6 +143,9 @@ public class JiraConfiguration implements Validateable
     resubmission = getBooleanProperty(properties, PROPERTY_RESUBMISSION);
     restApiEnabled = getBooleanProperty(properties, PROPERTY_REST_API);
 
+    commentWrap = properties.getProperty(PROPERTY_WRAP_FORMAT);
+    commentMonospace = getBooleanProperty(properties, PROPERTY_MONOSPACE);
+
     if (Strings.isNullOrEmpty(commentPrefix))
     {
       commentPrefix = DEFAULT_COMMENT_PREFIX;
@@ -157,6 +173,8 @@ public class JiraConfiguration implements Validateable
                   .add("mailAddress", mailAddress)
                   .add("resubmission", resubmission)
                   .add("restApiEnabled", restApiEnabled)
+                  .add("commentWrap", commentWrap)
+                  .add("commentMonospace", commentMonospace)
                   .toString();
     //J+
   }
@@ -315,6 +333,18 @@ public class JiraConfiguration implements Validateable
     return Util.isNotEmpty(url);
   }
 
+
+  public String getCommentWrap() 
+  {
+    return commentWrap;
+  }
+
+  public boolean getCommentMonospace() 
+  { 
+    return commentMonospace; 
+  }
+
+
   private boolean getBooleanProperty(PropertiesAware repository, String key)
   {
     boolean result = false;
@@ -401,4 +431,10 @@ public class JiraConfiguration implements Validateable
 
   /** connection username */
   private String username;
+
+  @XmlElement(name = "comment-wrap")
+  private String commentWrap = DEFAULT_COMMENT_WRAP;
+
+  @XmlElement(name = "comment-monospace")
+  private boolean commentMonospace;
 }

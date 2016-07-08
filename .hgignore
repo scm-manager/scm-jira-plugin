@@ -21,6 +21,12 @@ Desktop DF$
 \.project
 \.classpath
 \.settings
+<<<<<<< local
 # netbeans
 nb-configuration.xml
 nbproject
+=======
+# IntelliJ Files
+\.idea
+\.iml$
+>>>>>>> other
