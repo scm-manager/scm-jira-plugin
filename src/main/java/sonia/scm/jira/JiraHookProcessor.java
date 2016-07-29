@@ -32,7 +32,9 @@
 package sonia.scm.jira;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
+import java.util.Set;
 import java.util.regex.Matcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,13 +71,10 @@ public class JiraHookProcessor {
    * @param changeset received changeset
    */
   public void process(JiraIssueHandler issueHandler, JiraIssueRequest request, Changeset changeset){
-    String description = Strings.nullToEmpty(changeset.getDescription());
-    Matcher m = JiraChangesetPreProcessor.KEY_PATTERN.matcher(description);
-    while (m.find())
-    {
-      String issueId = m.group();
-      logger.trace("found issue id {} in commit message: {}", issueId, description);
+    Iterable<String> issueIds = extractIssueIds(changeset);
 
+    for (String issueId : issueIds)
+    {
       if (issueHandler != null)
       {
         if (!context.isHandled(request.getRepository(), changeset))
@@ -96,4 +95,23 @@ public class JiraHookProcessor {
     }
   }
   
+  private Iterable<String> extractIssueIds(Changeset changeset) {
+    Set<String> issueIds = Sets.newLinkedHashSet();
+    String description = Strings.nullToEmpty(changeset.getDescription());
+
+    Matcher m = JiraChangesetPreProcessor.KEY_PATTERN.matcher(description);
+    while (m.find())
+    {
+      String issueId = m.group();
+      logger.trace("found issue id {} in commit message: {}", issueId, description);
+      issueIds.add(issueId);
+    }
+
+    if (logger.isTraceEnabled())
+    {
+      logger.trace("found {} issue ids in commit message: {}", issueIds.size(), description);
+    }
+
+    return issueIds;
+  }
 }

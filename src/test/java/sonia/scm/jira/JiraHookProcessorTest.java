@@ -101,4 +101,16 @@ public class JiraHookProcessorTest extends JiraTestBase {
     verify(context, never()).markAsHandled(repository, changeset);
   }
 
+  /**
+   * Testing {@link JiraHookProcessor#process(JiraIssueHandler, JiraIssueRequest, Changeset)} with multiple times the 
+   * same issue id.
+   */
+  @Test
+  public void testProcessCallsHandleIssueOnlyOnce() {
+    description("TST-1, TST-2 and TST-1");
+    processor.process(issueHandler, request, changeset);
+    verify(issueHandler).handleIssue("TST-1", changeset);
+    verify(issueHandler).handleIssue("TST-2", changeset);
+  }
+
 }
