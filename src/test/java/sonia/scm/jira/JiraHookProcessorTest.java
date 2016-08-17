@@ -63,6 +63,7 @@ public class JiraHookProcessorTest extends JiraTestBase {
   @Before
   public void setUpMocks(){
     when(request.getRepository()).thenReturn(repository);
+    when(request.getConfiguration()).thenReturn(new JiraConfiguration());
   }
   
   /**

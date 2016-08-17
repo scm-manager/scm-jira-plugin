@@ -71,7 +71,7 @@ public class JiraHookProcessor {
    * @param changeset received changeset
    */
   public void process(JiraIssueHandler issueHandler, JiraIssueRequest request, Changeset changeset){
-    Iterable<String> issueIds = extractIssueIds(changeset);
+    Iterable<String> issueIds = extractIssueIds(request, changeset);
 
     for (String issueId : issueIds)
     {
@@ -95,11 +95,11 @@ public class JiraHookProcessor {
     }
   }
   
-  private Iterable<String> extractIssueIds(Changeset changeset) {
+  private Iterable<String> extractIssueIds(JiraIssueRequest request, Changeset changeset) {
     Set<String> issueIds = Sets.newLinkedHashSet();
     String description = Strings.nullToEmpty(changeset.getDescription());
 
-    Matcher m = JiraChangesetPreProcessor.KEY_PATTERN.matcher(description);
+    Matcher m = IssueKeys.createPattern(request.getConfiguration().getFilter()).matcher(description);
     while (m.find())
     {
       String issueId = m.group();

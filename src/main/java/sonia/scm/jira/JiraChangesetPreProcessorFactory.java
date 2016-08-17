@@ -35,6 +35,7 @@ package sonia.scm.jira;
 
 //~--- non-JDK imports --------------------------------------------------------
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
@@ -46,6 +47,7 @@ import sonia.scm.util.HttpUtil;
 //~--- JDK imports ------------------------------------------------------------
 
 import java.text.MessageFormat;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -57,12 +59,9 @@ public class JiraChangesetPreProcessorFactory
 {
 
   /** Field description */
-  public static final String PROPERTY_JIRA_URL = "jira.url";
-
-  /** Field description */
   public static final String REPLACEMENT_LINK =
     "<a target=\"_blank\" href=\"{0}/browse/$0\">$0</a>";
-
+  
   //~--- constructors ---------------------------------------------------------
 
   /**
@@ -104,7 +103,7 @@ public class JiraChangesetPreProcessorFactory
       String replacementPattern = MessageFormat.format(REPLACEMENT_LINK,
                                     jiraUrl);
 
-      cpp = new JiraChangesetPreProcessor(replacementPattern);
+      cpp = new JiraChangesetPreProcessor(IssueKeys.createPattern(configuration.getFilter()), replacementPattern);
     }
 
     return cpp;

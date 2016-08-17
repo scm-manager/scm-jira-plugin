@@ -72,6 +72,9 @@ Sonia.jira.I18n = {
   commentPrefixText: 'Comment prefix',
   commentPrefixHelpText: 'The comment prefix is created at the beginning of every comment in Jira created by SCM-Manager. The default prefix is [SCM].',
   
+  filterText: 'Project Filter',
+  filterHelpText: 'Filters for jira project key. Multiple filters seperated by ",". e.g.: SCM,TST,ASD',
+  
   usernameText: 'Username',
   usernameHelpText: 'Jira username for connection. Leave this field empty to create the connection\n\
                      with the credentials of the user which is logged in to SCM-Manager.',

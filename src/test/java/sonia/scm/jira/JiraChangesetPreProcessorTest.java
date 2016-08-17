@@ -37,9 +37,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import org.junit.Before;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import sonia.scm.repository.Changeset;
 
 /**
  * Unit tests for {@link JiraChangesetPreProcessor}.
@@ -56,7 +54,7 @@ public class JiraChangesetPreProcessorTest extends JiraTestBase {
    */
   @Before
   public void setUpMocks() {
-    processor = new JiraChangesetPreProcessor("_$0_");
+    processor = new JiraChangesetPreProcessor(IssueKeys.createPattern(""), "_$0_");
   }
 
   /**
@@ -64,11 +62,11 @@ public class JiraChangesetPreProcessorTest extends JiraTestBase {
    */
   @Test
   public void testKeyPattern() {
-    assertTrue(matcher("TST-1").find());
-    assertTrue(matcher("TST-1 and some string").find());
-    assertTrue(matcher("some string TST-1").find());
-    assertTrue(matcher("some string TST-1 more string").find());
-    Matcher m = matcher("TST-1 and TST-2 are equal with TST-3");
+    assertTrue(processor.matcher("TST-1").find());
+    assertTrue(processor.matcher("TST-1 and some string").find());
+    assertTrue(processor.matcher("some string TST-1").find());
+    assertTrue(processor.matcher("some string TST-1 more string").find());
+    Matcher m = processor.matcher("TST-1 and TST-2 are equal with TST-3");
     assertTrue(m.find());
     assertEquals("TST-1", m.group());
     assertTrue(m.find());
@@ -106,9 +104,5 @@ public class JiraChangesetPreProcessorTest extends JiraTestBase {
     description("description without key");
     processor.process(changeset);
     verify(changeset).setDescription("description without key");
-  }
-
-  private Matcher matcher(String description) {
-    return JiraChangesetPreProcessor.KEY_PATTERN.matcher(description);
   }
 }

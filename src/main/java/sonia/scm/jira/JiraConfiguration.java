@@ -80,6 +80,9 @@ public class JiraConfiguration implements Validateable
 
   /** comment prefix property */
   public static final String PROPERTY_COMMENT_PREFIX = "jira.comment-prefix";
+  
+  /** filter property */
+  public static final String PROPERTY_FILTER = "jira.filter";
 
   /** Address used in case of error */
   public static final String PROPERTY_ERROR_MAIL = "jira.mail-error-address";
@@ -138,6 +141,7 @@ public class JiraConfiguration implements Validateable
     password = getEncryptedProperty(properties, PROPERTY_PASSWORD);
     roleLevel = properties.getProperty(PROPERTY_ROLELEVEL);
     commentPrefix = properties.getProperty(PROPERTY_COMMENT_PREFIX);
+    filter = properties.getProperty(PROPERTY_FILTER);
     mailAddress = properties.getProperty(PROPERTY_ERROR_MAIL);
 
     resubmission = getBooleanProperty(properties, PROPERTY_RESUBMISSION);
@@ -165,6 +169,7 @@ public class JiraConfiguration implements Validateable
                   .add("url", url)
                   .add("updateIssues", updateIssues)
                   .add("commentPrefix", commentPrefix)
+                  .add("filter", filter)
                   .add("roleLevel", roleLevel)
                   .add("autoClose", autoClose)
                   .add("autoCloseWords", autoCloseWords)
@@ -214,6 +219,11 @@ public class JiraConfiguration implements Validateable
   public String getCommentPrefix()
   {
     return commentPrefix;
+  }
+  
+  public String getFilter()
+  {
+    return filter;
   }
 
   /**
@@ -413,6 +423,10 @@ public class JiraConfiguration implements Validateable
   /** comment prefix */
   @XmlElement(name = "comment-prefix")
   private String commentPrefix = DEFAULT_COMMENT_PREFIX;
+  
+  /** filter */
+  @XmlElement(name = "filter")
+  private String filter;
 
   /** use resubmission */
   @XmlElement(name = "resubmission")

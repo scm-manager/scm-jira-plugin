@@ -87,6 +87,12 @@ Sonia.jira.RepositoryConfigPanel = Ext.extend(Sonia.repository.PropertiesFormPan
         fieldLabel: Sonia.jira.I18n.commentPrefixText,
         helpText: Sonia.jira.I18n.commentPrefixHelpText
       },{
+        id: 'jiraFilter',
+        name: 'jiraFilter',
+        property: 'jira.filter',
+        fieldLabel: Sonia.jira.I18n.filterText,
+        helpText: Sonia.jira.I18n.filterHelpText
+      },{
         id: 'jiraUsername',
         name: 'jiraUsername',
         fieldLabel: Sonia.jira.I18n.usernameText,
@@ -178,6 +184,7 @@ Sonia.jira.RepositoryConfigPanel = Ext.extend(Sonia.repository.PropertiesFormPan
       autoclose,
       Ext.getCmp('jiraRoleLevel'),
       Ext.getCmp('jiraCommentPrefix'),
+      Ext.getCmp('jiraFilter'),
       Ext.getCmp('jiraUsername'),
       Ext.getCmp('jiraPassword'),
       resubmission

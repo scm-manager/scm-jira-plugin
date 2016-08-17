@@ -95,6 +95,12 @@ Sonia.jira.GlobalConfigPanel = Ext.extend(Sonia.config.ConfigForm, {
         fieldLabel: Sonia.jira.I18n.commentPrefixText,
         helpText: Sonia.jira.I18n.commentPrefixHelpText
       },{
+        id: 'filter',
+        name: 'filter',
+        xtype: 'textfield',
+        fieldLabel: Sonia.jira.I18n.filterText,
+        helpText: Sonia.jira.I18n.commentPrefixHelpText
+      },{
         id: 'username',
         name: 'username',
         xtype: 'textfield',
@@ -171,6 +177,7 @@ Sonia.jira.GlobalConfigPanel = Ext.extend(Sonia.config.ConfigForm, {
       autoclose,
       Ext.getCmp('roleLevel'),
       Ext.getCmp('commentPrefix'),
+      Ext.getCmp('filter'),
       Ext.getCmp('username'), 
       Ext.getCmp('password'),
       resubmission

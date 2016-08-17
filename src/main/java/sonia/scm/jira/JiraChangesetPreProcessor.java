@@ -58,11 +58,6 @@ import java.util.regex.Pattern;
 public class JiraChangesetPreProcessor implements ChangesetPreProcessor
 {
 
-  /** jira issue key pattern */
-  @VisibleForTesting
-  static final Pattern KEY_PATTERN =
-    Pattern.compile("\\b([A-Z]+-\\d+)");
-
   /**
    * the logger for JiraChangesetPreProcessor
    */
@@ -74,10 +69,12 @@ public class JiraChangesetPreProcessor implements ChangesetPreProcessor
   /**
    * Constructs a new JiraChangesetPreProcessor
    *
+     * @param keyPattern
    * @param keyReplacementPattern key replacement pattern
    */
-  public JiraChangesetPreProcessor(String keyReplacementPattern)
+  public JiraChangesetPreProcessor(Pattern keyPattern, String keyReplacementPattern)
   {
+    this.keyPattern = keyPattern;
     this.keyReplacementPattern = keyReplacementPattern;
   }
 
@@ -93,7 +90,7 @@ public class JiraChangesetPreProcessor implements ChangesetPreProcessor
   public void process(Changeset changeset)
   {
     StringBuffer sb = new StringBuffer();
-    Matcher m = KEY_PATTERN.matcher(Strings.nullToEmpty(changeset.getDescription()));
+    Matcher m = matcher(changeset.getDescription());
 
     while (m.find())
     {        
@@ -104,8 +101,17 @@ public class JiraChangesetPreProcessor implements ChangesetPreProcessor
     changeset.setDescription(sb.toString());   
   }
 
+  @VisibleForTesting
+  Matcher matcher(String value)
+  {
+    return keyPattern.matcher(Strings.nullToEmpty(value));
+  }
+  
   //~--- fields ---------------------------------------------------------------
 
+  /** regex issue key pattern */
+  private final Pattern keyPattern;
+  
   /** key replacement pattern */
   private final String keyReplacementPattern;
 }
