@@ -39,12 +39,13 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 
+import sonia.scm.issuetracker.IssueRequest;
+import sonia.scm.issuetracker.LinkHandler;
 import sonia.scm.repository.Changeset;
 import sonia.scm.repository.Repository;
 import sonia.scm.template.Template;
 import sonia.scm.template.TemplateEngine;
 import sonia.scm.template.TemplateEngineFactory;
-import sonia.scm.util.Util;
 
 //~--- JDK imports ------------------------------------------------------------
 
@@ -52,7 +53,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -126,9 +127,10 @@ public class DefaultCommentTemplateHandler implements CommentTemplateHandler
     // description get eaten, and don't show up in Jira.  Thus, we split the description by the line separator,
     // and make mustache put each line on its own line.
     env.put(ENV_DESCRIPTION_LINE, Arrays.asList(changeset.getDescription().split(LINE_SEPARATOR)));
-    env.put(ENV_DIFFURL, linkHandler.getDiffUrl(repository, changeset));
-    env.put(ENV_DIFFRESTURL, linkHandler.getDiffRestUrl(repository, changeset));
-    env.put(ENV_REPOSITORYURL, linkHandler.getRepositoryUrl(repository));
+    IssueRequest issueRequest = new IssueRequest(repository, changeset, Collections.emptyList());
+    env.put(ENV_DIFFURL, linkHandler.getDiffUrl(issueRequest));
+//    env.put(ENV_DIFFRESTURL, linkHandler.getDiffRestUrl(repository, changeset));
+    env.put(ENV_REPOSITORYURL, linkHandler.getRepositoryUrl(issueRequest));
     env.put(ENV_BRANCHES, changeset.getBranches()); // TODO:  Mercurial has empty branches for "default" ...
     env.put(ENV_BOOKMARKS, changeset.getProperty("hg.bookmarks"));
 

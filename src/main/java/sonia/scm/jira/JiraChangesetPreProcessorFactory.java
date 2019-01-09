@@ -35,11 +35,10 @@ package sonia.scm.jira;
 
 //~--- non-JDK imports --------------------------------------------------------
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
-import sonia.scm.plugin.ext.Extension;
+import sonia.scm.plugin.Extension;
 import sonia.scm.repository.ChangesetPreProcessorFactory;
 import sonia.scm.repository.Repository;
 import sonia.scm.util.HttpUtil;
@@ -47,7 +46,6 @@ import sonia.scm.util.HttpUtil;
 //~--- JDK imports ------------------------------------------------------------
 
 import java.text.MessageFormat;
-import java.util.regex.Pattern;
 
 /**
  *

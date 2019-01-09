@@ -35,7 +35,7 @@ package sonia.scm.jira.resubmit;
 
 //~--- non-JDK imports --------------------------------------------------------
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 
 //~--- JDK imports ------------------------------------------------------------
 
@@ -103,7 +103,7 @@ public class CommentData implements Comparable<CommentData>
   public String toString()
   {
     //J-
-    return Objects.toStringHelper(this)
+    return MoreObjects.toStringHelper(this)
                   .add("id", id)
                   .add("repositoryid", repositoryId)
                   .add("changesetId", changesetId)

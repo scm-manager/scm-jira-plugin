@@ -49,6 +49,7 @@ import org.slf4j.LoggerFactory;
 import sonia.scm.mail.api.MailSendBatchException;
 import sonia.scm.mail.api.MailService;
 import sonia.scm.repository.Changeset;
+import sonia.scm.repository.Repository;
 import sonia.scm.security.KeyGenerator;
 import sonia.scm.store.DataStore;
 import sonia.scm.store.DataStoreFactory;
@@ -95,7 +96,7 @@ public class MessageProblemHandler
     this.configuration = configuration;
     this.mailService = mailService;
     this.keyGenerator = keyGenerator;
-    this.store = dataStoreFactory.getStore(CommentData.class, STORE);
+    this.storeFactory = dataStoreFactory;//.getStore(CommentData.class, STORE);
   }
 
   //~--- methods --------------------------------------------------------------
@@ -109,7 +110,7 @@ public class MessageProblemHandler
   public void deleteComment(String id)
   {
     logger.debug("remove comment with id {}", id);
-    store.remove(id);
+    getStore().remove(id);
   }
 
 
@@ -178,7 +179,7 @@ public class MessageProblemHandler
    */
   public List<CommentData> getAllComments()
   {
-    return sort(store.getAll().values());
+    return sort(getStore().getAll().values());
   }
 
   /**
@@ -194,7 +195,7 @@ public class MessageProblemHandler
     //J-
     return sort(
       Iterables.filter(
-        store.getAll().values(), 
+        getStore().getAll().values(),
         new RepositoryPredicate(repositoryId)
       )
     );
@@ -212,7 +213,7 @@ public class MessageProblemHandler
    */
   public CommentData getComment(String id)
   {
-    return store.get(id);
+    return getStore().get(id);
   }
 
   //~--- methods --------------------------------------------------------------
@@ -261,7 +262,7 @@ public class MessageProblemHandler
   {
     logger.debug("save comment {}", commentData);
 
-    store.put(commentData.getId(), commentData);
+    getStore().put(commentData.getId(), commentData);
   }
 
   /**
@@ -286,6 +287,14 @@ public class MessageProblemHandler
   private List<CommentData> sort(Iterable<CommentData> commentData)
   {
     return Ordering.natural().immutableSortedCopy(commentData);
+  }
+
+  private DataStore<CommentData> getStore() {
+    return getStore(null);
+  }
+
+  private DataStore<CommentData> getStore(Repository repository) {
+    return storeFactory.withType(CommentData.class).withName(STORE).forRepository(repository).build();
   }
 
   //~--- inner classes --------------------------------------------------------
@@ -332,5 +341,5 @@ public class MessageProblemHandler
   private final MailService mailService;
 
   /** data store */
-  private final DataStore<CommentData> store;
+  private final DataStoreFactory storeFactory;
 }

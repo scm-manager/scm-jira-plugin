@@ -26,12 +26,6 @@
 
 package sonia.scm.jira.rest;
 
-//~--- non-JDK imports --------------------------------------------------------
-
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-
-//~--- JDK imports ------------------------------------------------------------
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -40,12 +34,9 @@ import javax.xml.bind.annotation.XmlRootElement;
  * Wrapper object to handle transition changes.
  *
  * @author Sebastian Sdorra
- *
- * TODO remove the JsonIgnoreProperties, with the release of SCM-Manager 1.47.
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class RestDoTransition
 {
   

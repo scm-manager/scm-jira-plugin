@@ -28,10 +28,8 @@ package sonia.scm.jira.rest;
 
 //~--- non-JDK imports --------------------------------------------------------
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
-
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 //~--- JDK imports ------------------------------------------------------------
 
@@ -46,12 +44,9 @@ import javax.xml.bind.annotation.XmlRootElement;
  * Wrapper object for jira rest comments.
  *
  * @author Sebastian Sdorra
- *
- * TODO remove the JsonIgnoreProperties, with the release of SCM-Manager 1.47.
  */
 @XmlRootElement(name = "comments")
 @XmlAccessorType(XmlAccessType.FIELD)
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class RestComments implements Iterable<RestComment>
 {
 
@@ -78,7 +73,7 @@ public class RestComments implements Iterable<RestComment>
   public String toString()
   {
     //J-
-    return Objects.toStringHelper(this)
+    return MoreObjects.toStringHelper(this)
                   .add("comments", comments)
                   .toString();
     //J+

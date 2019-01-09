@@ -39,17 +39,17 @@ import com.google.common.base.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sonia.scm.HandlerEvent;
-import sonia.scm.plugin.ext.Extension;
+import sonia.scm.HandlerEventType;
+import sonia.scm.event.HandlerEvent;
+import sonia.scm.plugin.Extension;
 import sonia.scm.repository.Repository;
-import sonia.scm.repository.RepositoryListener;
 
 /**
  *
  * @author Sebastian Sdorra
  */
 @Extension
-public class JiraRepositoryListener implements RepositoryListener
+public class JiraRepositoryListener
 {
 
   /**
@@ -67,10 +67,9 @@ public class JiraRepositoryListener implements RepositoryListener
    * @param repository
    * @param event
    */
-  @Override
   public void onEvent(Repository repository, HandlerEvent event)
   {
-    if (event == HandlerEvent.BEFORE_MODIFY)
+    if (event.getEventType() == HandlerEventType.BEFORE_MODIFY)
     {
       String password =
         repository.getProperty(JiraConfiguration.PROPERTY_PASSWORD);

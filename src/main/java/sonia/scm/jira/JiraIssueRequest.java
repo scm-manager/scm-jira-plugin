@@ -35,7 +35,7 @@ package sonia.scm.jira;
 
 //~--- non-JDK imports --------------------------------------------------------
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 
 import sonia.scm.repository.Repository;
 
@@ -126,7 +126,7 @@ public class JiraIssueRequest implements Closeable
   public String toString()
   {
     //J-
-    return Objects.toStringHelper(this)
+    return MoreObjects.toStringHelper(this)
                   .add("handlerFactory", handlerFactory.getClass())
                   .add("username", username)
                   .add("password", "xxx")
@@ -149,7 +149,7 @@ public class JiraIssueRequest implements Closeable
    */
   public String getAuthor()
   {
-    return Objects.firstNonNull(author, username);
+    return MoreObjects.firstNonNull(author, username);
   }
 
   /**

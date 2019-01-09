@@ -35,7 +35,7 @@ package sonia.scm.jira;
 
 //~--- non-JDK imports --------------------------------------------------------
 
-import com.google.common.eventbus.Subscribe;
+import com.github.legman.Subscribe;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
@@ -43,9 +43,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sonia.scm.EagerSingleton;
-import sonia.scm.event.Subscriber;
 import sonia.scm.jira.resubmit.MessageProblemHandler;
-import sonia.scm.plugin.ext.Extension;
+import sonia.scm.plugin.Extension;
 import sonia.scm.repository.Changeset;
 import sonia.scm.repository.PostReceiveRepositoryHookEvent;
 import sonia.scm.repository.Repository;
@@ -62,7 +61,6 @@ import sonia.scm.util.IOUtil;
  */
 @Extension
 @EagerSingleton
-@Subscriber(async = true)
 public final class JiraIssuePostReceiveHook
 {
 
@@ -183,8 +181,6 @@ public final class JiraIssuePostReceiveHook
   {
     Iterable<Changeset> changesets = null;
 
-    if (event.isContextAvailable())
-    {
       HookContext hookCtx = event.getContext();
 
       if (hookCtx.isFeatureSupported(HookFeature.CHANGESET_PROVIDER))
@@ -197,17 +193,6 @@ public final class JiraIssuePostReceiveHook
       {
         logger.warn("hook context does not support changeset provider");
       }
-    }
-    else
-    {
-      logger.warn("event does not support hook context");
-    }
-
-    if (changesets == null)
-    {
-      logger.warn("fall back to old getChangesets method");
-      changesets = event.getChangesets();
-    }
 
     return changesets;
   }

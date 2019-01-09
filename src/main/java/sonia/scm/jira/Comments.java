@@ -35,7 +35,6 @@ package sonia.scm.jira;
 
 import com.google.common.base.Strings;
 
-import sonia.scm.repository.EscapeUtil;
 import sonia.scm.util.Util;
 
 //~--- JDK imports ------------------------------------------------------------
@@ -148,7 +147,7 @@ public final class Comments
     //J+
 
     body = body.replaceAll(link, issueId);
-    body = body.replaceAll(EscapeUtil.escape(link), issueId);
+//    body = body.replaceAll(EscapeUtil.escape(link), issueId);
 
     return body;
   }

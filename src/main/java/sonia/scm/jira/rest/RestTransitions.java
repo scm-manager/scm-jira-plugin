@@ -28,10 +28,8 @@ package sonia.scm.jira.rest;
 
 //~--- non-JDK imports --------------------------------------------------------
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
-
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 //~--- JDK imports ------------------------------------------------------------
 
@@ -46,12 +44,9 @@ import javax.xml.bind.annotation.XmlRootElement;
  * Wrapper object jira rest transitions.
  *
  * @author Sebastian Sdorra
- *
- * TODO remove the JsonIgnoreProperties, with the release of SCM-Manager 1.47.
  */
 @XmlRootElement(name = "transitions")
 @XmlAccessorType(XmlAccessType.FIELD)
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class RestTransitions implements Iterable<RestTransition>
 {
  
@@ -75,7 +70,7 @@ public class RestTransitions implements Iterable<RestTransition>
   public String toString()
   {
     //J-
-    return Objects.toStringHelper(this)
+    return MoreObjects.toStringHelper(this)
                   .add("transitions", transitions)
                   .toString();
     //J+

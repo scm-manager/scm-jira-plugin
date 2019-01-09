@@ -39,7 +39,7 @@ import com.google.inject.AbstractModule;
 
 import sonia.scm.jira.resubmit.MessageProblemHandler;
 import sonia.scm.jira.resubmit.ResubmitCommentsHandler;
-import sonia.scm.plugin.ext.Extension;
+import sonia.scm.plugin.Extension;
 
 /**
  *

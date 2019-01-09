@@ -40,8 +40,6 @@ import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sonia.scm.repository.RepositoryException;
-
 //~--- JDK imports ------------------------------------------------------------
 
 import java.io.IOException;
@@ -90,12 +88,11 @@ public class ResubmitCommentsResource
    *  message.
    *
    * @throws IOException
-   * @throws RepositoryException
    */
   @POST
   @Path("all")
   @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-  public Response resubmitAll() throws IOException, RepositoryException
+  public Response resubmitAll() throws IOException
   {
     logger.trace("resubmit all stored comments");
 
@@ -116,13 +113,12 @@ public class ResubmitCommentsResource
    *  message.
    *
    * @throws IOException
-   * @throws RepositoryException
    */
   @POST
   @Path("repository/{repositoryId}")
   @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
   public Response resubmitAllFromRepository(
-    @PathParam("repositoryId") String repositoryId) throws IOException, RepositoryException
+    @PathParam("repositoryId") String repositoryId) throws IOException
   {
     logger.trace("resubmit all stored comments of repository {}", repositoryId);
 
@@ -143,12 +139,11 @@ public class ResubmitCommentsResource
    *  message.
    *
    * @throws IOException
-   * @throws RepositoryException
    */
   @POST
   @Path("comment/{commentId}")
   @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-  public Response resubmit(@PathParam("commentId") String commentId) throws IOException, RepositoryException
+  public Response resubmit(@PathParam("commentId") String commentId) throws IOException
   {
     logger.trace("resubmit stored comment {}", commentId);
 

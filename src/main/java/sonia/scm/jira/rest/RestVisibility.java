@@ -30,22 +30,18 @@
  */
 package sonia.scm.jira.rest;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 /**
  * Jira rest api visibility of a comment.
  *
  * @author Sebastian Sdorra
- *
- * TODO remove the JsonIgnoreProperties, with the release of SCM-Manager 1.47.
  */
 @XmlRootElement(name = "visibility")
 @XmlAccessorType(XmlAccessType.FIELD)
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class RestVisibility
 {
 
@@ -70,7 +66,7 @@ public class RestVisibility
   public String toString()
   {
     //J-
-    return Objects.toStringHelper(this)
+    return MoreObjects.toStringHelper(this)
                   .add("type", type)
                   .add("value", value)
                   .toString();

@@ -43,10 +43,10 @@ import org.slf4j.LoggerFactory;
 
 import sonia.scm.repository.Changeset;
 import sonia.scm.repository.Repository;
+import sonia.scm.store.ConfigurationStore;
+import sonia.scm.store.ConfigurationStoreFactory;
 import sonia.scm.store.DataStore;
 import sonia.scm.store.DataStoreFactory;
-import sonia.scm.store.Store;
-import sonia.scm.store.StoreFactory;
 
 /**
  * Global jira context.
@@ -76,11 +76,11 @@ public class JiraGlobalContext
    * @param dataStoreFactory data store factory
    */
   @Inject
-  public JiraGlobalContext(StoreFactory storeFactory,
-    DataStoreFactory dataStoreFactory)
+  public JiraGlobalContext(ConfigurationStoreFactory storeFactory,
+                           DataStoreFactory dataStoreFactory)
   {
-    store = storeFactory.getStore(JiraGlobalConfiguration.class, NAME);
-    dataStore = dataStoreFactory.getStore(JiraData.class, NAME);
+    store = storeFactory.withType(JiraGlobalConfiguration.class).withName(NAME).build();
+    dataStore = dataStoreFactory.withType(JiraData.class).withName(NAME).build();
     configuration = store.get();
 
     if (configuration == null)
@@ -176,5 +176,5 @@ public class JiraGlobalContext
   private final DataStore<JiraData> dataStore;
 
   /** global configuration store */
-  private final Store<JiraGlobalConfiguration> store;
+  private final ConfigurationStore<JiraGlobalConfiguration> store;
 }

@@ -35,12 +35,13 @@ package sonia.scm.jira;
 
 //~--- non-JDK imports --------------------------------------------------------
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableSet;
 
 import sonia.scm.PropertiesAware;
 import sonia.scm.Validateable;
+import sonia.scm.issuetracker.EncryptionUtil;
+import sonia.scm.issuetracker.XmlEncryptionAdapter;
 import sonia.scm.util.Util;
 
 //~--- JDK imports ------------------------------------------------------------
@@ -53,8 +54,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import java.util.Collections;
-import java.util.Set;
 
 //~--- JDK imports ------------------------------------------------------------
 
@@ -165,7 +164,7 @@ public class JiraConfiguration implements Validateable
   public String toString()
   {
     //J-
-    return Objects.toStringHelper(this)
+    return MoreObjects.toStringHelper(this)
                   .add("url", url)
                   .add("updateIssues", updateIssues)
                   .add("commentPrefix", commentPrefix)

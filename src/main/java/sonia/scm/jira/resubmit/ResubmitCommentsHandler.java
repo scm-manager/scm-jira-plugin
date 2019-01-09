@@ -54,7 +54,6 @@ import sonia.scm.jira.JiraIssueRequestFactory;
 import sonia.scm.repository.Changeset;
 import sonia.scm.repository.PermissionType;
 import sonia.scm.repository.Repository;
-import sonia.scm.repository.RepositoryException;
 import sonia.scm.repository.RepositoryManager;
 import sonia.scm.repository.api.RepositoryService;
 import sonia.scm.repository.api.RepositoryServiceFactory;
@@ -122,10 +121,9 @@ public class ResubmitCommentsHandler
    * @param commentId id of the comment
    *
    * @throws IOException
-   * @throws RepositoryException
    * @throws CommentNotFoundException
    */
-  public void resubmit(String commentId) throws IOException, RepositoryException, CommentNotFoundException
+  public void resubmit(String commentId) throws IOException, CommentNotFoundException
   {
     resubmit(getCommentChecked(commentId));
   }
@@ -174,9 +172,8 @@ public class ResubmitCommentsHandler
    * Resend all comments to jira.
    *
    * @throws IOException
-   * @throws RepositoryException
    */
-  public void resubmitAll() throws IOException, RepositoryException
+  public void resubmitAll() throws IOException
   {
     SecurityUtils.getSubject().checkRole(Role.ADMIN);
 
@@ -190,10 +187,9 @@ public class ResubmitCommentsHandler
    * @param repositoryId repository id
    *
    * @throws IOException
-   * @throws RepositoryException
    */
   public void resubmitAllFromRepository(String repositoryId)
-    throws IOException, RepositoryException
+    throws IOException
   {
     //J-
     SecurityUtils.getSubject().checkPermission(
@@ -241,7 +237,7 @@ public class ResubmitCommentsHandler
   }
 
   private void resubmit(List<CommentData> comments)
-    throws IOException, RepositoryException
+    throws IOException
   {
     logger.trace("resubmit {} comments", comments.size());
 
@@ -257,10 +253,9 @@ public class ResubmitCommentsHandler
    * @param commentData The data to use for resent.
    *
    * @throws IOException
-   * @throws RepositoryException
    */
   private void resubmit(CommentData commentData)
-    throws IOException, RepositoryException
+    throws IOException
   {
     logger.info("resubmit comment with id {} for issue {}", commentData.getId(),
       commentData.getIssueId());
@@ -302,10 +297,9 @@ public class ResubmitCommentsHandler
    * @return {@link Changeset} with the given id
    *
    * @throws IOException
-   * @throws RepositoryException
    */
   private Changeset getChangeset(Repository repository, String changesetId)
-    throws IOException, RepositoryException
+    throws IOException
   {
     Changeset changeset = null;
     RepositoryService service = null;
