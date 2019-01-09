@@ -37,6 +37,7 @@ package sonia.scm.jira;
 
 import com.google.common.base.MoreObjects;
 
+import sonia.scm.repository.Changeset;
 import sonia.scm.repository.Repository;
 
 //~--- JDK imports ------------------------------------------------------------
@@ -69,7 +70,7 @@ public class JiraIssueRequest implements Closeable
    */
   public JiraIssueRequest(JiraHandlerFactory handlerFactory, String username,
     String password, JiraConfiguration configuration, Repository repository,
-    String author, Calendar creation)
+    Changeset changeset, String author, Calendar creation)
   {
     this.handlerFactory = handlerFactory;
     this.username = username;
@@ -78,6 +79,7 @@ public class JiraIssueRequest implements Closeable
     this.repository = repository;
     this.author = author;
     this.creation = creation;
+    this.changeset = changeset;
   }
 
   //~--- methods --------------------------------------------------------------
@@ -199,6 +201,11 @@ public class JiraIssueRequest implements Closeable
     return repository;
   }
 
+  public Changeset getChangeset()
+  {
+    return changeset;
+  }
+
   /**
    * Returns the username which is used for the connection.
    *
@@ -229,6 +236,8 @@ public class JiraIssueRequest implements Closeable
 
   /** changed repository */
   private final Repository repository;
+
+  private final Changeset changeset;
 
   /** connection username */
   private final String username;

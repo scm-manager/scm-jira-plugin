@@ -41,12 +41,8 @@ import com.google.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sonia.scm.repository.Changeset;
-import sonia.scm.repository.Repository;
 import sonia.scm.store.ConfigurationStore;
 import sonia.scm.store.ConfigurationStoreFactory;
-import sonia.scm.store.DataStore;
-import sonia.scm.store.DataStoreFactory;
 
 /**
  * Global jira context.
@@ -73,40 +69,17 @@ public class JiraGlobalContext
    *
    *
    * @param storeFactory store factory
-   * @param dataStoreFactory data store factory
    */
   @Inject
-  public JiraGlobalContext(ConfigurationStoreFactory storeFactory,
-                           DataStoreFactory dataStoreFactory)
+  public JiraGlobalContext(ConfigurationStoreFactory storeFactory)
   {
     store = storeFactory.withType(JiraGlobalConfiguration.class).withName(NAME).build();
-    dataStore = dataStoreFactory.withType(JiraData.class).withName(NAME).build();
     configuration = store.get();
 
     if (configuration == null)
     {
       configuration = new JiraGlobalConfiguration();
     }
-  }
-
-  //~--- methods --------------------------------------------------------------
-
-  /**
-   * Marks an changeset as handled.
-   *
-   *
-   * @param repository changed repository
-   * @param changeset changeset
-   */
-  public void markAsHandled(Repository repository, Changeset changeset)
-  {
-    logger.debug("mark changeset {} of repository {} as handled",
-      changeset.getId(), repository.getId());
-
-    JiraData data = getData(repository);
-
-    data.getHandledChangesets().add(changeset.getId());
-    dataStore.put(repository.getId(), data);
   }
 
   //~--- get methods ----------------------------------------------------------
@@ -120,22 +93,6 @@ public class JiraGlobalContext
   public JiraGlobalConfiguration getConfiguration()
   {
     return configuration;
-  }
-
-  /**
-   * Returns {@code true} if the changeset is already handled.
-   *
-   *
-   * @param repository changed repository
-   * @param changeset changeset
-   *
-   * @return {@code true} if the changeset is already handled
-   */
-  public boolean isHandled(Repository repository, Changeset changeset)
-  {
-    JiraData data = getData(repository);
-
-    return data.getHandledChangesets().contains(changeset.getId());
   }
 
   //~--- set methods ----------------------------------------------------------
@@ -153,27 +110,10 @@ public class JiraGlobalContext
     this.store.set(configuration);
   }
 
-  //~--- get methods ----------------------------------------------------------
-
-  private JiraData getData(Repository repository)
-  {
-    JiraData data = dataStore.get(repository.getId());
-
-    if (data == null)
-    {
-      data = new JiraData();
-    }
-
-    return data;
-  }
-
   //~--- fields ---------------------------------------------------------------
 
   /** global jira configuration */
   private JiraGlobalConfiguration configuration;
-
-  /** data store */
-  private final DataStore<JiraData> dataStore;
 
   /** global configuration store */
   private final ConfigurationStore<JiraGlobalConfiguration> store;

@@ -44,6 +44,7 @@ import com.google.common.base.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sonia.scm.issuetracker.CommentHandler;
 import sonia.scm.jira.resubmit.MessageProblemHandler;
 import sonia.scm.repository.Changeset;
 
@@ -59,7 +60,7 @@ import java.util.Map;
  *
  * @author Sebastian Sdorra
  */
-public class JiraIssueHandler
+public class JiraIssueHandler implements CommentHandler
 {
 
   /** env variable auto close word */
@@ -89,15 +90,21 @@ public class JiraIssueHandler
 
   //~--- methods --------------------------------------------------------------
 
+  @Override
+  public void close() throws IOException {
+
+  }
+
   /**
    * Updates or closes the jira issue with the given id.
    *
    *
    * @param issueId jira issue id
-   * @param changeset changeset
    */
-  public void handleIssue(String issueId, Changeset changeset)
+  @Override
+  public void commentIssue(String issueId)
   {
+    Changeset changeset = request.getChangeset();
     if (request.getConfiguration().isAutoCloseEnabled())
     {
       if (logger.isTraceEnabled())

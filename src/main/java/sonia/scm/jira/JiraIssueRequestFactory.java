@@ -50,6 +50,7 @@ import org.slf4j.LoggerFactory;
 import sonia.scm.jira.rest.RestJiraHandlerFactory;
 import sonia.scm.jira.soap.SoapJiraHandlerFactory;
 import sonia.scm.net.ahc.AdvancedHttpClient;
+import sonia.scm.repository.Changeset;
 import sonia.scm.repository.Repository;
 import sonia.scm.security.CipherUtil;
 import sonia.scm.util.AssertUtil;
@@ -99,9 +100,9 @@ public class JiraIssueRequestFactory
    *
    * @return new {@link JiraIssueRequest}
    */
-  public JiraIssueRequest createRequest(JiraConfiguration configuration, Repository repository)
+  public JiraIssueRequest createRequest(JiraConfiguration configuration, Repository repository, Changeset changeset)
   {
-    return createRequest(configuration, repository, null, null);
+    return createRequest(configuration, repository, changeset, null, null);
   }
 
   /**
@@ -114,7 +115,7 @@ public class JiraIssueRequestFactory
    *
    * @return new {@link JiraIssueRequest}
    */
-  public JiraIssueRequest createRequest(JiraConfiguration configuration, Repository repository, String author,
+  public JiraIssueRequest createRequest(JiraConfiguration configuration, Repository repository, Changeset changeset, String author,
     Calendar creation)
   {
     String username = configuration.getUsername();
@@ -133,7 +134,7 @@ public class JiraIssueRequestFactory
     logger.debug("create jira issue request for user {}", username);
 
     return new JiraIssueRequest(createJiraHandlerFactory(configuration), username, password, configuration, repository,
-      author, creation);
+      changeset, author, creation);
   }
 
   private JiraHandlerFactory createJiraHandlerFactory(JiraConfiguration configuration)

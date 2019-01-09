@@ -221,8 +221,7 @@ public class ResubmitCommentsHandler
    *
    * @return jira issue request
    */
-  private JiraIssueRequest createRequest(CommentData commentData)
-  {
+  private JiraIssueRequest createRequest(CommentData commentData) throws IOException {
     Repository repository =
       repositoryManager.get(commentData.getRepositoryId());
 
@@ -231,8 +230,10 @@ public class ResubmitCommentsHandler
     JiraConfiguration cfg = JiraConfigurationResolver.resolve(context,
                               repository);
 
+    Changeset changeset = getChangeset(repository,
+                            commentData.getChangesetId());
     // todo handle npe for changeset
-    return requestFactory.createRequest(cfg, repository,
+    return requestFactory.createRequest(cfg, repository, changeset,
       commentData.getAuthor(), commentData.getCreated());
   }
 
@@ -262,8 +263,7 @@ public class ResubmitCommentsHandler
 
     // used stored configuration instead of global one
     JiraIssueRequest request = createRequest(commentData);
-    Changeset changeset = getChangeset(request.getRepository(),
-                            commentData.getChangesetId());
+    Changeset changeset = request.getChangeset();
 
     // todo handle npe for changeset
 

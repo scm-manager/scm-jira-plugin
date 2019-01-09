@@ -53,6 +53,9 @@ import java.util.regex.Matcher;
 public final class Comments
 {
 
+  public static final String REPLACEMENT_LINK =
+    "<a target=\"_blank\" href=\"{0}/browse/$0\">$0</a>";
+
   /**
    * Constructs ...
    *
@@ -141,7 +144,7 @@ public final class Comments
   {
     //J-
     String link = MessageFormat.format(
-      JiraChangesetPreProcessorFactory.REPLACEMENT_LINK,
+      REPLACEMENT_LINK,
       jiraUrl
     ).replaceAll(Matcher.quoteReplacement("$0"), issueId);
     //J+

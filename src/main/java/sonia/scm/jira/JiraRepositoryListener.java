@@ -41,6 +41,7 @@ import org.slf4j.LoggerFactory;
 
 import sonia.scm.HandlerEventType;
 import sonia.scm.event.HandlerEvent;
+import sonia.scm.issuetracker.EncryptionUtil;
 import sonia.scm.plugin.Extension;
 import sonia.scm.repository.Repository;
 
