@@ -104,6 +104,7 @@ class JiraConfigurationItems extends React.Component<Props, State> {
                     helpText={t("scm-jira-plugin.form.passwordHelp")}
                     disabled={readOnly || !this.state.updateIssues}
                     value={this.state.password}
+                    type={"password"}
                     onChange={this.valueChangeHandler}/>
         <Checkbox name={"resubmission"}
                   label={t("scm-jira-plugin.form.resubmission")}
