@@ -61,7 +61,9 @@ public class JiraGlobalConfiguration extends JiraConfiguration
     return disableRepositoryConfiguration;
   }
 
-  //~--- fields ---------------------------------------------------------------
+  public void setDisableRepositoryConfiguration(boolean disableRepositoryConfiguration) {
+    this.disableRepositoryConfiguration = disableRepositoryConfiguration;
+  }
 
   /** repository configuration is disabled */
   @XmlElement(name = "disable-repository-configuration")

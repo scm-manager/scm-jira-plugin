@@ -383,7 +383,50 @@ public class JiraConfiguration implements Validateable
     this.updateIssues = updateIssues;
   }
 
-  //~--- fields ---------------------------------------------------------------
+  public void setMailAddress(String mailAddress) {
+    this.mailAddress = mailAddress;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
+  public void setRestApiEnabled(boolean restApiEnabled) {
+    this.restApiEnabled = restApiEnabled;
+  }
+
+  public void setCommentPrefix(String commentPrefix) {
+    this.commentPrefix = commentPrefix;
+  }
+
+  public void setFilter(String filter) {
+    this.filter = filter;
+  }
+
+  public void setResubmission(boolean resubmission) {
+    this.resubmission = resubmission;
+  }
+
+  public void setRoleLevel(String roleLevel) {
+    this.roleLevel = roleLevel;
+  }
+
+  public void setUrl(String url) {
+    this.url = url;
+  }
+
+  public void setUsername(String username) {
+    this.username = username;
+  }
+
+  public void setCommentWrap(String commentWrap) {
+    this.commentWrap = commentWrap;
+  }
+
+  public void setCommentMonospace(boolean commentMonospace) {
+    this.commentMonospace = commentMonospace;
+  }
+//~--- fields ---------------------------------------------------------------
 
   /** auto close */
   @XmlElement(name = "auto-close")
