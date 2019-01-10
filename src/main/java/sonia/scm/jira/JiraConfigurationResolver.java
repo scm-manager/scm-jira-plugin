@@ -81,7 +81,7 @@ public class JiraConfigurationResolver
     }
     else
     {
-      configuration = new JiraConfiguration(repository);
+      configuration = context.getConfiguration(repository);
 
       if (!configuration.isValid())
       {

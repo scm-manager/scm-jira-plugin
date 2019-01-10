@@ -116,45 +116,6 @@ public class JiraConfiguration implements Validateable
   /** separator for set properties */
   public static final String SEPARATOR = ",";
 
-  //~--- constructors ---------------------------------------------------------
-
-  /**
-   * This constructor should only be used by jaxb.
-   *
-   */
-  public JiraConfiguration() {}
-
-  /**
-   * Constructs a new JiraConfiguration.
-   *
-   *
-   * @param properties property holding object
-   */
-  public JiraConfiguration(PropertiesAware properties)
-  {
-    url = properties.getProperty(PROPERTY_JIRA_URL);
-    updateIssues = getBooleanProperty(properties, PROPERTY_UPDATEISSUES);
-    autoClose = getBooleanProperty(properties, PROPERTY_AUTOCLOSE);
-    autoCloseWords = getAutoCloseWordProperty(properties, PROPERTY_AUTOCLOSEWORDS);
-    username = properties.getProperty(PROPERTY_USERNAME);
-    password = getEncryptedProperty(properties, PROPERTY_PASSWORD);
-    roleLevel = properties.getProperty(PROPERTY_ROLELEVEL);
-    commentPrefix = properties.getProperty(PROPERTY_COMMENT_PREFIX);
-    filter = properties.getProperty(PROPERTY_FILTER);
-    mailAddress = properties.getProperty(PROPERTY_ERROR_MAIL);
-
-    resubmission = getBooleanProperty(properties, PROPERTY_RESUBMISSION);
-    restApiEnabled = getBooleanProperty(properties, PROPERTY_REST_API);
-
-    commentWrap = properties.getProperty(PROPERTY_WRAP_FORMAT);
-    commentMonospace = getBooleanProperty(properties, PROPERTY_MONOSPACE);
-
-    if (Strings.isNullOrEmpty(commentPrefix))
-    {
-      commentPrefix = DEFAULT_COMMENT_PREFIX;
-    }
-  }
-
   //~--- methods --------------------------------------------------------------
 
   /**
@@ -394,6 +355,30 @@ public class JiraConfiguration implements Validateable
     }
 
     return map;
+  }
+
+  void setAutoCloseWordsForMapping(Map<String, String> autoCloseWords) {
+    this.autoCloseWords = autoCloseWords;
+  }
+
+  Map<String, String> getAutoCloseWordsForMapping() {
+    return this.autoCloseWords;
+  }
+
+  public boolean isAutoClose() {
+    return autoClose;
+  }
+
+  public void setAutoClose(boolean autoClose) {
+    this.autoClose = autoClose;
+  }
+
+  public boolean isUpdateIssues() {
+    return updateIssues;
+  }
+
+  public void setUpdateIssues(boolean updateIssues) {
+    this.updateIssues = updateIssues;
   }
 
   //~--- fields ---------------------------------------------------------------

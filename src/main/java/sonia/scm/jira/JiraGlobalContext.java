@@ -41,6 +41,7 @@ import com.google.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sonia.scm.repository.Repository;
 import sonia.scm.store.ConfigurationStore;
 import sonia.scm.store.ConfigurationStoreFactory;
 
@@ -73,17 +74,12 @@ public class JiraGlobalContext
   @Inject
   public JiraGlobalContext(ConfigurationStoreFactory storeFactory)
   {
+    this.storeFactory = storeFactory;
     store = storeFactory.withType(JiraGlobalConfiguration.class).withName(NAME).build();
-    configuration = store.get();
-
-    if (configuration == null)
-    {
-      configuration = new JiraGlobalConfiguration();
-    }
   }
 
-  //~--- get methods ----------------------------------------------------------
 
+  //~--- get methods ----------------------------------------------------------
   /**
    * Returns the global jira configuration.
    *
@@ -92,11 +88,19 @@ public class JiraGlobalContext
    */
   public JiraGlobalConfiguration getConfiguration()
   {
-    return configuration;
+    return store
+      .getOptional()
+      .orElse(new JiraGlobalConfiguration());
   }
 
-  //~--- set methods ----------------------------------------------------------
+  public JiraConfiguration getConfiguration(Repository repository) {
+    return getRepositoryStore(repository)
+      .getOptional()
+      .orElse(new JiraConfiguration());
+  }
 
+
+  //~--- set methods ----------------------------------------------------------
   /**
    * Sets and stores the global jira configuration.
    *
@@ -106,15 +110,25 @@ public class JiraGlobalContext
   public void setConfiguration(JiraGlobalConfiguration configuration)
   {
     logger.debug("store jira configuration");
-    this.configuration = configuration;
     this.store.set(configuration);
   }
 
+  public void setConfiguration(JiraConfiguration configuration, Repository repository) {
+    getRepositoryStore(repository)
+      .set(configuration);
+  }
+
+  private ConfigurationStore<JiraConfiguration> getRepositoryStore(Repository repository) {
+    return storeFactory
+      .withType(JiraConfiguration.class)
+      .withName(NAME)
+      .forRepository(repository)
+      .build();
+  }
+
   //~--- fields ---------------------------------------------------------------
-
-  /** global jira configuration */
-  private JiraGlobalConfiguration configuration;
-
   /** global configuration store */
   private final ConfigurationStore<JiraGlobalConfiguration> store;
+
+  private final ConfigurationStoreFactory storeFactory;
 }
