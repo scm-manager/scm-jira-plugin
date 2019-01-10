@@ -46,7 +46,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Sebastian Sdorra
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "jira-configuration")
+@XmlRootElement(name = "jira-global-configuration")
 public class JiraGlobalConfiguration extends JiraConfiguration
 {
 
