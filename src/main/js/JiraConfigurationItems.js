@@ -121,7 +121,7 @@ class JiraConfigurationItems extends React.Component<Props, State> {
         <InputField name={"mailAddress"}
                     label={t("scm-jira-plugin.form.mailAddress")}
                     helpText={t("scm-jira-plugin.form.mailAddressHelp")}
-                    disabled={readOnly}
+                    disabled={readOnly || !this.state.resubmission}
                     value={this.state.mailAddress}
                     onChange={this.valueChangeHandler}/>
         <InputField name={"commentWrap"}
