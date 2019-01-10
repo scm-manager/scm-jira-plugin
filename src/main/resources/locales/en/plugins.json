@@ -1,0 +1,45 @@
+{
+  "scm-jira-plugin": {
+    "global": {
+      "nav-link": "Jira",
+      "header": "Global Jira Configuration"
+    },
+    "local": {
+      "nav-link": "Jira",
+      "header": "Jira Configuration"
+    },
+    "form": {
+      "url": "Url",
+      "urlHelp": "Url of Jira installation (with contextpath).",
+      "disableRepositoryConfiguration": "Do not allow repository configuration",
+      "disableRepositoryConfigurationHelp": "Do not allow repository owners to configure jira instances. You have to restart your application server after changing this value.",
+      "updateJiraIssues": "Update Jira Issues",
+      "updateJiraIssuesHelp": "Enable the automatic update function. SCM-Manager searches for issue keys in commit messages. If a issue id is found SCM-Manager updates the issue with a comment. <b>Note:</b> If username and password are different in SCM-Manager and Jira, it is necessary to configure the username and password below.",
+      "autoClose": "Enable Status Modification",
+      "autoCloseHelp": "Enable the automatic update function. SCM-Manager searches for issue keys in commit messages. If a issue id is found SCM-Manager updates the issue with a comment. <b>Note:</b> If username and password are different in SCM-Manager and Jira, it is necessary to configure the username and password below.",
+      "autoCloseWords": "Status Modification Words",
+      "autoCloseWordsHelp": "Comma separated list of terms to enable the status modification function. Add the transitions name (e.g. start progress, stop progress, ...) or configure a mapping (e.g. start = start progress, beginn = start progress, stop = stop progress,...). The transition names depend on your jira workflow. Each commit message of a changeset gets searched for these words.",
+      "mailAddress": "E-Mail",
+      "mailAddressHelp": "The mail address to send a message to if a jira comment fails.",
+      "username": "Username",
+      "usernameHelp": "Jira username for connection. Leave this field empty to create the connection with the credentials of the user which is logged in to SCM-Manager.",
+      "password": "Password",
+      "passwordHelp": "Jira password for connection.",
+      "restApiEnabled": "Rest API v2",
+      "restApiEnabledHelp": "Use Jira Rest API v2 to communicate with Jira.",
+      "commentPrefix": "Comment prefix",
+      "commentPrefixHelp": "The comment prefix is created at the beginning of every comment in Jira created by SCM-Manager. The default prefix is [SCM].",
+      "filter": "Project Filter",
+      "filterHelp": "Filters for jira project key. Multiple filters seperated by \",\". e.g.: SCM,TST,ASD",
+      "resubmission": "Enable resubmission",
+      "resubmissionHelp": "By enabling this option SCM-Manager stores the comments for resubmission in case the Jira server is not available. An information about the failed submission will be sent to the e-mail configured below.",
+      "roleLevel": "Role visibility",
+      "roleLevelHelp": "Defines for which Project Role the comments are visible. <b>Note:</b> The name must be a valid jira role name.",
+      "commentWrap": "Wrap Comment With",
+      "commentWrapHelp": "Text to place around the changeset description in the Jira comment. The default is no wrapping.  Examples:  {quote} or {noformat}.  See https://jira.atlassian.com/secure/WikiRendererHelpAction.jspa?section=all",
+      "commentMonospace": "Monospace",
+      "commentMonospaceHelp": "Should the comment include the mono-space wrapper?  {{ }}.  Note:  Jira handling for this is not consistent."
+    },
+    "configurationChangedSuccess": "Configuration changed"
+  }
+}
