@@ -73,51 +73,6 @@ public class JiraConfiguration implements Validateable
 
   public static final String DEFAULT_COMMENT_WRAP = "";
 
-  /** auto close property */
-  public static final String PROPERTY_AUTOCLOSE = "jira.auto-close";
-
-  /** auto close words property */
-  public static final String PROPERTY_AUTOCLOSEWORDS = "jira.auto-close-words";
-
-  /** comment prefix property */
-  public static final String PROPERTY_COMMENT_PREFIX = "jira.comment-prefix";
-  
-  /** filter property */
-  public static final String PROPERTY_FILTER = "jira.filter";
-
-  /** Address used in case of error */
-  public static final String PROPERTY_ERROR_MAIL = "jira.mail-error-address";
-
-  /** url property */
-  public static final String PROPERTY_JIRA_URL = "jira.url";
-
-  /** password property */
-  public static final String PROPERTY_PASSWORD = "jira.password";
-
-  /** resubmission */
-  public static final String PROPERTY_RESUBMISSION = "jira.resubmission";
-  
-  /** use jira rest api v2 */
-  public static final String PROPERTY_REST_API = "jira.rest-api-enabled";
-
-  /** role level property */
-  public static final String PROPERTY_ROLELEVEL = "jira.role-level";
-
-  /** update issues property */
-  public static final String PROPERTY_UPDATEISSUES = "jira.update-issues";
-
-  /** username property */
-  public static final String PROPERTY_USERNAME = "jira.username";
-
-  /** wrap property */
-  public static final String PROPERTY_WRAP_FORMAT = "jira.comment-wrap";
-
-  /** monospace property */
-  public static final String PROPERTY_MONOSPACE = "jira.comment-monospace";
-
-  /** separator for set properties */
-  public static final String SEPARATOR = ",";
-
   //~--- methods --------------------------------------------------------------
 
   /**
@@ -314,49 +269,6 @@ public class JiraConfiguration implements Validateable
   public boolean getCommentMonospace() 
   { 
     return commentMonospace; 
-  }
-
-
-  private boolean getBooleanProperty(PropertiesAware repository, String key)
-  {
-    boolean result = false;
-    String value = repository.getProperty(key);
-
-    if (Util.isNotEmpty(value))
-    {
-      result = Boolean.parseBoolean(value);
-    }
-
-    return result;
-  }
-
-  private String getEncryptedProperty(PropertiesAware repository, String key)
-  {
-    String value = repository.getProperty(key);
-
-    if (EncryptionUtil.isEncrypted(value))
-    {
-      value = EncryptionUtil.decrypt(value);
-    }
-
-    return value;
-  }
-
-  private Map<String,String> getAutoCloseWordProperty(PropertiesAware repository, String key)
-  {
-    Map<String,String> map;
-    String value = repository.getProperty(key);
-
-    if (!Strings.isNullOrEmpty(value))
-    {
-      map = AutoCloseWords.parse(value);
-    }
-    else
-    {
-      map = Collections.EMPTY_MAP;
-    }
-
-    return map;
   }
 
   void setAutoCloseWordsForMapping(Map<String, String> autoCloseWords) {
