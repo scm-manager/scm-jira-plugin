@@ -43,6 +43,7 @@ import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryManager;
 import sonia.scm.repository.RepositoryPermissions;
 
+import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
@@ -111,7 +112,7 @@ public class JiraConfigurationResource {
     @ResponseCode(code = 403, condition = "not authorized, the current user does not have the privilege to change the configuration"),
     @ResponseCode(code = 500, condition = "internal server error")
   })
-  public Response update(JiraGlobalConfigurationDto updatedConfig) {
+  public Response update(@Valid JiraGlobalConfigurationDto updatedConfig) {
     ConfigurationPermissions.write(configuration).check();
     context.setConfiguration(jiraGlobalConfigurationMapper.map(updatedConfig));
 
@@ -146,7 +147,7 @@ public class JiraConfigurationResource {
     @ResponseCode(code = 404, condition = "not found, no repository with the specified namespace and name available"),
     @ResponseCode(code = 500, condition = "internal server error")
   })
-  public Response updateForRepository(@PathParam("namespace") String namespace, @PathParam("name") String name, JiraConfigurationDto updatedConfig) {
+  public Response updateForRepository(@PathParam("namespace") String namespace, @PathParam("name") String name, @Valid JiraConfigurationDto updatedConfig) {
     Repository repository = loadRepository(namespace, name);
     context.setConfiguration(jenkinsConfigurationMapper.map(updatedConfig), repository);
 

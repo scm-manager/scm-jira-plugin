@@ -1,7 +1,7 @@
 //@flow
 
 import React from "react";
-import {Checkbox, Configuration, InputField} from "@scm-manager/ui-components";
+import {Checkbox, Configuration, InputField, validation} from "@scm-manager/ui-components";
 import {translate} from "react-i18next";
 
 type JiraConfiguration = {
@@ -31,7 +31,7 @@ type Props = {
 }
 
 type State = JiraConfiguration & {
-  configurationChanged: boolean
+  mailValid: boolean
 };
 
 class JiraConfigurationItems extends React.Component<Props, State> {
@@ -39,15 +39,31 @@ class JiraConfigurationItems extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      configurationChanged: false,
+      mailValid: true,
       ...props.initialConfiguration
     };
   }
 
+  emailChangeHandler = (value: string, name: string) => {
+    let mailValid = value === "" || validation.isMailValid(value);
+    this.setState({
+      mailAddress: value,
+      mailValid: mailValid,
+    }, this.configurationChangedCallback);
+  };
+
   valueChangeHandler = (value: string, name: string) => {
     this.setState({
       [name]: value
-    }, () => this.props.onConfigurationChange({...this.state}, true));
+    }, this.configurationChangedCallback);
+  };
+
+  configurationChangedCallback = () => {
+    this.props.onConfigurationChange({...this.state}, this.isValid());
+  };
+
+  isValid = () => {
+    return this.state.mailValid;
   };
 
   render(): React.ReactNode {
@@ -55,7 +71,6 @@ class JiraConfigurationItems extends React.Component<Props, State> {
     console.log("this.state.updateJiraIssues: ", this.state);
     return (
       <>
-        {this.renderConfigChangedNotification()}
         <InputField name={"url"}
                     label={t("scm-jira-plugin.form.url")}
                     helpText={t("scm-jira-plugin.form.urlHelp")}
@@ -121,9 +136,11 @@ class JiraConfigurationItems extends React.Component<Props, State> {
         <InputField name={"mailAddress"}
                     label={t("scm-jira-plugin.form.mailAddress")}
                     helpText={t("scm-jira-plugin.form.mailAddressHelp")}
+                    errorMessage={t("scm-jira-plugin.form.mailAddressError")}
+                    validationError={!this.state.mailValid}
                     disabled={readOnly || !this.state.resubmission}
                     value={this.state.mailAddress}
-                    onChange={this.valueChangeHandler}/>
+                    onChange={this.emailChangeHandler}/>
         <InputField name={"commentWrap"}
                     label={t("scm-jira-plugin.form.commentWrap")}
                     helpText={t("scm-jira-plugin.form.commentWrapHelp")}
@@ -155,23 +172,6 @@ class JiraConfigurationItems extends React.Component<Props, State> {
        return null;
     }
   }
-
-  renderConfigChangedNotification = () => {
-    if (this.state.configurationChanged) {
-      return (
-        <div className="notification is-primary">
-          <button
-            className="delete"
-            onClick={() =>
-              this.setState({...this.state, configurationChanged: false})
-            }
-          />
-          {this.props.t("scm-jira-plugin.configurationChangedSuccess")}
-        </div>
-      );
-    }
-    return null;
-  };
 }
 
 export default translate("plugins")(JiraConfigurationItems);

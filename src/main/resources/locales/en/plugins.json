@@ -21,6 +21,7 @@
       "autoCloseWordsHelp": "Comma separated list of terms to enable the status modification function. Add the transitions name (e.g. start progress, stop progress, ...) or configure a mapping (e.g. start = start progress, beginn = start progress, stop = stop progress,...). The transition names depend on your jira workflow. Each commit message of a changeset gets searched for these words.",
       "mailAddress": "E-Mail",
       "mailAddressHelp": "The mail address to send a message to if a jira comment fails.",
+      "mailAddressError": "This email is invalid",
       "username": "Username",
       "usernameHelp": "Jira username for connection. Leave this field empty to create the connection with the credentials of the user which is logged in to SCM-Manager.",
       "password": "Password",

@@ -4,11 +4,13 @@ import de.otto.edison.hal.HalRepresentation;
 import de.otto.edison.hal.Links;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Email;
 
 @Getter @Setter
 public class JiraConfigurationDto extends HalRepresentation {
   private boolean autoClose;
   private String autoCloseWords;
+  @Email
   private String mailAddress;
   private String password;
   private boolean restApiEnabled = false;
