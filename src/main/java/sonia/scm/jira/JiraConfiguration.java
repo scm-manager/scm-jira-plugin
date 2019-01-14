@@ -36,25 +36,19 @@ package sonia.scm.jira;
 //~--- non-JDK imports --------------------------------------------------------
 
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Strings;
-
-import sonia.scm.PropertiesAware;
 import sonia.scm.Validateable;
-import sonia.scm.issuetracker.EncryptionUtil;
 import sonia.scm.issuetracker.XmlEncryptionAdapter;
 import sonia.scm.util.Util;
-
-//~--- JDK imports ------------------------------------------------------------
-
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.util.Map;
+import java.util.Set;
+
+//~--- JDK imports ------------------------------------------------------------
 
 //~--- JDK imports ------------------------------------------------------------
 
@@ -70,7 +64,7 @@ public class JiraConfiguration implements Validateable
 
   /** default comment prefix */
   public static final String DEFAULT_COMMENT_PREFIX = "[SCM]";
-
+  public static final String DEFAULT_AUTO_CLOSE_WORDS = "fix=done, reopen=reopen and start progress, start=start progress";
   public static final String DEFAULT_COMMENT_WRAP = "";
 
   //~--- methods --------------------------------------------------------------
@@ -348,7 +342,7 @@ public class JiraConfiguration implements Validateable
   /** set of auto close words */
   @XmlElement(name = "auto-close-words")
   @XmlJavaTypeAdapter(XmlStringMapAdapter.class)
-  private Map<String,String> autoCloseWords;
+  private Map<String,String> autoCloseWords = AutoCloseWords.parse(DEFAULT_AUTO_CLOSE_WORDS);
 
   /** Address to send Error-Message to */
   @XmlElement(name = "mail-error-address")
