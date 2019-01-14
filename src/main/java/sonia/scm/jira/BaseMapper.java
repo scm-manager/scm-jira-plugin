@@ -26,7 +26,7 @@ public class BaseMapper {
 
   @AfterMapping
   void replaceDummyWithOldPassword(@MappingTarget JiraConfiguration target, @Context JiraConfiguration oldConfiguration) {
-    if ("__DUMMY__".equals(target.getPassword())) {
+    if (DUMMY_PASSWORD.equals(target.getPassword())) {
       target.setPassword(oldConfiguration.getPassword());
     }
   }
