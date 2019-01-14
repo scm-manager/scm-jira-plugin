@@ -1,9 +1,13 @@
 package sonia.scm.jira;
 
+import org.apache.commons.lang.StringUtils;
 import org.mapstruct.AfterMapping;
+import org.mapstruct.Context;
 import org.mapstruct.MappingTarget;
 
-public class AutoCloseMapper {
+public class BaseMapper {
+
+  public static final String DUMMY_PASSWORD = "__DUMMY__";
 
   @AfterMapping
   void mapAutoCloseWords(@MappingTarget JiraConfiguration target, JiraConfigurationDto source) {
@@ -16,6 +20,20 @@ public class AutoCloseMapper {
   void mapAutoCloseWords(@MappingTarget JiraConfigurationDto target, JiraConfiguration source) {
     if (source.getAutoCloseWordsForMapping() != null) {
       target.setAutoCloseWords(new XmlStringMapAdapter().marshal(source.getAutoCloseWordsForMapping()));
+    }
+  }
+
+  @AfterMapping
+  void replaceDummyWithOldPassword(@MappingTarget JiraConfiguration target, @Context JiraConfiguration oldConfiguration) {
+    if ("__DUMMY__".equals(target.getPassword())) {
+      target.setPassword(oldConfiguration.getPassword());
+    }
+  }
+
+  @AfterMapping
+  void replacePasswordWithDummy(@MappingTarget JiraConfigurationDto target) {
+    if (StringUtils.isNotEmpty(target.getPassword())) {
+      target.setPassword(DUMMY_PASSWORD);
     }
   }
 }

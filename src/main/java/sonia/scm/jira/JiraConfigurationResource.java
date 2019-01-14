@@ -73,8 +73,8 @@ public class JiraConfigurationResource {
   @Inject
   public JiraConfigurationResource(
     JiraGlobalContext context,
-    JiraPermissions permissions, JiraGlobalConfigurationMapperImpl jiraGlobalConfigurationMapper,
-    JiraConfigurationMapperImpl jenkinsConfigurationMapper,
+    JiraPermissions permissions, JiraGlobalConfigurationMapper jiraGlobalConfigurationMapper,
+    JiraConfigurationMapper jenkinsConfigurationMapper,
     RepositoryManager repositoryManager) {
     this.context = context;
     this.permissions = permissions;
@@ -109,7 +109,7 @@ public class JiraConfigurationResource {
     @ResponseCode(code = 500, condition = "internal server error")
   })
   public Response update(@Valid JiraGlobalConfigurationDto updatedConfig) {
-    context.setGlobalConfiguration(jiraGlobalConfigurationMapper.map(updatedConfig));
+    context.setGlobalConfiguration(jiraGlobalConfigurationMapper.map(updatedConfig, context.getGlobalConfiguration()));
 
     return Response.noContent().build();
   }
@@ -144,7 +144,7 @@ public class JiraConfigurationResource {
   })
   public Response updateForRepository(@PathParam("namespace") String namespace, @PathParam("name") String name, @Valid JiraConfigurationDto updatedConfig) {
     Repository repository = loadRepository(namespace, name);
-    context.setConfiguration(jenkinsConfigurationMapper.map(updatedConfig), repository);
+    context.setConfiguration(jenkinsConfigurationMapper.map(updatedConfig, context.getConfiguration(repository)), repository);
 
     return Response.noContent().build();
   }

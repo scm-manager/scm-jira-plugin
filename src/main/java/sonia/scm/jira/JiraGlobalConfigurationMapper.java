@@ -2,6 +2,7 @@ package sonia.scm.jira;
 
 import de.otto.edison.hal.Links;
 import org.mapstruct.AfterMapping;
+import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -14,7 +15,7 @@ import static de.otto.edison.hal.Link.link;
 import static de.otto.edison.hal.Links.linkingTo;
 
 @Mapper
-public abstract class JiraGlobalConfigurationMapper extends AutoCloseMapper {
+public abstract class JiraGlobalConfigurationMapper extends BaseMapper {
 
   @Inject
   private ScmPathInfoStore scmPathInfoStore;
@@ -26,7 +27,7 @@ public abstract class JiraGlobalConfigurationMapper extends AutoCloseMapper {
   public abstract JiraGlobalConfigurationDto map(JiraGlobalConfiguration config);
 
   @Mapping(target = "autoCloseWords", ignore = true)
-  public abstract JiraGlobalConfiguration map(JiraGlobalConfigurationDto dto);
+  public abstract JiraGlobalConfiguration map(JiraGlobalConfigurationDto dto, @Context JiraConfiguration oldConfiguration);
 
   @AfterMapping
   void appendLinks(@MappingTarget JiraGlobalConfigurationDto target) {

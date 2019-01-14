@@ -16,7 +16,7 @@ import static de.otto.edison.hal.Link.link;
 import static de.otto.edison.hal.Links.linkingTo;
 
 @Mapper
-public abstract class JiraConfigurationMapper extends AutoCloseMapper {
+public abstract class JiraConfigurationMapper extends BaseMapper {
 
   @Inject
   private ScmPathInfoStore scmPathInfoStore;
@@ -28,7 +28,7 @@ public abstract class JiraConfigurationMapper extends AutoCloseMapper {
   public abstract JiraConfigurationDto map(JiraConfiguration config, @Context Repository repository);
 
   @Mapping(target = "autoCloseWords", ignore = true)
-  public abstract JiraConfiguration map(JiraConfigurationDto dto);
+  public abstract JiraConfiguration map(JiraConfigurationDto dto, @Context JiraConfiguration oldConfiguration);
 
   @AfterMapping
   void appendLinks(@MappingTarget JiraConfigurationDto target, @Context Repository repository) {
