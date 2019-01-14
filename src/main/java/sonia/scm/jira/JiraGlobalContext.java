@@ -41,10 +41,7 @@ import com.google.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sonia.scm.config.ConfigurationPermissions;
-import sonia.scm.config.ScmConfiguration;
 import sonia.scm.repository.Repository;
-import sonia.scm.repository.RepositoryPermissions;
 import sonia.scm.store.ConfigurationStore;
 import sonia.scm.store.ConfigurationStoreFactory;
 
@@ -73,13 +70,14 @@ public class JiraGlobalContext
    *
    *
    * @param storeFactory store factory
+   * @param permissions
    */
   @Inject
-  public JiraGlobalContext(ConfigurationStoreFactory storeFactory, ScmConfiguration scmConfiguration)
+  public JiraGlobalContext(ConfigurationStoreFactory storeFactory, JiraPermissions permissions)
   {
     this.storeFactory = storeFactory;
-    this.scmConfiguration = scmConfiguration;
     this.store = storeFactory.withType(JiraGlobalConfiguration.class).withName(NAME).build();
+    this.permissions = permissions;
   }
 
 
@@ -113,13 +111,13 @@ public class JiraGlobalContext
    */
   public void setConfiguration(JiraGlobalConfiguration configuration)
   {
+    permissions.checkWriteGlobalConfig();
     logger.debug("store jira configuration");
-    ConfigurationPermissions.write(scmConfiguration).check();
     this.store.set(configuration);
   }
 
   public void setConfiguration(JiraConfiguration configuration, Repository repository) {
-    RepositoryPermissions.modify(repository).check();
+    permissions.checkWriteRepositoryConfig(repository);
     getRepositoryStore(repository)
       .set(configuration);
   }
@@ -135,7 +133,6 @@ public class JiraGlobalContext
   //~--- fields ---------------------------------------------------------------
   /** global configuration store */
   private final ConfigurationStore<JiraGlobalConfiguration> store;
-  private final ScmConfiguration scmConfiguration;
-
+  private final JiraPermissions permissions;
   private final ConfigurationStoreFactory storeFactory;
 }

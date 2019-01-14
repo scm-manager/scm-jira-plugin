@@ -36,12 +36,9 @@ package sonia.scm.jira;
 import com.google.inject.Inject;
 import com.webcohesion.enunciate.metadata.rs.ResponseCode;
 import com.webcohesion.enunciate.metadata.rs.StatusCodes;
-import sonia.scm.config.ConfigurationPermissions;
-import sonia.scm.config.ScmConfiguration;
 import sonia.scm.repository.NamespaceAndName;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryManager;
-import sonia.scm.repository.RepositoryPermissions;
 
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
@@ -68,7 +65,7 @@ public class JiraConfigurationResource {
   static final String JIRA_CONFIG_PATH_V2 = "v2/config/jira";
 
   private final JiraGlobalContext context;
-  private final ScmConfiguration configuration;
+  private final JiraPermissions permissions;
   private final JiraGlobalConfigurationMapper jiraGlobalConfigurationMapper;
   private final JiraConfigurationMapper jenkinsConfigurationMapper;
   private final RepositoryManager repositoryManager;
@@ -76,12 +73,11 @@ public class JiraConfigurationResource {
   @Inject
   public JiraConfigurationResource(
     JiraGlobalContext context,
-    ScmConfiguration configuration,
-    JiraGlobalConfigurationMapperImpl jiraGlobalConfigurationMapper,
+    JiraPermissions permissions, JiraGlobalConfigurationMapperImpl jiraGlobalConfigurationMapper,
     JiraConfigurationMapperImpl jenkinsConfigurationMapper,
     RepositoryManager repositoryManager) {
     this.context = context;
-    this.configuration = configuration;
+    this.permissions = permissions;
     this.jiraGlobalConfigurationMapper = jiraGlobalConfigurationMapper;
     this.jenkinsConfigurationMapper = jenkinsConfigurationMapper;
     this.repositoryManager = repositoryManager;
@@ -97,9 +93,9 @@ public class JiraConfigurationResource {
     @ResponseCode(code = 500, condition = "internal server error")
   })
   public Response get() {
-    ConfigurationPermissions.read(configuration).check();
+    permissions.checkReadGlobalConfig();
 
-    return Response.ok(jiraGlobalConfigurationMapper.map(context.getConfiguration(), configuration)).build();
+    return Response.ok(jiraGlobalConfigurationMapper.map(context.getConfiguration())).build();
   }
 
   @PUT
@@ -113,7 +109,6 @@ public class JiraConfigurationResource {
     @ResponseCode(code = 500, condition = "internal server error")
   })
   public Response update(@Valid JiraGlobalConfigurationDto updatedConfig) {
-    ConfigurationPermissions.write(configuration).check();
     context.setConfiguration(jiraGlobalConfigurationMapper.map(updatedConfig));
 
     return Response.noContent().build();
@@ -131,7 +126,7 @@ public class JiraConfigurationResource {
   })
   public Response getForRepository(@PathParam("namespace") String namespace, @PathParam("name") String name) {
     Repository repository = loadRepository(namespace, name);
-    RepositoryPermissions.modify(repository).check();
+    permissions.checkReadRepositoryConfig(repository);
 
     return Response.ok(jenkinsConfigurationMapper.map(context.getConfiguration(repository), repository)).build();
   }

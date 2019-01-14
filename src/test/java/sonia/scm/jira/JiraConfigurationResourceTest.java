@@ -50,15 +50,18 @@ public class JiraConfigurationResourceTest {
   @Before
   public void init() {
     InMemoryConfigurationStoreFactory storeFactory = new InMemoryConfigurationStoreFactory(new InMemoryConfigurationStore());
-    JiraGlobalContext context = new JiraGlobalContext(storeFactory, new ScmConfiguration());
+    JiraPermissions permissions = new JiraPermissions(new ScmConfiguration());
+    JiraGlobalContext context = new JiraGlobalContext(storeFactory, permissions);
     repositoryManager = mock(RepositoryManager.class);
     ScmPathInfoStore scmPathInfoStore = new ScmPathInfoStore();
     scmPathInfoStore.set(() -> URI.create("/"));
     JiraGlobalConfigurationMapperImpl jiraGlobalConfigurationMapper = new JiraGlobalConfigurationMapperImpl();
     jiraGlobalConfigurationMapper.setScmPathInfoStore(scmPathInfoStore);
+    jiraGlobalConfigurationMapper.setPermissions(permissions);
     JiraConfigurationMapperImpl jenkinsConfigurationMapper = new JiraConfigurationMapperImpl();
     jenkinsConfigurationMapper.setScmPathInfoStore(scmPathInfoStore);
-    JiraConfigurationResource resource = new JiraConfigurationResource(context, new ScmConfiguration(), jiraGlobalConfigurationMapper, jenkinsConfigurationMapper, repositoryManager);
+    jenkinsConfigurationMapper.setPermissions(permissions);
+    JiraConfigurationResource resource = new JiraConfigurationResource(context, permissions, jiraGlobalConfigurationMapper, jenkinsConfigurationMapper, repositoryManager);
     dispatcher = createDispatcher();
     dispatcher.getRegistry().addSingletonResource(resource);
     when(repositoryManager.get(REPOSITORY.getNamespaceAndName())).thenReturn(REPOSITORY);
@@ -102,6 +105,19 @@ public class JiraConfigurationResourceTest {
   @SubjectAware(username = "trillian", password = "secret")
   public void normalUserShouldNotGetConfig() throws URISyntaxException {
     MockHttpRequest request = MockHttpRequest.get("/" + JiraConfigurationResource.JIRA_CONFIG_PATH_V2);
+    MockHttpResponse response = new MockHttpResponse();
+
+    expectedException.expect(new ExceptionMatcher<>(UnauthorizedException.class));
+
+    dispatcher.invoke(request, response);
+  }
+
+  @Test
+  @SubjectAware(username = "trillian", password = "secret")
+  public void normalUserShouldNotSetConfig() throws URISyntaxException, IOException {
+    URL url = Resources.getResource("sonia/scm/jira/jiraConfig.json");
+    byte[] configJson = Resources.toByteArray(url);
+    MockHttpRequest request = MockHttpRequest.put("/" + JiraConfigurationResource.JIRA_CONFIG_PATH_V2).contentType(MediaType.APPLICATION_JSON_TYPE).content(configJson);
     MockHttpResponse response = new MockHttpResponse();
 
     expectedException.expect(new ExceptionMatcher<>(UnauthorizedException.class));

@@ -9,11 +9,8 @@ import org.mapstruct.MappingTarget;
 import sonia.scm.api.v2.resources.LinkBuilder;
 import sonia.scm.api.v2.resources.ScmPathInfoStore;
 import sonia.scm.repository.Repository;
-import sonia.scm.repository.RepositoryPermissions;
 
 import javax.inject.Inject;
-
-import java.util.Map;
 
 import static de.otto.edison.hal.Link.link;
 import static de.otto.edison.hal.Links.linkingTo;
@@ -23,6 +20,8 @@ public abstract class JiraConfigurationMapper extends AutoCloseMapper {
 
   @Inject
   private ScmPathInfoStore scmPathInfoStore;
+  @Inject
+  private JiraPermissions permissions;
 
   @Mapping(target = "autoCloseWords", ignore = true)
   @Mapping(target = "attributes", ignore = true)
@@ -34,7 +33,7 @@ public abstract class JiraConfigurationMapper extends AutoCloseMapper {
   @AfterMapping
   void appendLinks(@MappingTarget JiraConfigurationDto target, @Context Repository repository) {
     Links.Builder linksBuilder = linkingTo().self(self(repository));
-    if (RepositoryPermissions.modify(repository).isPermitted()) {
+    if (permissions.isPermittedWriteRepositoryConfig(repository)) {
       linksBuilder.single(link("update", update(repository)));
     }
     target.add(linksBuilder.build());
@@ -52,5 +51,9 @@ public abstract class JiraConfigurationMapper extends AutoCloseMapper {
 
   void setScmPathInfoStore(ScmPathInfoStore scmPathInfoStore) {
     this.scmPathInfoStore = scmPathInfoStore;
+  }
+
+  public void setPermissions(JiraPermissions permissions) {
+    this.permissions = permissions;
   }
 }
