@@ -69,7 +69,7 @@ public class JiraConfigurationResolver
   {
     JiraConfiguration configuration;
 
-    if (context.getConfiguration().isDisableRepositoryConfiguration())
+    if (context.getGlobalConfiguration().isDisableRepositoryConfiguration())
     {
       if (logger.isDebugEnabled())
       {
@@ -77,7 +77,7 @@ public class JiraConfigurationResolver
           "repository configuration is disabled, try to use global configuration");
       }
 
-      configuration = context.getConfiguration();
+      configuration = context.getGlobalConfiguration();
     }
     else
     {
@@ -91,7 +91,7 @@ public class JiraConfigurationResolver
             "repository configuration is not valid, try to use global configuration");
         }
 
-        configuration = context.getConfiguration();
+        configuration = context.getGlobalConfiguration();
       }
 
     }

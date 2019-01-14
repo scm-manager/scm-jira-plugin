@@ -95,7 +95,7 @@ public class JiraConfigurationResource {
   public Response get() {
     permissions.checkReadGlobalConfig();
 
-    return Response.ok(jiraGlobalConfigurationMapper.map(context.getConfiguration())).build();
+    return Response.ok(jiraGlobalConfigurationMapper.map(context.getGlobalConfiguration())).build();
   }
 
   @PUT
@@ -109,7 +109,7 @@ public class JiraConfigurationResource {
     @ResponseCode(code = 500, condition = "internal server error")
   })
   public Response update(@Valid JiraGlobalConfigurationDto updatedConfig) {
-    context.setConfiguration(jiraGlobalConfigurationMapper.map(updatedConfig));
+    context.setGlobalConfiguration(jiraGlobalConfigurationMapper.map(updatedConfig));
 
     return Response.noContent().build();
   }

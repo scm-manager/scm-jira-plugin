@@ -88,7 +88,7 @@ public class JiraGlobalContext
    *
    * @return global jira configuration
    */
-  public JiraGlobalConfiguration getConfiguration()
+  public JiraGlobalConfiguration getGlobalConfiguration()
   {
     return store
       .getOptional()
@@ -109,7 +109,7 @@ public class JiraGlobalContext
    *
    * @param configuration global jira configuration
    */
-  public void setConfiguration(JiraGlobalConfiguration configuration)
+  public void setGlobalConfiguration(JiraGlobalConfiguration configuration)
   {
     permissions.checkWriteGlobalConfig();
     logger.debug("store jira configuration");

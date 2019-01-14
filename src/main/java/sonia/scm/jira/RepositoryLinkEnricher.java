@@ -30,7 +30,7 @@ public class RepositoryLinkEnricher implements LinkEnricher {
   @Override
   public void enrich(LinkEnricherContext context, LinkAppender appender) {
     Repository repository = context.oneRequireByType(Repository.class);
-    if (!jiraContext.getConfiguration().isDisableRepositoryConfiguration() && permissions.isPermittedReadRepositoryConfig(repository)) {
+    if (!jiraContext.getGlobalConfiguration().isDisableRepositoryConfiguration() && permissions.isPermittedReadRepositoryConfig(repository)) {
       String globalJiraConfigUrl = new LinkBuilder(scmPathInfoStore.get().get(), JiraConfigurationResource.class)
         .method("getForRepository")
         .parameters(repository.getNamespace(), repository.getName())
