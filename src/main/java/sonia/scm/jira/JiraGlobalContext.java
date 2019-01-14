@@ -41,7 +41,10 @@ import com.google.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sonia.scm.config.ConfigurationPermissions;
+import sonia.scm.config.ScmConfiguration;
 import sonia.scm.repository.Repository;
+import sonia.scm.repository.RepositoryPermissions;
 import sonia.scm.store.ConfigurationStore;
 import sonia.scm.store.ConfigurationStoreFactory;
 
@@ -72,10 +75,11 @@ public class JiraGlobalContext
    * @param storeFactory store factory
    */
   @Inject
-  public JiraGlobalContext(ConfigurationStoreFactory storeFactory)
+  public JiraGlobalContext(ConfigurationStoreFactory storeFactory, ScmConfiguration scmConfiguration)
   {
     this.storeFactory = storeFactory;
-    store = storeFactory.withType(JiraGlobalConfiguration.class).withName(NAME).build();
+    this.scmConfiguration = scmConfiguration;
+    this.store = storeFactory.withType(JiraGlobalConfiguration.class).withName(NAME).build();
   }
 
 
@@ -110,10 +114,12 @@ public class JiraGlobalContext
   public void setConfiguration(JiraGlobalConfiguration configuration)
   {
     logger.debug("store jira configuration");
+    ConfigurationPermissions.write(scmConfiguration).check();
     this.store.set(configuration);
   }
 
   public void setConfiguration(JiraConfiguration configuration, Repository repository) {
+    RepositoryPermissions.modify(repository).check();
     getRepositoryStore(repository)
       .set(configuration);
   }
@@ -129,6 +135,7 @@ public class JiraGlobalContext
   //~--- fields ---------------------------------------------------------------
   /** global configuration store */
   private final ConfigurationStore<JiraGlobalConfiguration> store;
+  private final ScmConfiguration scmConfiguration;
 
   private final ConfigurationStoreFactory storeFactory;
 }

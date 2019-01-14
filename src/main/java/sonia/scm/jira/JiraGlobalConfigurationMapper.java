@@ -49,4 +49,8 @@ public abstract class JiraGlobalConfigurationMapper extends AutoCloseMapper {
     LinkBuilder linkBuilder = new LinkBuilder(scmPathInfoStore.get(), JiraConfigurationResource.class);
     return linkBuilder.method("update").parameters().href();
   }
+
+  void setScmPathInfoStore(ScmPathInfoStore scmPathInfoStore) {
+    this.scmPathInfoStore = scmPathInfoStore;
+  }
 }

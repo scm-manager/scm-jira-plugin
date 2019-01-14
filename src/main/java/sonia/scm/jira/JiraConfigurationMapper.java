@@ -37,9 +37,7 @@ public abstract class JiraConfigurationMapper extends AutoCloseMapper {
     if (RepositoryPermissions.modify(repository).isPermitted()) {
       linksBuilder.single(link("update", update(repository)));
     }
-    if (RepositoryPermissions.read(repository).isPermitted()) {
-      target.add(linksBuilder.build());
-    }
+    target.add(linksBuilder.build());
   }
 
   private String self(Repository repository) {
@@ -50,5 +48,9 @@ public abstract class JiraConfigurationMapper extends AutoCloseMapper {
   private String update(Repository repository) {
     LinkBuilder linkBuilder = new LinkBuilder(scmPathInfoStore.get(), JiraConfigurationResource.class);
     return linkBuilder.method("updateForRepository").parameters(repository.getNamespace(), repository.getName()).href();
+  }
+
+  void setScmPathInfoStore(ScmPathInfoStore scmPathInfoStore) {
+    this.scmPathInfoStore = scmPathInfoStore;
   }
 }

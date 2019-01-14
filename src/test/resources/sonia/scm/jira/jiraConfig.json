@@ -1,0 +1,17 @@
+{
+  "autoClose": true,
+  "autoCloseWords": null,
+  "mailAddress": null,
+  "password": null,
+  "restApiEnabled": false,
+  "commentPrefix": "[SCM]",
+  "filter": null,
+  "resubmission": false,
+  "roleLevel": null,
+  "updateIssues": false,
+  "url": null,
+  "username": null,
+  "commentWrap": "",
+  "commentMonospace": false,
+  "disableRepositoryConfiguration": false
+}
