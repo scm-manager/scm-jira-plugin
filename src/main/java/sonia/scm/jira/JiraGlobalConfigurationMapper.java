@@ -34,6 +34,7 @@ public abstract class JiraGlobalConfigurationMapper extends BaseMapper {
     Links.Builder linksBuilder = linkingTo().self(self());
     if (permissions.isPermittedWriteGlobalConfig()) {
       linksBuilder.single(link("update", update()));
+      linksBuilder.single(link("resubmit", resubmit()));
     }
     target.add(linksBuilder.build());
   }
@@ -46,6 +47,11 @@ public abstract class JiraGlobalConfigurationMapper extends BaseMapper {
   private String update() {
     LinkBuilder linkBuilder = new LinkBuilder(scmPathInfoStore.get(), JiraConfigurationResource.class);
     return linkBuilder.method("update").parameters().href();
+  }
+
+  private String resubmit() {
+    LinkBuilder linkBuilder = new LinkBuilder(scmPathInfoStore.get(), JiraConfigurationResource.class);
+    return linkBuilder.method("resubmitAll").parameters().href();
   }
 
   void setScmPathInfoStore(ScmPathInfoStore scmPathInfoStore) {

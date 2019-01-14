@@ -36,6 +36,7 @@ package sonia.scm.jira;
 import com.google.inject.Inject;
 import com.webcohesion.enunciate.metadata.rs.ResponseCode;
 import com.webcohesion.enunciate.metadata.rs.StatusCodes;
+import sonia.scm.jira.resubmit.ResubmitCommentsHandler;
 import sonia.scm.repository.NamespaceAndName;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryManager;
@@ -43,12 +44,15 @@ import sonia.scm.repository.RepositoryManager;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import java.io.IOException;
 
 import static sonia.scm.ContextEntry.ContextBuilder.entity;
 import static sonia.scm.NotFoundException.notFound;
@@ -69,18 +73,22 @@ public class JiraConfigurationResource {
   private final JiraGlobalConfigurationMapper jiraGlobalConfigurationMapper;
   private final JiraConfigurationMapper jenkinsConfigurationMapper;
   private final RepositoryManager repositoryManager;
+  private final ResubmitCommentsHandler resubmitCommentsHandler;
 
   @Inject
   public JiraConfigurationResource(
     JiraGlobalContext context,
-    JiraPermissions permissions, JiraGlobalConfigurationMapper jiraGlobalConfigurationMapper,
+    JiraPermissions permissions,
+    JiraGlobalConfigurationMapper jiraGlobalConfigurationMapper,
     JiraConfigurationMapper jenkinsConfigurationMapper,
-    RepositoryManager repositoryManager) {
+    RepositoryManager repositoryManager,
+    ResubmitCommentsHandler resubmitCommentsHandler) {
     this.context = context;
     this.permissions = permissions;
     this.jiraGlobalConfigurationMapper = jiraGlobalConfigurationMapper;
     this.jenkinsConfigurationMapper = jenkinsConfigurationMapper;
     this.repositoryManager = repositoryManager;
+    this.resubmitCommentsHandler = resubmitCommentsHandler;
   }
 
   @GET
@@ -111,6 +119,20 @@ public class JiraConfigurationResource {
   public Response update(@Valid JiraGlobalConfigurationDto updatedConfig) {
     context.setGlobalConfiguration(jiraGlobalConfigurationMapper.map(updatedConfig, context.getGlobalConfiguration()));
 
+    return Response.noContent().build();
+  }
+
+  @POST
+  @Path("/resubmit")
+  @StatusCodes({
+    @ResponseCode(code = 204, condition = "resubmit triggered successfully"),
+    @ResponseCode(code = 401, condition = "not authenticated / invalid credentials"),
+    @ResponseCode(code = 403, condition = "not authorized, the current user does not have the privilege to change the configuration"),
+    @ResponseCode(code = 404, condition = "not found, no repository with the specified namespace and name available"),
+    @ResponseCode(code = 500, condition = "internal server error")
+  })
+  public Response resubmitAll() throws IOException {
+    resubmitCommentsHandler.resubmitAll();
     return Response.noContent().build();
   }
 
@@ -146,6 +168,21 @@ public class JiraConfigurationResource {
     Repository repository = loadRepository(namespace, name);
     context.setConfiguration(jenkinsConfigurationMapper.map(updatedConfig, context.getConfiguration(repository)), repository);
 
+    return Response.noContent().build();
+  }
+
+  @POST
+  @Path("/{namespace}/{name}/resubmit")
+  @StatusCodes({
+    @ResponseCode(code = 204, condition = "resubmit triggered successfully"),
+    @ResponseCode(code = 401, condition = "not authenticated / invalid credentials"),
+    @ResponseCode(code = 403, condition = "not authorized, the current user does not have the privilege to change the configuration"),
+    @ResponseCode(code = 404, condition = "not found, no repository with the specified namespace and name available"),
+    @ResponseCode(code = 500, condition = "internal server error")
+  })
+  public Response resubmitForRepository(@PathParam("namespace") String namespace, @PathParam("name") String name) throws IOException {
+    Repository repository = loadRepository(namespace, name);
+    resubmitCommentsHandler.resubmitAllFromRepository(repository.getId());
     return Response.noContent().build();
   }
 
