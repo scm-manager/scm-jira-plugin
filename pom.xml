@@ -73,7 +73,8 @@
           <testCases>false</testCases>
           <serverSide>false</serverSide>
           <subPackageByFileName>false</subPackageByFileName>
-          <outputDirectory>${project.build.directory}/generated-sources</outputDirectory>
+          <!-- Due to mapstruct we have to put generated files in annotations directory -->
+          <outputDirectory>${project.build.directory}/generated-sources/annotations</outputDirectory>
         </configuration>
         <executions>
           <execution>
@@ -83,7 +84,7 @@
           </execution>
         </executions>
       </plugin>
-    
+
     </plugins>
   </build>
   
