@@ -267,15 +267,16 @@ public class ResubmitCommentsHandler
 
     // todo handle npe for changeset
 
+    String content = createContent(request, changeset, commentData);
     //J-
-    try 
-    { 
-      String content = createContent(request, changeset, commentData);
-      new JiraIssueHandler(
-        messageProblemHandler, 
+    try (
+      JiraIssueHandler jiraIssueHandler = new JiraIssueHandler(
+        messageProblemHandler,
         templateHandler,
         request
-      ).updateIssue(changeset, commentData.getIssueId(), content);
+      ))
+    {
+      jiraIssueHandler.updateIssue(changeset, commentData.getIssueId(), content);
     } 
     finally 
     {

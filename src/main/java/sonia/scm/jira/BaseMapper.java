@@ -7,7 +7,8 @@ import org.mapstruct.MappingTarget;
 
 public class BaseMapper {
 
-  public static final String DUMMY_PASSWORD = "__DUMMY__";
+  @SuppressWarnings("squid:S2068") // we have no password here
+  static final String DUMMY_PASSWORD = "__DUMMY__";
 
   @AfterMapping
   void mapAutoCloseWords(@MappingTarget JiraConfiguration target, JiraConfigurationDto source) {

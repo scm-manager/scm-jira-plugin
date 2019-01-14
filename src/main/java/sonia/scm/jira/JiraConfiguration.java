@@ -78,6 +78,7 @@ public class JiraConfiguration implements Validateable
   /**
    * {@inheritDoc}
    */
+  @SuppressWarnings("squid:S2068") // we have no password here
   @Override
   public String toString()
   {
