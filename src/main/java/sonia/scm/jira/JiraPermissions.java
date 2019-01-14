@@ -1,5 +1,6 @@
 package sonia.scm.jira;
 
+import com.google.inject.Inject;
 import sonia.scm.config.ConfigurationPermissions;
 import sonia.scm.config.ScmConfiguration;
 import sonia.scm.repository.Repository;
@@ -8,6 +9,7 @@ import sonia.scm.repository.RepositoryPermissions;
 class JiraPermissions {
   private final ScmConfiguration configuration;
 
+  @Inject
   JiraPermissions(ScmConfiguration configuration) {
     this.configuration = configuration;
   }
