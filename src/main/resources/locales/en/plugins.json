@@ -39,7 +39,10 @@
       "commentWrap": "Wrap Comment With",
       "commentWrapHelp": "Text to place around the changeset description in the Jira comment. The default is no wrapping.  Examples:  {quote} or {noformat}.  See https://jira.atlassian.com/secure/WikiRendererHelpAction.jspa?section=all",
       "commentMonospace": "Monospace",
-      "commentMonospaceHelp": "Should the comment include the mono-space wrapper?  {{ }}.  Note:  Jira handling for this is not consistent."
+      "commentMonospaceHelp": "Should the comment include the mono-space wrapper?  {{ }}.  Note:  Jira handling for this is not consistent.",
+      "resubmit": "Resubmit stored comments",
+      "resubmitSuccess": "Resubmit triggered",
+      "resubmitFailed": "Resubmit failed"
     },
     "configurationChangedSuccess": "Configuration changed"
   }

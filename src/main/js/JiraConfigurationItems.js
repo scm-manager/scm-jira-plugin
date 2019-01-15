@@ -1,7 +1,7 @@
 //@flow
 
 import React from "react";
-import {Checkbox, Configuration, InputField, validation} from "@scm-manager/ui-components";
+import {Button, Checkbox, Configuration, InputField, validation} from "@scm-manager/ui-components";
 import {translate} from "react-i18next";
 
 type JiraConfiguration = {
@@ -27,6 +27,7 @@ type Props = {
   readOnly: boolean,
   onConfigurationChange: (Configuration, boolean) => void,
   includeGlobalConfigItem: boolean,
+  resubmitHandler: () => void,
   t: (string) => string
 }
 
@@ -66,6 +67,10 @@ class JiraConfigurationItems extends React.Component<Props, State> {
     return this.state.mailValid;
   };
 
+  resubmit = () => {
+    this.props.resubmitHandler();
+  };
+
   render(): React.ReactNode {
     const {t, readOnly} = this.props;
     console.log("this.state.updateJiraIssues: ", this.state);
@@ -76,6 +81,7 @@ class JiraConfigurationItems extends React.Component<Props, State> {
                     helpText={t("scm-jira-plugin.form.urlHelp")}
                     disabled={readOnly}
                     value={this.state.url}
+                    type="url"
                     onChange={this.valueChangeHandler}/>
         {this.renderGlobalConfigItem()}
         <Checkbox name={"updateIssues"}
@@ -153,6 +159,8 @@ class JiraConfigurationItems extends React.Component<Props, State> {
                   checked={this.state.commentMonospace}
                   disabled={readOnly}
                   onChange={this.valueChangeHandler}/>
+        <Button label={t("scm-jira-plugin.form.resubmit")}
+                action={this.resubmit}/>
       </>
     );
   }
