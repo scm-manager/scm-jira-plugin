@@ -1,0 +1,7 @@
+version: '2.1'
+
+services:
+  jenkins:
+    image: cptactionhank/atlassian-jira:latest 
+    ports:
+      - "8080:8080"
