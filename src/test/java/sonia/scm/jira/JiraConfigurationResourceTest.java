@@ -16,7 +16,6 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import sonia.scm.NotFoundException;
 import sonia.scm.api.v2.resources.ScmPathInfoStore;
-import sonia.scm.config.ScmConfiguration;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryManager;
 import sonia.scm.store.InMemoryConfigurationStore;
@@ -50,7 +49,7 @@ public class JiraConfigurationResourceTest {
   @Before
   public void init() {
     InMemoryConfigurationStoreFactory storeFactory = new InMemoryConfigurationStoreFactory(new InMemoryConfigurationStore());
-    JiraPermissions permissions = new JiraPermissions(new ScmConfiguration());
+    JiraPermissions permissions = new JiraPermissions();
     JiraGlobalContext context = new JiraGlobalContext(storeFactory, permissions);
     repositoryManager = mock(RepositoryManager.class);
     ScmPathInfoStore scmPathInfoStore = new ScmPathInfoStore();

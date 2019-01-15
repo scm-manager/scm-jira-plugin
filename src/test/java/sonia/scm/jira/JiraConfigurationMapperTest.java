@@ -7,7 +7,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.mapstruct.factory.Mappers;
 import sonia.scm.api.v2.resources.ScmPathInfoStore;
-import sonia.scm.config.ScmConfiguration;
 import sonia.scm.repository.Repository;
 
 import java.net.URI;
@@ -26,7 +25,7 @@ public class JiraConfigurationMapperTest {
 
   @Before
   public void init() {
-    JiraPermissions permissions = new JiraPermissions(new ScmConfiguration());
+    JiraPermissions permissions = new JiraPermissions();
     ScmPathInfoStore scmPathInfoStore = new ScmPathInfoStore();
     scmPathInfoStore.set(() -> URI.create("/"));
     mapper = Mappers.getMapper(JiraConfigurationMapper.class);

@@ -1,33 +1,27 @@
 package sonia.scm.jira;
 
-import com.google.inject.Inject;
 import sonia.scm.config.ConfigurationPermissions;
-import sonia.scm.config.ScmConfiguration;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryPermissions;
 
 class JiraPermissions {
-  private final ScmConfiguration configuration;
 
-  @Inject
-  JiraPermissions(ScmConfiguration configuration) {
-    this.configuration = configuration;
-  }
+  private static final String PERMISSION_NAME = "jira";
 
   boolean isPermittedReadGlobalConfig() {
     return ConfigurationPermissions.list().isPermitted();
   }
 
   boolean isPermittedWriteGlobalConfig() {
-    return ConfigurationPermissions.write(configuration).isPermitted();
+    return ConfigurationPermissions.write(PERMISSION_NAME).isPermitted();
   }
 
   void checkReadGlobalConfig() {
-    ConfigurationPermissions.read(configuration).check();
+    ConfigurationPermissions.read(PERMISSION_NAME).check();
   }
 
   void checkWriteGlobalConfig() {
-    ConfigurationPermissions.read(configuration).check();
+    ConfigurationPermissions.read(PERMISSION_NAME).check();
   }
 
   public boolean isPermittedReadRepositoryConfig(Repository repository) {
