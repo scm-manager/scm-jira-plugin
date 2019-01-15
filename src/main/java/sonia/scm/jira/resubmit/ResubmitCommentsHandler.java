@@ -55,6 +55,7 @@ import sonia.scm.repository.Changeset;
 import sonia.scm.repository.PermissionType;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryManager;
+import sonia.scm.repository.RepositoryPermissions;
 import sonia.scm.repository.api.RepositoryService;
 import sonia.scm.repository.api.RepositoryServiceFactory;
 import sonia.scm.security.RepositoryPermission;
@@ -191,11 +192,7 @@ public class ResubmitCommentsHandler
   public void resubmitAllFromRepository(String repositoryId)
     throws IOException
   {
-    //J-
-    SecurityUtils.getSubject().checkPermission(
-      new RepositoryPermission(repositoryId, PermissionType.OWNER)
-    );
-    //J+
+    RepositoryPermissions.modify(repositoryId).check();
 
     resubmit(messageProblemHandler.getAllCommentsByRepository(repositoryId));
   }
