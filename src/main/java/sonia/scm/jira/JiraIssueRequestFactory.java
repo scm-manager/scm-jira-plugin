@@ -33,29 +33,16 @@
 
 package sonia.scm.jira;
 
-//~--- non-JDK imports --------------------------------------------------------
-
-import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
-
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.session.Session;
-import org.apache.shiro.subject.Subject;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import sonia.scm.jira.rest.RestJiraHandlerFactory;
 import sonia.scm.jira.soap.SoapJiraHandlerFactory;
 import sonia.scm.net.ahc.AdvancedHttpClient;
 import sonia.scm.repository.Changeset;
 import sonia.scm.repository.Repository;
-import sonia.scm.security.CipherUtil;
-import sonia.scm.util.AssertUtil;
-
-//~--- JDK imports ------------------------------------------------------------
 
 import java.util.Calendar;
 
@@ -68,9 +55,6 @@ import java.util.Calendar;
 @Singleton
 public class JiraIssueRequestFactory
 {
-
-  /** credentials session attribute */
-  public static final String SCM_CREDENTIALS = "SCM_CREDENTIALS";
 
   /**
    * the logger for JiraIssueRequestFactory
@@ -121,16 +105,6 @@ public class JiraIssueRequestFactory
     String username = configuration.getUsername();
     String password = configuration.getPassword();
 
-    if (Strings.isNullOrEmpty(username))
-    {
-      logger.trace("no username configured, use current credentials");
-
-      String[] credentials = getUserCredentials();
-
-      username = credentials[0];
-      password = credentials[1];
-    }
-
     logger.debug("create jira issue request for user {}", username);
 
     return new JiraIssueRequest(createJiraHandlerFactory(configuration), username, password, configuration, repository,
@@ -153,55 +127,6 @@ public class JiraIssueRequestFactory
     }
 
     return factory;
-  }
-
-  //~--- get methods ----------------------------------------------------------
-
-  /**
-   * Returns the encrypted user credentials from session.
-   *
-   *
-   * @return encrypted user credentials
-   */
-  private String getCredentialsString()
-  {
-    String crendentials = null;
-
-    Subject subject = SecurityUtils.getSubject();
-    Session session = subject.getSession();
-
-    if (session != null)
-    {
-      crendentials = (String) session.getAttribute(SCM_CREDENTIALS);
-
-    }
-
-    return crendentials;
-  }
-
-  /**
-   * Returns string array which contains the user credentials. The first element
-   * in the array contains the username and the second one contains the
-   * password.
-   *
-   *
-   * @return string which contains the user credentials
-   */
-  private String[] getUserCredentials()
-  {
-    String credentialsString = getCredentialsString();
-
-    AssertUtil.assertIsNotEmpty(credentialsString);
-    credentialsString = CipherUtil.getInstance().decode(credentialsString);
-
-    String[] credentialsArray = credentialsString.split(":");
-
-    if (credentialsArray.length < 2)
-    {
-      throw new RuntimeException("non valid credentials found");
-    }
-
-    return credentialsArray;
   }
 
   //~--- fields ---------------------------------------------------------------

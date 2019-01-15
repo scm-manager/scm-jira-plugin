@@ -252,7 +252,7 @@ public class JiraConfiguration implements Validateable
   @Override
   public boolean isValid()
   {
-    return Util.isNotEmpty(url);
+    return Util.isNotEmpty(url) && Util.isNotEmpty(username) && Util.isNotEmpty(password);
   }
 
 
