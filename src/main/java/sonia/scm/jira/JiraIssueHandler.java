@@ -91,8 +91,8 @@ public class JiraIssueHandler implements CommentHandler
   //~--- methods --------------------------------------------------------------
 
   @Override
-  public void close() throws IOException {
-
+  public void close() {
+    // nothing to do here
   }
 
   /**
@@ -109,7 +109,7 @@ public class JiraIssueHandler implements CommentHandler
     {
       if (logger.isTraceEnabled())
       {
-        logger.trace("check changeset {} for auto-close of issue",
+        logger.trace("check changeset {} for auto-close of issue {}",
           changeset.getId(), issueId);
       }
 
