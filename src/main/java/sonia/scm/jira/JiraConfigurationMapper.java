@@ -35,7 +35,7 @@ public abstract class JiraConfigurationMapper extends BaseMapper {
     Links.Builder linksBuilder = linkingTo().self(self(repository));
     if (permissions.isPermittedWriteRepositoryConfig(repository)) {
       linksBuilder.single(link("update", update(repository)));
-      linksBuilder.single(link("resubmit", update(repository)));
+      linksBuilder.single(link("resubmit", resubmit(repository)));
     }
     target.add(linksBuilder.build());
   }
