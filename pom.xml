@@ -78,7 +78,15 @@
         </configuration>
         <executions>
           <execution>
+            <id>default</id>
             <goals>
+              <goal>wsdl2java</goal>
+            </goals>
+          </execution>
+	  <execution>
+            <id>plugin</id>
+            <phase>smp-process-resources</phase>
+	    <goals>
               <goal>wsdl2java</goal>
             </goals>
           </execution>
@@ -87,7 +95,7 @@
 
     </plugins>
   </build>
-  
+
   <pluginRepositories>
     
     <pluginRepository>
