@@ -1,22 +1,25 @@
 // @flow
 import React from "react";
-import {Title, Configuration} from "@scm-manager/ui-components";
+import { Title, Configuration } from "@scm-manager/ui-components";
 import LocalJiraConfigurationForm from "./LocalJiraConfigurationForm";
-import {translate} from "react-i18next";
+import { translate } from "react-i18next";
 
 type Props = {
   link: string,
-  t: (string) => string
+  t: string => string
 };
 
 class LocalJiraConfiguration extends React.Component<Props> {
-
-  render(): React.ReactNode {
-    const {t, link} = this.props;
+  render() {
+    const { t, link } = this.props;
     return (
       <>
-        <Title title={t("scm-jira-plugin.local.header")}/>
-        <Configuration link={link} t={t} render={props => <LocalJiraConfigurationForm {...props}/>}/>
+        <Title title={t("scm-jira-plugin.local.header")} />
+        <Configuration
+          link={link}
+          t={t}
+          render={props => <LocalJiraConfigurationForm {...props} />}
+        />
       </>
     );
   }
