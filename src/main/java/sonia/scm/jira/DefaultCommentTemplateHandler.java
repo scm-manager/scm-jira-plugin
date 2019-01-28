@@ -65,8 +65,9 @@ import java.util.Map;
 public class DefaultCommentTemplateHandler implements CommentTemplateHandler
 {
 
-  private static final String LINE_SEPARATOR = System.getProperty("line.separator", "\n");
-    
+  private static final String UNIX_LINE_SEPARATOR = "\n";
+  private static final String LINE_SEPARATOR = System.getProperty("line.separator", UNIX_LINE_SEPARATOR);
+
   /** env var for changeset */
   private static final String ENV_CHANGESET = "changeset";
 
@@ -126,7 +127,7 @@ public class DefaultCommentTemplateHandler implements CommentTemplateHandler
     // Mustache is pretty annoying, in that it escapes HTML.  Thus any lovely line-feeds in the changeset
     // description get eaten, and don't show up in Jira.  Thus, we split the description by the line separator,
     // and make mustache put each line on its own line.
-    env.put(ENV_DESCRIPTION_LINE, Arrays.asList(changeset.getDescription().split(LINE_SEPARATOR)));
+    env.put(ENV_DESCRIPTION_LINE, splitIntoLines(changeset));
     IssueRequest issueRequest = new IssueRequest(repository, changeset, Collections.emptyList());
     env.put(ENV_DIFFURL, linkHandler.getDiffUrl(issueRequest));
 //    env.put(ENV_DIFFRESTURL, linkHandler.getDiffRestUrl(repository, changeset));
@@ -145,6 +146,26 @@ public class DefaultCommentTemplateHandler implements CommentTemplateHandler
     env.put(ENV_COMMENTWRAP_POST, commentWrapPost);
 
     return env;
+  }
+
+  private List<String> splitIntoLines(Changeset changeset) {
+    List<String> lines = splitDescriptionWith(changeset, getSystemLineSeparator());
+    if (descriptionMayHaveOtherLineSeparatorThanConfigured(lines)) {
+      return splitDescriptionWith(changeset, UNIX_LINE_SEPARATOR);
+    }
+    return lines;
+  }
+
+  private List<String> splitDescriptionWith(Changeset changeset, String separator) {
+    return Arrays.asList(changeset.getDescription().split(separator));
+  }
+
+  private boolean descriptionMayHaveOtherLineSeparatorThanConfigured(List<String> lines) {
+    return lines.size() == 1 && !UNIX_LINE_SEPARATOR.equals(getSystemLineSeparator());
+  }
+
+  String getSystemLineSeparator() {
+    return LINE_SEPARATOR;
   }
 
   /**
