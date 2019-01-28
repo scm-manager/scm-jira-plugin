@@ -39,6 +39,9 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 
+import org.apache.shiro.SecurityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sonia.scm.issuetracker.IssueRequest;
 import sonia.scm.issuetracker.LinkHandler;
 import sonia.scm.repository.Changeset;
@@ -46,6 +49,7 @@ import sonia.scm.repository.Repository;
 import sonia.scm.template.Template;
 import sonia.scm.template.TemplateEngine;
 import sonia.scm.template.TemplateEngineFactory;
+import sonia.scm.user.User;
 
 //~--- JDK imports ------------------------------------------------------------
 
@@ -54,7 +58,12 @@ import java.io.StringWriter;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 
 /**
  * The DefaultCommentTemplateHandler uses the default {@link TemplateEngine} to 
@@ -64,6 +73,7 @@ import java.util.Map;
  */
 public class DefaultCommentTemplateHandler implements CommentTemplateHandler
 {
+  private static final Logger logger = LoggerFactory.getLogger(DefaultCommentTemplateHandler.class);
 
   private static final String UNIX_LINE_SEPARATOR = "\n";
   private static final String LINE_SEPARATOR = System.getProperty("line.separator", UNIX_LINE_SEPARATOR);
@@ -73,9 +83,6 @@ public class DefaultCommentTemplateHandler implements CommentTemplateHandler
 
   /** Field description */
   private static final String ENV_DESCRIPTION_LINE = "descriptionLine";
-
-  /** env var for diff rest url */
-  private static final String ENV_DIFFRESTURL = "diffRestUrl";
 
   /** env var for diff url */
   private static final String ENV_DIFFURL = "diffUrl";
@@ -91,6 +98,9 @@ public class DefaultCommentTemplateHandler implements CommentTemplateHandler
 
   private static final String ENV_BRANCHES = "branches";
   private static final String ENV_BOOKMARKS = "bookmarks";
+
+  private static final String ENV_AUTHOR = "author";
+  private static final String ENV_COMMITTER = "committer";
 
   //~--- constructors ---------------------------------------------------------
 
@@ -128,9 +138,14 @@ public class DefaultCommentTemplateHandler implements CommentTemplateHandler
     // description get eaten, and don't show up in Jira.  Thus, we split the description by the line separator,
     // and make mustache put each line on its own line.
     env.put(ENV_DESCRIPTION_LINE, splitIntoLines(changeset));
-    IssueRequest issueRequest = new IssueRequest(repository, changeset, Collections.emptyList());
+    String author = changeset.getAuthor().getName();
+    env.put(ENV_AUTHOR, author);
+    Optional<String> committer = getCommitter().map(User::getDisplayName);
+    if (committer.isPresent() && !author.equals(committer)) {
+      env.put(ENV_COMMITTER, committer.get());
+    }
+    IssueRequest issueRequest = new IssueRequest(repository, changeset, Collections.emptyList(), null);
     env.put(ENV_DIFFURL, linkHandler.getDiffUrl(issueRequest));
-//    env.put(ENV_DIFFRESTURL, linkHandler.getDiffRestUrl(repository, changeset));
     env.put(ENV_REPOSITORYURL, linkHandler.getRepositoryUrl(issueRequest));
     env.put(ENV_BRANCHES, changeset.getBranches()); // TODO:  Mercurial has empty branches for "default" ...
     env.put(ENV_BOOKMARKS, changeset.getProperty("hg.bookmarks"));
@@ -146,6 +161,16 @@ public class DefaultCommentTemplateHandler implements CommentTemplateHandler
     env.put(ENV_COMMENTWRAP_POST, commentWrapPost);
 
     return env;
+  }
+
+  private Optional<User> getCommitter() {
+    try {
+      return of(SecurityUtils.getSubject().getPrincipals().oneByType(User.class));
+    } catch (Exception e) {
+      // reading the logged in user should not let the comment fail
+      logger.info("could not read current user from SecurityUtils", e);
+      return empty();
+    }
   }
 
   private List<String> splitIntoLines(Changeset changeset) {
