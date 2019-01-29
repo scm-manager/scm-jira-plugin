@@ -67,6 +67,8 @@ import java.io.IOException;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
 import sonia.scm.jira.Comments;
 
 /**
@@ -76,10 +78,8 @@ import sonia.scm.jira.Comments;
 public class ResubmitCommentsHandler
 {
 
-  /** Field description */
   private static final String ENV_AUTHOR = "author";
-
-  /** Field description */
+  private static final String ENV_COMMITTER = "committer";
   private static final String ENV_CREATED = "created";
 
   /** Field description */
@@ -204,7 +204,6 @@ public class ResubmitCommentsHandler
     Map<String, Object> env = templateHandler.createBaseEnvironment(request,
                                 changeset);
 
-    env.put(ENV_AUTHOR, commentData.getAuthor());
     env.put(ENV_CREATED, Comments.format(commentData.getCreated()));
 
     return templateHandler.render(CommentTemplate.RESEND, env);
@@ -231,7 +230,7 @@ public class ResubmitCommentsHandler
                             commentData.getChangesetId());
     // todo handle npe for changeset
     return requestFactory.createRequest(cfg, repository, changeset,
-      commentData.getAuthor(), commentData.getCreated());
+      Optional.ofNullable(commentData.getCommitter()), commentData.getCreated());
   }
 
   private void resubmit(List<CommentData> comments)

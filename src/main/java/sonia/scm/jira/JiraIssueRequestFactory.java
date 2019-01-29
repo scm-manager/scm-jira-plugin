@@ -36,6 +36,7 @@ package sonia.scm.jira;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
+import org.apache.shiro.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sonia.scm.jira.rest.RestJiraHandlerFactory;
@@ -43,8 +44,14 @@ import sonia.scm.jira.soap.SoapJiraHandlerFactory;
 import sonia.scm.net.ahc.AdvancedHttpClient;
 import sonia.scm.repository.Changeset;
 import sonia.scm.repository.Repository;
+import sonia.scm.user.User;
 
 import java.util.Calendar;
+import java.util.Optional;
+
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
+import static java.util.Optional.ofNullable;
 
 /**
  * The JiraIssueRequestFactory is able to create {@link JiraIssueRequest}
@@ -86,7 +93,7 @@ public class JiraIssueRequestFactory
    */
   public JiraIssueRequest createRequest(JiraConfiguration configuration, Repository repository, Changeset changeset)
   {
-    return createRequest(configuration, repository, changeset, null, null);
+    return createRequest(configuration, repository, changeset, getCommitter().map(User::getDisplayName), null);
   }
 
   /**
@@ -94,36 +101,46 @@ public class JiraIssueRequestFactory
    *
    * @param configuration jira configuration
    * @param repository changed repository
-   * @param author name of user which has done the push/commit
+   * @param committer name of user which has done the push/commit
    * @param creation creation time
    *
    * @return new {@link JiraIssueRequest}
    */
-  public JiraIssueRequest createRequest(JiraConfiguration configuration, Repository repository, Changeset changeset, String author,
+  public JiraIssueRequest createRequest(JiraConfiguration configuration, Repository repository, Changeset changeset, Optional<String> committer,
     Calendar creation)
   {
-    String username = configuration.getUsername();
-    String password = configuration.getPassword();
+    logger.debug("create jira issue request");
 
-    logger.debug("create jira issue request for user {}", username);
+    return new JiraIssueRequest(createJiraHandlerFactory(configuration), committer, configuration, repository,
+      changeset, creation);
+  }
 
-    return new JiraIssueRequest(createJiraHandlerFactory(configuration), username, password, configuration, repository,
-      changeset, author, creation);
+  private static Optional<User> getCommitter() {
+    try {
+      return ofNullable(SecurityUtils.getSubject().getPrincipals().oneByType(User.class));
+    } catch (Exception e) {
+      // reading the logged in user should not let the comment fail
+      logger.info("could not read current user from SecurityUtils", e);
+      return empty();
+    }
   }
 
   private JiraHandlerFactory createJiraHandlerFactory(JiraConfiguration configuration)
   {
     JiraHandlerFactory factory;
 
+    String username = configuration.getUsername();
+    String password = configuration.getPassword();
+
     if (configuration.isRestApiEnabled())
     {
       logger.debug("use rest api for jira communication");
-      factory = new RestJiraHandlerFactory(ahcProvider.get());
+      factory = new RestJiraHandlerFactory(ahcProvider.get(), username, password);
     }
     else
     {
       logger.debug("use soap api for jira communication");
-      factory = new SoapJiraHandlerFactory();
+      factory = new SoapJiraHandlerFactory(username, password);
     }
 
     return factory;

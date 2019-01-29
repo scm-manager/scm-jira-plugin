@@ -5,6 +5,7 @@ import org.junit.Test;
 import sonia.scm.config.ScmConfiguration;
 import sonia.scm.issuetracker.LinkHandler;
 import sonia.scm.repository.Changeset;
+import sonia.scm.repository.Person;
 import sonia.scm.repository.Repository;
 
 import java.util.Map;
@@ -55,6 +56,7 @@ public class DefaultCommentTemplateHandlerTest {
   @Before
   public void init() {
     changeset = mock(Changeset.class);
+    when(changeset.getAuthor()).thenReturn(new Person("Arthur Dent"));
     request = mock(JiraIssueRequest.class);
     when(request.getConfiguration()).thenReturn(mock(JiraConfiguration.class));
     when(request.getRepository()).thenReturn(new Repository("id", "git", "space", "X"));

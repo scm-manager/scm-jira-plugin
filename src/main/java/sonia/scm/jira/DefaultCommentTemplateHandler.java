@@ -140,8 +140,8 @@ public class DefaultCommentTemplateHandler implements CommentTemplateHandler
     env.put(ENV_DESCRIPTION_LINE, splitIntoLines(changeset));
     String author = changeset.getAuthor().getName();
     env.put(ENV_AUTHOR, author);
-    Optional<String> committer = getCommitter().map(User::getDisplayName);
-    if (committer.isPresent() && !author.equals(committer)) {
+    Optional<String> committer = request.getCommitter();
+    if (committer.isPresent() && !author.equals(committer.get())) {
       env.put(ENV_COMMITTER, committer.get());
     }
     IssueRequest issueRequest = new IssueRequest(repository, changeset, Collections.emptyList(), null);
@@ -161,16 +161,6 @@ public class DefaultCommentTemplateHandler implements CommentTemplateHandler
     env.put(ENV_COMMENTWRAP_POST, commentWrapPost);
 
     return env;
-  }
-
-  private Optional<User> getCommitter() {
-    try {
-      return of(SecurityUtils.getSubject().getPrincipals().oneByType(User.class));
-    } catch (Exception e) {
-      // reading the logged in user should not let the comment fail
-      logger.info("could not read current user from SecurityUtils", e);
-      return empty();
-    }
   }
 
   private List<String> splitIntoLines(Changeset changeset) {

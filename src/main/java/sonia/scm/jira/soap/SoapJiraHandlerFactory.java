@@ -66,14 +66,21 @@ public class SoapJiraHandlerFactory implements JiraHandlerFactory
   private static final Logger logger =
     LoggerFactory.getLogger(SoapJiraHandlerFactory.class);
 
+  private final String username;
+  private final String password;
+
+  public SoapJiraHandlerFactory(String username, String password) {
+    this.username = username;
+    this.password = password;
+  }
+
   //~--- methods --------------------------------------------------------------
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public JiraHandler createJiraHandler(JiraIssueRequest request,
-    String username, String password)
+  public JiraHandler createJiraHandler(JiraIssueRequest request)
     throws JiraConnectException
   {
     JiraHandler handler = null;
