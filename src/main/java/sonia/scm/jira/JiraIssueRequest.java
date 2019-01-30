@@ -39,6 +39,7 @@ import com.google.common.base.MoreObjects;
 
 import sonia.scm.repository.Changeset;
 import sonia.scm.repository.Repository;
+import sonia.scm.user.User;
 
 //~--- JDK imports ------------------------------------------------------------
 
@@ -67,7 +68,7 @@ public class JiraIssueRequest implements Closeable
    * @param repository modified repository
    * @param creation creation time
    */
-  public JiraIssueRequest(JiraHandlerFactory handlerFactory, Optional<String> committer,
+  public JiraIssueRequest(JiraHandlerFactory handlerFactory, Optional<User> committer,
     JiraConfiguration configuration, Repository repository,
     Changeset changeset, Calendar creation)
   {
@@ -180,13 +181,13 @@ public class JiraIssueRequest implements Closeable
     return changeset;
   }
 
-  public Optional<String> getCommitter() {
+  public Optional<User> getCommitter() {
     return committer;
   }
 //~--- fields ---------------------------------------------------------------
 
   /** the user which has done the push/commit */
-  private final Optional<String> committer;
+  private final Optional<User> committer;
 
   /** jira configuration */
   private final JiraConfiguration configuration;

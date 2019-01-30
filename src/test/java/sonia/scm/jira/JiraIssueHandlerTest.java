@@ -46,7 +46,7 @@ import sonia.scm.repository.Changeset;
 
 /**
  * Unit tests for {@link JiraIssueHandler}.
- * 
+ *
  * @author Sebastian Sdorra <sebastian.sdorra@triology.de>
  */
 @RunWith(MockitoJUnitRunner.class)
@@ -57,6 +57,9 @@ public class JiraIssueHandlerTest {
 
     @Mock
     private JiraIssueRequest request;
+
+    @Mock
+    private CommentTemplateHandlerFactory templateHandlerFactory;
 
     @Mock
     private CommentTemplateHandler templateHandler;
@@ -72,7 +75,8 @@ public class JiraIssueHandlerTest {
      */
     @Before
     public void setUp() {
-        when(request.getConfiguration()).thenReturn(configuration);
+      when(request.getConfiguration()).thenReturn(configuration);
+      when(templateHandlerFactory.create(any())).thenReturn(templateHandler);
     }
 
     /**

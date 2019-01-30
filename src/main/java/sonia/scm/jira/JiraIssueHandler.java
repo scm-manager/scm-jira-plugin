@@ -72,19 +72,12 @@ public class JiraIssueHandler implements CommentHandler
 
   //~--- constructors ---------------------------------------------------------
 
-  /**
-   * Constructs a new JiraIssueHandler.
-   *
-   *
-   * @param problemHandler message problem handler
-   * @param templateHandler comment template handler
-   * @param request jira issue request
-   */
   public JiraIssueHandler(MessageProblemHandler problemHandler,
-    CommentTemplateHandler templateHandler, JiraIssueRequest request)
+                          CommentTemplateHandlerFactory commentTemplateHandlerFactory, JiraIssueRequest request)
   {
     this.problemHandler = problemHandler;
-    this.templateHandler = templateHandler;
+    this.updateTemplateHandler = commentTemplateHandlerFactory.create(CommentTemplate.UPADTE);
+    this.autoCloseTemplateHandler = commentTemplateHandlerFactory.create(CommentTemplate.AUTOCLOSE);
     this.request = request;
   }
 
@@ -150,7 +143,7 @@ public class JiraIssueHandler implements CommentHandler
     //J-
     return MoreObjects.toStringHelper(this)
                   .add("request", request)
-                  .add("problemHandler", templateHandler)
+                  .add("problemHandler", updateTemplateHandler)
                   .toString();
     //J+
   }
@@ -213,12 +206,12 @@ public class JiraIssueHandler implements CommentHandler
     try
     {
       JiraHandler handler = request.createJiraHandler();
-      Map<String, Object> env = templateHandler.createBaseEnvironment(request,
+      Map<String, Object> env = updateTemplateHandler.createBaseEnvironment(request,
                                   changeset);
 
       env.put(ENV_AUTOCLOSEWORD, Strings.nullToEmpty(autoCloseWord));
 
-      comment = templateHandler.render(CommentTemplate.AUTOCLOSE, env);
+      comment = autoCloseTemplateHandler.render(env);
 
       handler.close(issueId, autoCloseWord);
       //J-
@@ -294,11 +287,11 @@ public class JiraIssueHandler implements CommentHandler
 
     if (Strings.isNullOrEmpty(comment))
     {
-      Map<String, Object> env = templateHandler.createBaseEnvironment(request,
+      Map<String, Object> env = updateTemplateHandler.createBaseEnvironment(request,
                                   changeset);
 
       // use always update?
-      comment = templateHandler.render(CommentTemplate.UPADTE, env);
+      comment = updateTemplateHandler.render(env);
     }
 
     //J-
@@ -316,10 +309,10 @@ public class JiraIssueHandler implements CommentHandler
     try
     {
 
-      Map<String, Object> env = templateHandler.createBaseEnvironment(request,
+      Map<String, Object> env = updateTemplateHandler.createBaseEnvironment(request,
                                   changeset);
 
-      String comment = templateHandler.render(CommentTemplate.UPADTE, env);
+      String comment = updateTemplateHandler.render(env);
 
       updateIssue(changeset, issueId, comment);
     }
@@ -340,5 +333,6 @@ public class JiraIssueHandler implements CommentHandler
   private final JiraIssueRequest request;
 
   /** comment template handler */
-  private final CommentTemplateHandler templateHandler;
+  private final CommentTemplateHandler updateTemplateHandler;
+  private final CommentTemplateHandler autoCloseTemplateHandler;
 }

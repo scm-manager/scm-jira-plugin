@@ -45,6 +45,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import sonia.scm.jira.Comments;
+import sonia.scm.user.User;
 
 /**
  * A CommentData instance is stored, if comment could not added to the jira
@@ -73,7 +74,7 @@ public class CommentData implements Comparable<CommentData>
    * @param created The date and time the comment was created.
    */
   public CommentData(String id, String repositoryId, String changesetId,
-    String issueId, String committer, String body, Calendar created)
+    String issueId, User committer, String body, Calendar created)
   {
     this.id = id;
     this.repositoryId = repositoryId;
@@ -116,7 +117,7 @@ public class CommentData implements Comparable<CommentData>
 
   //~--- get methods ----------------------------------------------------------
 
-  public String getCommitter() {
+  public User getCommitter() {
     return committer;
   }
 
@@ -189,7 +190,7 @@ public class CommentData implements Comparable<CommentData>
   //~--- fields ---------------------------------------------------------------
 
   /** comment author */
-  private String committer;
+  private User committer;
 
   /** content of comment */
   private String body;

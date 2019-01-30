@@ -60,7 +60,7 @@ public class JiraModule extends AbstractModule
     bind(JiraIssueRequestFactory.class);
     bind(MessageProblemHandler.class);
     bind(ResubmitCommentsHandler.class);
-    bind(CommentTemplateHandler.class).to(DefaultCommentTemplateHandler.class);
+    bind(CommentTemplateHandlerFactory.class).to(DefaultCommentTemplateHandlerFactory.class);
     bind(JiraConfigurationMapper.class).to(Mappers.getMapper(JiraConfigurationMapper.class).getClass());
     bind(JiraGlobalConfigurationMapper.class).to(Mappers.getMapper(JiraGlobalConfigurationMapper.class).getClass());
   }

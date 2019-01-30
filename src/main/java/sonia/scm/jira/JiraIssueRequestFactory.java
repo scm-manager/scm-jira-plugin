@@ -93,7 +93,7 @@ public class JiraIssueRequestFactory
    */
   public JiraIssueRequest createRequest(JiraConfiguration configuration, Repository repository, Changeset changeset)
   {
-    return createRequest(configuration, repository, changeset, getCommitter().map(User::getDisplayName), null);
+    return createRequest(configuration, repository, changeset, getCommitter(), null);
   }
 
   /**
@@ -106,7 +106,7 @@ public class JiraIssueRequestFactory
    *
    * @return new {@link JiraIssueRequest}
    */
-  public JiraIssueRequest createRequest(JiraConfiguration configuration, Repository repository, Changeset changeset, Optional<String> committer,
+  public JiraIssueRequest createRequest(JiraConfiguration configuration, Repository repository, Changeset changeset, Optional<User> committer,
     Calendar creation)
   {
     logger.debug("create jira issue request");

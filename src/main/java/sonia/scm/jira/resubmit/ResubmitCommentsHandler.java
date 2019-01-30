@@ -45,6 +45,7 @@ import org.slf4j.LoggerFactory;
 
 import sonia.scm.jira.CommentTemplate;
 import sonia.scm.jira.CommentTemplateHandler;
+import sonia.scm.jira.CommentTemplateHandlerFactory;
 import sonia.scm.jira.JiraConfiguration;
 import sonia.scm.jira.JiraConfigurationResolver;
 import sonia.scm.jira.JiraGlobalContext;
@@ -88,25 +89,15 @@ public class ResubmitCommentsHandler
 
   //~--- constructors ---------------------------------------------------------
 
-  /**
-   * Constructs a new ResubmitCommentsHandler.
-   *
-   * @param requestFactory jira request factory
-   * @param templateHandler template handler
-   * @param messageProblemHandler message problem handler
-   * @param context jira global context
-   * @param repositoryManager repository manager
-   * @param repositoryServiceFactory repository service factory
-   */
   @Inject
   public ResubmitCommentsHandler(JiraIssueRequestFactory requestFactory,
-    CommentTemplateHandler templateHandler,
+    CommentTemplateHandlerFactory commentTemplateHandlerFactory,
     MessageProblemHandler messageProblemHandler, JiraGlobalContext context,
     RepositoryManager repositoryManager,
     RepositoryServiceFactory repositoryServiceFactory)
   {
     this.requestFactory = requestFactory;
-    this.templateHandler = templateHandler;
+    this.commentTemplateHandlerFactory = commentTemplateHandlerFactory;
     this.messageProblemHandler = messageProblemHandler;
     this.context = context;
     this.repositoryManager = repositoryManager;
@@ -201,12 +192,13 @@ public class ResubmitCommentsHandler
     CommentData commentData)
     throws IOException
   {
-    Map<String, Object> env = templateHandler.createBaseEnvironment(request,
+    CommentTemplateHandler resendTemplateHandler = commentTemplateHandlerFactory.create(CommentTemplate.RESEND);
+    Map<String, Object> env = resendTemplateHandler.createBaseEnvironment(request,
                                 changeset);
 
     env.put(ENV_CREATED, Comments.format(commentData.getCreated()));
 
-    return templateHandler.render(CommentTemplate.RESEND, env);
+    return resendTemplateHandler.render(env);
   }
 
   /**
@@ -268,7 +260,7 @@ public class ResubmitCommentsHandler
     try (
       JiraIssueHandler jiraIssueHandler = new JiraIssueHandler(
         messageProblemHandler,
-        templateHandler,
+        commentTemplateHandlerFactory,
         request
       ))
     {
@@ -334,5 +326,5 @@ public class ResubmitCommentsHandler
   private final JiraIssueRequestFactory requestFactory;
 
   /** template handler */
-  private final CommentTemplateHandler templateHandler;
+  private final CommentTemplateHandlerFactory commentTemplateHandlerFactory;
 }
