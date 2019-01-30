@@ -79,8 +79,6 @@ import sonia.scm.jira.Comments;
 public class ResubmitCommentsHandler
 {
 
-  private static final String ENV_AUTHOR = "author";
-  private static final String ENV_COMMITTER = "committer";
   private static final String ENV_CREATED = "created";
 
   /** Field description */
@@ -118,26 +116,6 @@ public class ResubmitCommentsHandler
   public void resubmit(String commentId) throws IOException, CommentNotFoundException
   {
     resubmit(getCommentChecked(commentId));
-  }
-  
-  /**
-   * Removes the stored comment with the given id.
-   *
-   *
-   * @param commentId id of the comment
-   * 
-   * @return removed comment
-   * 
-   * @throws CommentNotFoundException
-   */
-  public CommentData remove(String commentId) throws CommentNotFoundException{
-    CommentData commentData = getCommentChecked(commentId);
-    
-    logger.warn("user {} removed comment {} for issue {} from resubmit queue, comment details: {}", 
-      SecurityUtils.getSubject().getPrincipal(), commentId, commentData.getIssueId(), commentData);
-    messageProblemHandler.deleteComment(commentId);
-    
-    return commentData;
   }
   
   private CommentData getCommentChecked(String commentId) throws CommentNotFoundException
@@ -290,7 +268,7 @@ public class ResubmitCommentsHandler
   private Changeset getChangeset(Repository repository, String changesetId)
     throws IOException
   {
-    Changeset changeset = null;
+    Changeset changeset;
     RepositoryService service = null;
 
     try
