@@ -46,6 +46,7 @@ import sonia.scm.template.TemplateEngineFactory;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 public abstract class DefaultCommentTemplateHandler extends TemplateBasedHandler implements CommentTemplateHandler {
