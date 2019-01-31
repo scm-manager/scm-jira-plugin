@@ -36,7 +36,6 @@ package sonia.scm.jira;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
-import org.apache.shiro.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sonia.scm.jira.rest.RestJiraHandlerFactory;
@@ -48,10 +47,6 @@ import sonia.scm.user.User;
 
 import java.util.Calendar;
 import java.util.Optional;
-
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
-import static java.util.Optional.ofNullable;
 
 /**
  * The JiraIssueRequestFactory is able to create {@link JiraIssueRequest}
