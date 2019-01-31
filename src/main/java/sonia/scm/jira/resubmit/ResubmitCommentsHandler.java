@@ -33,19 +33,15 @@
 
 package sonia.scm.jira.resubmit;
 
-//~--- non-JDK imports --------------------------------------------------------
-
 import com.google.common.io.Closeables;
 import com.google.inject.Inject;
-
 import org.apache.shiro.SecurityUtils;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import sonia.scm.jira.CommentTemplate;
 import sonia.scm.jira.CommentTemplateHandler;
 import sonia.scm.jira.CommentTemplateHandlerFactory;
+import sonia.scm.jira.Comments;
 import sonia.scm.jira.JiraConfiguration;
 import sonia.scm.jira.JiraConfigurationResolver;
 import sonia.scm.jira.JiraGlobalContext;
@@ -53,24 +49,20 @@ import sonia.scm.jira.JiraIssueHandler;
 import sonia.scm.jira.JiraIssueRequest;
 import sonia.scm.jira.JiraIssueRequestFactory;
 import sonia.scm.repository.Changeset;
-import sonia.scm.repository.PermissionType;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryManager;
 import sonia.scm.repository.RepositoryPermissions;
 import sonia.scm.repository.api.RepositoryService;
 import sonia.scm.repository.api.RepositoryServiceFactory;
-import sonia.scm.security.RepositoryPermission;
 import sonia.scm.security.Role;
 
-//~--- JDK imports ------------------------------------------------------------
-
 import java.io.IOException;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import sonia.scm.jira.Comments;
+import static sonia.scm.ContextEntry.ContextBuilder.entity;
+import static sonia.scm.NotFoundException.notFound;
 
 /**
  * Class to resubmit all comments saved from the {@link MessageProblemHandler}.
@@ -111,31 +103,25 @@ public class ResubmitCommentsHandler
    * @param commentId id of the comment
    *
    * @throws IOException
-   * @throws CommentNotFoundException
    */
-  public void resubmit(String commentId) throws IOException, CommentNotFoundException
+  public void resubmit(String commentId) throws IOException
   {
     resubmit(getCommentChecked(commentId));
   }
-  
-  private CommentData getCommentChecked(String commentId) throws CommentNotFoundException
+
+  private CommentData getCommentChecked(String commentId)
   {
     CommentData commentData = messageProblemHandler.getComment(commentId);
 
     if (commentData != null)
     {
-      //J-
-      SecurityUtils.getSubject().checkPermission(
-        new RepositoryPermission(commentData.getRepositoryId(), PermissionType.OWNER)
-      );
-      //J+
+      RepositoryPermissions.modify(commentData.getRepositoryId()).check();
+      return commentData;
     }
     else
     {
-      // TODO custom exception type?
-      throw new CommentNotFoundException("id does not exists");
+      throw notFound(entity("jira comment", commentId));
     }
-    return commentData;
   }
 
   /**
@@ -243,8 +229,8 @@ public class ResubmitCommentsHandler
       ))
     {
       jiraIssueHandler.updateIssue(changeset, commentData.getIssueId(), content);
-    } 
-    finally 
+    }
+    finally
     {
       // delete the comment
       messageProblemHandler.deleteComment(commentData.getId());
