@@ -56,7 +56,6 @@ public class RestJiraHandlerFactory implements JiraHandlerFactory
    * @param username connection username
    * @param password connection password
    */
-  @Inject
   public RestJiraHandlerFactory(AdvancedHttpClient client, String username, String password)
   {
     this.client = client;

@@ -89,11 +89,12 @@ public class JiraIssueRequestFactory
    * @param configuration jira configuration
    * @param repository changed repository
    *
+   * @param committer
    * @return new {@link JiraIssueRequest}
    */
-  public JiraIssueRequest createRequest(JiraConfiguration configuration, Repository repository, Changeset changeset)
+  public JiraIssueRequest createRequest(JiraConfiguration configuration, Repository repository, Changeset changeset, Optional<User> committer)
   {
-    return createRequest(configuration, repository, changeset, getCommitter(), null);
+    return createRequest(configuration, repository, changeset, committer, null);
   }
 
   /**
@@ -113,16 +114,6 @@ public class JiraIssueRequestFactory
 
     return new JiraIssueRequest(createJiraHandlerFactory(configuration), committer, configuration, repository,
       changeset, creation);
-  }
-
-  private static Optional<User> getCommitter() {
-    try {
-      return ofNullable(SecurityUtils.getSubject().getPrincipals().oneByType(User.class));
-    } catch (Exception e) {
-      // reading the logged in user should not let the comment fail
-      logger.info("could not read current user from SecurityUtils", e);
-      return empty();
-    }
   }
 
   private JiraHandlerFactory createJiraHandlerFactory(JiraConfiguration configuration)

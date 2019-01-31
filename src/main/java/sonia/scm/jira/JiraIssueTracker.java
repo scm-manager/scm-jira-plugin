@@ -76,7 +76,7 @@ public class JiraIssueTracker extends DataStoreBasedIssueTracker {
   @Override
   protected CommentHandler getCommentHandler(IssueRequest request) {
     JiraConfiguration configuration = JiraConfigurationResolver.resolve(context, request.getRepository());
-    JiraIssueRequest jiraIssueRequest = requestFactory.createRequest(configuration, request.getRepository(), request.getChangeset());
+    JiraIssueRequest jiraIssueRequest = requestFactory.createRequest(configuration, request.getRepository(), request.getChangeset(), request.getCommitter());
     return new JiraIssueHandler(messageProblemHandler, templateHandlerFactoryProvider.get(), jiraIssueRequest);
   }
 }
