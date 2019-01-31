@@ -40,12 +40,11 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Ordering;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-
 import org.codemonkey.simplejavamail.Email;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import sonia.scm.config.ScmConfiguration;
+import sonia.scm.jira.JiraIssueRequest;
 import sonia.scm.mail.api.MailSendBatchException;
 import sonia.scm.mail.api.MailService;
 import sonia.scm.repository.Changeset;
@@ -53,15 +52,12 @@ import sonia.scm.repository.Repository;
 import sonia.scm.security.KeyGenerator;
 import sonia.scm.store.DataStore;
 import sonia.scm.store.DataStoreFactory;
-
-//~--- JDK imports ------------------------------------------------------------
-
-import java.util.List;
+import sonia.scm.util.HttpUtil;
 
 import javax.mail.Message;
-import sonia.scm.config.ScmConfiguration;
-import sonia.scm.jira.JiraIssueRequest;
-import sonia.scm.util.HttpUtil;
+import java.util.List;
+
+//~--- JDK imports ------------------------------------------------------------
 
 /**
  * A class to handle problems of message sending.
@@ -131,9 +127,9 @@ public class MessageProblemHandler
       keyGenerator.createKey(),
       request.getRepository().getId(), 
       changeset.getId(), 
-      issueId, 
-      request.getAuthor(), 
-      body, 
+      issueId,
+      request.getCommitter().orElse(null),
+      body,
       request.getCreation()
     );
     //J+
@@ -231,7 +227,7 @@ public class MessageProblemHandler
 
     c.append("The following comment could not be sent to the jira server:");
     c.append("<br/>");
-    c.append("<br/>Author: ").append(commentData.getAuthor());
+    c.append("<br/>Committer: ").append(commentData.getCommitter());
     c.append("<br/> IssueId: ").append(commentData.getIssueId());
     c.append("<br/> Body: <br/>");
     c.append("<pre>").append(commentData.getBody()).append("</pre>");

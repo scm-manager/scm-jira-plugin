@@ -45,6 +45,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import sonia.scm.jira.Comments;
+import sonia.scm.user.User;
 
 /**
  * A CommentData instance is stored, if comment could not added to the jira
@@ -69,18 +70,17 @@ public class CommentData implements Comparable<CommentData>
    * @param repositoryId id of the repository
    * @param changesetId id of the changeset
    * @param issueId The issue the comment is referring to.
-   * @param author The author of the comment.
    * @param body The body of the comment.
    * @param created The date and time the comment was created.
    */
   public CommentData(String id, String repositoryId, String changesetId,
-    String issueId, String author, String body, Calendar created)
+    String issueId, User committer, String body, Calendar created)
   {
     this.id = id;
     this.repositoryId = repositoryId;
     this.changesetId = changesetId;
     this.issueId = issueId;
-    this.author = author;
+    this.committer = committer;
     this.body = body;
     this.created = created;
   }
@@ -108,7 +108,7 @@ public class CommentData implements Comparable<CommentData>
                   .add("repositoryid", repositoryId)
                   .add("changesetId", changesetId)
                   .add("issueId", issueId)
-                  .add("author", author)
+                  .add("committer", committer)
                   .add("body", body)
                   .add("created", Comments.format(created))
                   .toString();
@@ -117,15 +117,8 @@ public class CommentData implements Comparable<CommentData>
 
   //~--- get methods ----------------------------------------------------------
 
-  /**
-   * Returns comment author,
-   *
-   *
-   * @return comment author
-   */
-  public String getAuthor()
-  {
-    return author;
+  public User getCommitter() {
+    return committer;
   }
 
   /**
@@ -197,7 +190,7 @@ public class CommentData implements Comparable<CommentData>
   //~--- fields ---------------------------------------------------------------
 
   /** comment author */
-  private String author;
+  private User committer;
 
   /** content of comment */
   private String body;

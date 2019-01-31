@@ -37,8 +37,6 @@ package sonia.scm.jira;
 
 import sonia.scm.repository.Changeset;
 
-//~--- JDK imports ------------------------------------------------------------
-
 import java.io.IOException;
 import java.util.Map;
 
@@ -53,14 +51,13 @@ public interface CommentTemplateHandler
   /**
    * Returns the rendered template.
    *
-   * @param template template
    * @param model model which is used within the template
    *
    * @return rendered template
    *
    * @throws IOException
    */
-  public String render(CommentTemplate template, Object model) throws IOException;
+  String render(Object model) throws IOException;
 
   /**
    * Creates a base environment for the rendering of a {@link CommentTemplate}.
@@ -70,5 +67,5 @@ public interface CommentTemplateHandler
    *
    * @return
    */
-  public Map<String,Object> createBaseEnvironment(JiraIssueRequest request, Changeset changeset);
+  Map<String, Object> createBaseEnvironment(JiraIssueRequest request, Changeset changeset);
 }

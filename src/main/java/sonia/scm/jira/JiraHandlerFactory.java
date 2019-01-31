@@ -46,14 +46,11 @@ public interface JiraHandlerFactory
    *
    *
    * @param request jira issue request
-   * @param username connection username
-   * @param password connection password
    *
    * @return new {@link JiraHandler}.
    *
    * @throws JiraConnectException
    */
-  public JiraHandler createJiraHandler(JiraIssueRequest request, String username,
-    String password)
+  public JiraHandler createJiraHandler(JiraIssueRequest request)
     throws JiraConnectException;
 }

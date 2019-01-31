@@ -39,6 +39,7 @@ import com.google.common.base.MoreObjects;
 
 import sonia.scm.repository.Changeset;
 import sonia.scm.repository.Repository;
+import sonia.scm.user.User;
 
 //~--- JDK imports ------------------------------------------------------------
 
@@ -47,6 +48,7 @@ import java.io.IOException;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Optional;
 
 /**
  * The JiraIssueRequest contains all informations which are required to create a
@@ -61,23 +63,19 @@ public class JiraIssueRequest implements Closeable
    * Constructs a new JiraIssueRequest.
    *
    * @param handlerFactory jira handler factory
-   * @param username connection username
-   * @param password connection password
+   * @param committer optional user which has done the push/commit
    * @param configuration jira configuration
    * @param repository modified repository
-   * @param author name of user which has done the push/commit
    * @param creation creation time
    */
-  public JiraIssueRequest(JiraHandlerFactory handlerFactory, String username,
-    String password, JiraConfiguration configuration, Repository repository,
-    Changeset changeset, String author, Calendar creation)
+  public JiraIssueRequest(JiraHandlerFactory handlerFactory, Optional<User> committer,
+    JiraConfiguration configuration, Repository repository,
+    Changeset changeset, Calendar creation)
   {
     this.handlerFactory = handlerFactory;
-    this.username = username;
-    this.password = password;
+    this.committer = committer;
     this.configuration = configuration;
     this.repository = repository;
-    this.author = author;
     this.creation = creation;
     this.changeset = changeset;
   }
@@ -115,7 +113,7 @@ public class JiraIssueRequest implements Closeable
   {
     if (handler == null)
     {
-      handler = handlerFactory.createJiraHandler(this, username, password);
+      handler = handlerFactory.createJiraHandler(this);
     }
 
     return handler;
@@ -131,29 +129,16 @@ public class JiraIssueRequest implements Closeable
     //J-
     return MoreObjects.toStringHelper(this)
                   .add("handlerFactory", handlerFactory.getClass())
-                  .add("username", username)
+                  .add("committer", committer)
                   .add("password", "xxx")
                   .add("configuration", configuration)
                   .add("repository", repository)
-                  .add("author", author)
                   .add("creation", creation)
                   .toString();
     //J+
   }
 
   //~--- get methods ----------------------------------------------------------
-
-  /**
-   * Returns name of the user which has done the push/commit, if the author is 
-   * {@code null} the method will return the username.
-   *
-   *
-   * @return author name
-   */
-  public String getAuthor()
-  {
-    return MoreObjects.firstNonNull(author, username);
-  }
 
   /**
    * Returns jira configuration.
@@ -181,17 +166,6 @@ public class JiraIssueRequest implements Closeable
   }
 
   /**
-   * Returns the password which is used for the connection.
-   *
-   *
-   * @return connection password
-   */
-  public String getPassword()
-  {
-    return password;
-  }
-
-  /**
    * Returns the changed repository.
    *
    *
@@ -207,21 +181,13 @@ public class JiraIssueRequest implements Closeable
     return changeset;
   }
 
-  /**
-   * Returns the username which is used for the connection.
-   *
-   *
-   * @return connection username
-   */
-  public String getUsername()
-  {
-    return username;
+  public Optional<User> getCommitter() {
+    return committer;
   }
-
-  //~--- fields ---------------------------------------------------------------
+//~--- fields ---------------------------------------------------------------
 
   /** the user which has done the push/commit */
-  private final String author;
+  private final Optional<User> committer;
 
   /** jira configuration */
   private final JiraConfiguration configuration;
@@ -232,16 +198,10 @@ public class JiraIssueRequest implements Closeable
   /** jira handler factory */
   private final JiraHandlerFactory handlerFactory;
 
-  /** connection password */
-  private final String password;
-
   /** changed repository */
   private final Repository repository;
 
   private final Changeset changeset;
-
-  /** connection username */
-  private final String username;
 
   /** jira handler */
   private JiraHandler handler;

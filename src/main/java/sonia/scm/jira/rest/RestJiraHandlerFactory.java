@@ -29,9 +29,6 @@ package sonia.scm.jira.rest;
 
 //~--- non-JDK imports --------------------------------------------------------
 
-import com.google.inject.Inject;
-
-import sonia.scm.jira.JiraConnectException;
 import sonia.scm.jira.JiraHandlerFactory;
 import sonia.scm.jira.JiraIssueRequest;
 import sonia.scm.net.ahc.AdvancedHttpClient;
@@ -53,18 +50,20 @@ public class RestJiraHandlerFactory implements JiraHandlerFactory
    * Constructs a new {@link RestJiraHandlerFactory}.
    *
    * @param client http client
+   * @param username connection username
+   * @param password connection password
    */
-  @Inject
-  public RestJiraHandlerFactory(AdvancedHttpClient client)
+  public RestJiraHandlerFactory(AdvancedHttpClient client, String username, String password)
   {
     this.client = client;
+    this.username = username;
+    this.password = password;
   }
 
   //~--- methods --------------------------------------------------------------
 
   @Override
-  public RestJiraHandler createJiraHandler(JiraIssueRequest request, String username, String password)
-    throws JiraConnectException
+  public RestJiraHandler createJiraHandler(JiraIssueRequest request)
   {
     return new RestJiraHandler(client, request, createUrl(request), username, password);
   }
@@ -78,4 +77,7 @@ public class RestJiraHandlerFactory implements JiraHandlerFactory
 
   /** http client */
   private final AdvancedHttpClient client;
+
+  private final String username;
+  private final String password;
 }

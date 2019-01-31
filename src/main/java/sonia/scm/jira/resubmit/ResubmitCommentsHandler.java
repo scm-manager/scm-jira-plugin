@@ -33,18 +33,15 @@
 
 package sonia.scm.jira.resubmit;
 
-//~--- non-JDK imports --------------------------------------------------------
-
 import com.google.common.io.Closeables;
 import com.google.inject.Inject;
-
 import org.apache.shiro.SecurityUtils;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import sonia.scm.jira.CommentTemplate;
 import sonia.scm.jira.CommentTemplateHandler;
+import sonia.scm.jira.CommentTemplateHandlerFactory;
+import sonia.scm.jira.Comments;
 import sonia.scm.jira.JiraConfiguration;
 import sonia.scm.jira.JiraConfigurationResolver;
 import sonia.scm.jira.JiraGlobalContext;
@@ -52,22 +49,20 @@ import sonia.scm.jira.JiraIssueHandler;
 import sonia.scm.jira.JiraIssueRequest;
 import sonia.scm.jira.JiraIssueRequestFactory;
 import sonia.scm.repository.Changeset;
-import sonia.scm.repository.PermissionType;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryManager;
 import sonia.scm.repository.RepositoryPermissions;
 import sonia.scm.repository.api.RepositoryService;
 import sonia.scm.repository.api.RepositoryServiceFactory;
-import sonia.scm.security.RepositoryPermission;
 import sonia.scm.security.Role;
 
-//~--- JDK imports ------------------------------------------------------------
-
 import java.io.IOException;
-
 import java.util.List;
 import java.util.Map;
-import sonia.scm.jira.Comments;
+import java.util.Optional;
+
+import static sonia.scm.ContextEntry.ContextBuilder.entity;
+import static sonia.scm.NotFoundException.notFound;
 
 /**
  * Class to resubmit all comments saved from the {@link MessageProblemHandler}.
@@ -76,10 +71,6 @@ import sonia.scm.jira.Comments;
 public class ResubmitCommentsHandler
 {
 
-  /** Field description */
-  private static final String ENV_AUTHOR = "author";
-
-  /** Field description */
   private static final String ENV_CREATED = "created";
 
   /** Field description */
@@ -88,25 +79,15 @@ public class ResubmitCommentsHandler
 
   //~--- constructors ---------------------------------------------------------
 
-  /**
-   * Constructs a new ResubmitCommentsHandler.
-   *
-   * @param requestFactory jira request factory
-   * @param templateHandler template handler
-   * @param messageProblemHandler message problem handler
-   * @param context jira global context
-   * @param repositoryManager repository manager
-   * @param repositoryServiceFactory repository service factory
-   */
   @Inject
   public ResubmitCommentsHandler(JiraIssueRequestFactory requestFactory,
-    CommentTemplateHandler templateHandler,
+    CommentTemplateHandlerFactory commentTemplateHandlerFactory,
     MessageProblemHandler messageProblemHandler, JiraGlobalContext context,
     RepositoryManager repositoryManager,
     RepositoryServiceFactory repositoryServiceFactory)
   {
     this.requestFactory = requestFactory;
-    this.templateHandler = templateHandler;
+    this.commentTemplateHandlerFactory = commentTemplateHandlerFactory;
     this.messageProblemHandler = messageProblemHandler;
     this.context = context;
     this.repositoryManager = repositoryManager;
@@ -122,51 +103,25 @@ public class ResubmitCommentsHandler
    * @param commentId id of the comment
    *
    * @throws IOException
-   * @throws CommentNotFoundException
    */
-  public void resubmit(String commentId) throws IOException, CommentNotFoundException
+  public void resubmit(String commentId) throws IOException
   {
     resubmit(getCommentChecked(commentId));
   }
-  
-  /**
-   * Removes the stored comment with the given id.
-   *
-   *
-   * @param commentId id of the comment
-   * 
-   * @return removed comment
-   * 
-   * @throws CommentNotFoundException
-   */
-  public CommentData remove(String commentId) throws CommentNotFoundException{
-    CommentData commentData = getCommentChecked(commentId);
-    
-    logger.warn("user {} removed comment {} for issue {} from resubmit queue, comment details: {}", 
-      SecurityUtils.getSubject().getPrincipal(), commentId, commentData.getIssueId(), commentData);
-    messageProblemHandler.deleteComment(commentId);
-    
-    return commentData;
-  }
-  
-  private CommentData getCommentChecked(String commentId) throws CommentNotFoundException
+
+  private CommentData getCommentChecked(String commentId)
   {
     CommentData commentData = messageProblemHandler.getComment(commentId);
 
     if (commentData != null)
     {
-      //J-
-      SecurityUtils.getSubject().checkPermission(
-        new RepositoryPermission(commentData.getRepositoryId(), PermissionType.OWNER)
-      );
-      //J+
+      RepositoryPermissions.modify(commentData.getRepositoryId()).check();
+      return commentData;
     }
     else
     {
-      // TODO custom exception type?
-      throw new CommentNotFoundException("id does not exists");
+      throw notFound(entity("jira comment", commentId));
     }
-    return commentData;
   }
 
   /**
@@ -201,13 +156,13 @@ public class ResubmitCommentsHandler
     CommentData commentData)
     throws IOException
   {
-    Map<String, Object> env = templateHandler.createBaseEnvironment(request,
+    CommentTemplateHandler resendTemplateHandler = commentTemplateHandlerFactory.create(CommentTemplate.RESEND);
+    Map<String, Object> env = resendTemplateHandler.createBaseEnvironment(request,
                                 changeset);
 
-    env.put(ENV_AUTHOR, commentData.getAuthor());
     env.put(ENV_CREATED, Comments.format(commentData.getCreated()));
 
-    return templateHandler.render(CommentTemplate.RESEND, env);
+    return resendTemplateHandler.render(env);
   }
 
   /**
@@ -231,7 +186,7 @@ public class ResubmitCommentsHandler
                             commentData.getChangesetId());
     // todo handle npe for changeset
     return requestFactory.createRequest(cfg, repository, changeset,
-      commentData.getAuthor(), commentData.getCreated());
+      Optional.ofNullable(commentData.getCommitter()), commentData.getCreated());
   }
 
   private void resubmit(List<CommentData> comments)
@@ -269,13 +224,13 @@ public class ResubmitCommentsHandler
     try (
       JiraIssueHandler jiraIssueHandler = new JiraIssueHandler(
         messageProblemHandler,
-        templateHandler,
+        commentTemplateHandlerFactory,
         request
       ))
     {
       jiraIssueHandler.updateIssue(changeset, commentData.getIssueId(), content);
-    } 
-    finally 
+    }
+    finally
     {
       // delete the comment
       messageProblemHandler.deleteComment(commentData.getId());
@@ -299,7 +254,7 @@ public class ResubmitCommentsHandler
   private Changeset getChangeset(Repository repository, String changesetId)
     throws IOException
   {
-    Changeset changeset = null;
+    Changeset changeset;
     RepositoryService service = null;
 
     try
@@ -335,5 +290,5 @@ public class ResubmitCommentsHandler
   private final JiraIssueRequestFactory requestFactory;
 
   /** template handler */
-  private final CommentTemplateHandler templateHandler;
+  private final CommentTemplateHandlerFactory commentTemplateHandlerFactory;
 }

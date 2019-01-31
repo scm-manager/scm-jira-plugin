@@ -34,15 +34,15 @@ public class JiraIssueTracker extends DataStoreBasedIssueTracker {
 
   private final JiraGlobalContext context;
   private final MessageProblemHandler messageProblemHandler;
-  private final Provider<CommentTemplateHandler> templateHandlerProvider;
+  private final Provider<CommentTemplateHandlerFactory> templateHandlerFactoryProvider;
   private final JiraIssueRequestFactory requestFactory;
 
   @Inject
-  public JiraIssueTracker(JiraGlobalContext context, DataStoreFactory storeFactory, MessageProblemHandler messageProblemHandler, Provider<CommentTemplateHandler> templateHandlerProvider, JiraIssueRequestFactory requestFactory) {
+  public JiraIssueTracker(JiraGlobalContext context, DataStoreFactory storeFactory, MessageProblemHandler messageProblemHandler, Provider<CommentTemplateHandlerFactory> templateHandlerFactoryProvider, JiraIssueRequestFactory requestFactory) {
     super(JIRA_ISSUE_TRACKER_NAME, storeFactory);
     this.context = context;
     this.messageProblemHandler = messageProblemHandler;
-    this.templateHandlerProvider = templateHandlerProvider;
+    this.templateHandlerFactoryProvider = templateHandlerFactoryProvider;
     this.requestFactory = requestFactory;
   }
 
@@ -76,7 +76,7 @@ public class JiraIssueTracker extends DataStoreBasedIssueTracker {
   @Override
   protected CommentHandler getCommentHandler(IssueRequest request) {
     JiraConfiguration configuration = JiraConfigurationResolver.resolve(context, request.getRepository());
-    JiraIssueRequest jiraIssueRequest = requestFactory.createRequest(configuration, request.getRepository(), request.getChangeset());
-    return new JiraIssueHandler(messageProblemHandler, templateHandlerProvider.get(), jiraIssueRequest);
+    JiraIssueRequest jiraIssueRequest = requestFactory.createRequest(configuration, request.getRepository(), request.getChangeset(), request.getCommitter());
+    return new JiraIssueHandler(messageProblemHandler, templateHandlerFactoryProvider.get(), jiraIssueRequest);
   }
 }
