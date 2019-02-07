@@ -1,6 +1,6 @@
 // @flow
 import React from "react";
-import { Title, Configuration } from "@scm-manager/ui-components";
+import { Subtitle, Configuration } from "@scm-manager/ui-components";
 import LocalJiraConfigurationForm from "./LocalJiraConfigurationForm";
 import { translate } from "react-i18next";
 
@@ -14,7 +14,7 @@ class LocalJiraConfiguration extends React.Component<Props> {
     const { t, link } = this.props;
     return (
       <>
-        <Title title={t("scm-jira-plugin.local.header")} />
+        <Subtitle subtitle={t("scm-jira-plugin.local.title")} />
         <Configuration
           link={link}
           t={t}

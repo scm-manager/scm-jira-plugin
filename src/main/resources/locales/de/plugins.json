@@ -2,11 +2,11 @@
   "scm-jira-plugin": {
     "global": {
       "nav-link": "Jira",
-      "header": "Globale Jira Konfiguration"
+      "title": "Globale Jira Konfiguration"
     },
     "local": {
       "nav-link": "Jira",
-      "header": "Jira Konfiguration"
+      "title": "Jira Konfiguration"
     },
     "form": {
       "url": "URL",

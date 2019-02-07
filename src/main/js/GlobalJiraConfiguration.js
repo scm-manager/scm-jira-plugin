@@ -14,7 +14,7 @@ class GlobalJiraConfiguration extends React.Component<Props> {
     const { t, link } = this.props;
     return (
       <>
-        <Title title={t("scm-jira-plugin.global.header")} />
+        <Title title={t("scm-jira-plugin.global.title")} />
         <Configuration
           link={link}
           t={t}
