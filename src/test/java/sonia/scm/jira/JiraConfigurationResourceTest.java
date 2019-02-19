@@ -24,6 +24,7 @@ import sonia.scm.store.InMemoryConfigurationStoreFactory;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -68,7 +69,7 @@ public class JiraConfigurationResourceTest {
 
   @Test
   @SubjectAware(username = "dent", password = "secret")
-  public void adminShouldGetConfigWithUpdateLink() throws URISyntaxException {
+  public void adminShouldGetConfigWithUpdateLink() throws URISyntaxException, UnsupportedEncodingException {
     MockHttpRequest request = MockHttpRequest.get("/" + JiraConfigurationResource.JIRA_CONFIG_PATH_V2);
     MockHttpResponse response = new MockHttpResponse();
 
@@ -137,7 +138,7 @@ public class JiraConfigurationResourceTest {
 
   @Test
   @SubjectAware(username = "marvin", password = "secret")
-  public void repositoryOwnerShouldGetConfigWithUpdateLink() throws URISyntaxException {
+  public void repositoryOwnerShouldGetConfigWithUpdateLink() throws URISyntaxException, UnsupportedEncodingException {
     MockHttpRequest request = MockHttpRequest.get("/" + JiraConfigurationResource.JIRA_CONFIG_PATH_V2 + "/space/X");
     MockHttpResponse response = new MockHttpResponse();
 
