@@ -45,5 +45,31 @@
       "resubmitFailed": "Übertragung fehlgeschlagen"
     },
     "configurationChangedSuccess": "Konfiguration geändert"
+  },
+  "permissions": {
+    "configuration": {
+      "read,write": {
+        "jira": {
+          "displayName": "Globale Jira Konfiguiration ändern",
+          "description": "Darf die globale Jira Konfiguration verändern"
+        }
+      }
+    },
+    "repository": {
+      "jira": {
+        "*": {
+          "displayName": "Repository-spezifische Jira Konfiguiration ändern",
+          "description": "Darf die repository-spezifischen Jira Konfiguration verändern"
+        }
+      }
+    }
+  },
+  "verbs": {
+    "repository": {
+      "jira": {
+        "displayName": "Jira Konfiguration ändern",
+        "description": "Darf die Jira Konfiguration verändern"
+      }
+    }
   }
 }

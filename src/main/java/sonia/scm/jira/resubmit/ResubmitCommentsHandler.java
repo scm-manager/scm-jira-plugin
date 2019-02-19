@@ -48,6 +48,7 @@ import sonia.scm.jira.JiraGlobalContext;
 import sonia.scm.jira.JiraIssueHandler;
 import sonia.scm.jira.JiraIssueRequest;
 import sonia.scm.jira.JiraIssueRequestFactory;
+import sonia.scm.jira.JiraPermissions;
 import sonia.scm.repository.Changeset;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryManager;
@@ -115,7 +116,7 @@ public class ResubmitCommentsHandler
 
     if (commentData != null)
     {
-      RepositoryPermissions.modify(commentData.getRepositoryId()).check();
+      new JiraPermissions().checkWriteRepositoryConfig(commentData.getRepositoryId());
       return commentData;
     }
     else
@@ -147,7 +148,7 @@ public class ResubmitCommentsHandler
   public void resubmitAllFromRepository(String repositoryId)
     throws IOException
   {
-    RepositoryPermissions.modify(repositoryId).check();
+    new JiraPermissions().checkWriteRepositoryConfig(repositoryId);
 
     resubmit(messageProblemHandler.getAllCommentsByRepository(repositoryId));
   }
