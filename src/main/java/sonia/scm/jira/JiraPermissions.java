@@ -4,39 +4,43 @@ import sonia.scm.config.ConfigurationPermissions;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryPermissions;
 
-class JiraPermissions {
+public class JiraPermissions {
 
   private static final String PERMISSION_NAME = "jira";
 
-  boolean isPermittedReadGlobalConfig() {
-    return ConfigurationPermissions.list().isPermitted();
+  public boolean isPermittedReadGlobalConfig() {
+    return ConfigurationPermissions.read(PERMISSION_NAME).isPermitted();
   }
 
-  boolean isPermittedWriteGlobalConfig() {
+  public boolean isPermittedWriteGlobalConfig() {
     return ConfigurationPermissions.write(PERMISSION_NAME).isPermitted();
   }
 
-  void checkReadGlobalConfig() {
+  public void checkReadGlobalConfig() {
     ConfigurationPermissions.read(PERMISSION_NAME).check();
   }
 
-  void checkWriteGlobalConfig() {
-    ConfigurationPermissions.read(PERMISSION_NAME).check();
+  public void checkWriteGlobalConfig() {
+    ConfigurationPermissions.write(PERMISSION_NAME).check();
   }
 
   public boolean isPermittedReadRepositoryConfig(Repository repository) {
-    return RepositoryPermissions.modify(repository).isPermitted();
+    return RepositoryPermissions.custom(PERMISSION_NAME, repository).isPermitted();
   }
 
   public boolean isPermittedWriteRepositoryConfig(Repository repository) {
-    return RepositoryPermissions.modify(repository).isPermitted();
+    return RepositoryPermissions.custom(PERMISSION_NAME, repository).isPermitted();
   }
 
   public void checkReadRepositoryConfig(Repository repository) {
-    RepositoryPermissions.modify(repository).check();
+    RepositoryPermissions.custom(PERMISSION_NAME, repository).check();
   }
 
   public void checkWriteRepositoryConfig(Repository repository) {
-    RepositoryPermissions.modify(repository).check();
+    RepositoryPermissions.custom(PERMISSION_NAME, repository).check();
+  }
+
+  public void checkWriteRepositoryConfig(String repositoryId) {
+    RepositoryPermissions.custom(PERMISSION_NAME, repositoryId).check();
   }
 }

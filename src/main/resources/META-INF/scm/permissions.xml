@@ -1,0 +1,8 @@
+<permissions>
+  <permission>
+    <value>configuration:read,write:jira</value>
+  </permission>
+  <permission>
+    <value>repository:jira:*</value>
+  </permission>
+</permissions>

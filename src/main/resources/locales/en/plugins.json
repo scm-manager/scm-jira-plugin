@@ -45,5 +45,31 @@
       "resubmitFailed": "Resubmit failed"
     },
     "configurationChangedSuccess": "Configuration changed"
+  },
+  "permissions": {
+    "configuration": {
+      "read,write": {
+        "jira": {
+          "displayName": "Modify global Jira configuration",
+          "description": "May modify the global Jira configuration"
+        }
+      }
+    },
+    "repository": {
+      "jira": {
+        "*": {
+          "displayName": "Modify repository specific Jira configuration",
+          "description": "May modify the repository specific Jira configuration for all repositories"
+        }
+      }
+    }
+  },
+  "verbs": {
+    "repository": {
+      "jira": {
+        "displayName": "configure Jira",
+        "description": "May modify the repository specific Jira configurations"
+      }
+    }
   }
 }

@@ -1,0 +1,5 @@
+<repository-permissions>
+  <verbs>
+    <verb>jira</verb>
+  </verbs>
+</repository-permissions>
