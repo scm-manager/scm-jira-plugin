@@ -35,7 +35,6 @@ package sonia.scm.jira.resubmit;
 
 import com.google.common.io.Closeables;
 import com.google.inject.Inject;
-import org.apache.shiro.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sonia.scm.jira.CommentTemplate;
@@ -54,7 +53,6 @@ import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryManager;
 import sonia.scm.repository.api.RepositoryService;
 import sonia.scm.repository.api.RepositoryServiceFactory;
-import sonia.scm.security.Role;
 
 import java.io.IOException;
 import java.util.List;
@@ -131,7 +129,7 @@ public class ResubmitCommentsHandler
    */
   public void resubmitAll() throws IOException
   {
-    SecurityUtils.getSubject().checkRole(Role.ADMIN);
+    new JiraPermissions().checkWriteGlobalConfig();
 
     resubmit(messageProblemHandler.getAllComments());
   }
