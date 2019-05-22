@@ -36,17 +36,18 @@ package sonia.scm.jira.resubmit;
 //~--- non-JDK imports --------------------------------------------------------
 
 import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Ordering;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import org.codemonkey.simplejavamail.Email;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sonia.scm.config.ScmConfiguration;
 import sonia.scm.jira.JiraIssueRequest;
 import sonia.scm.mail.api.MailSendBatchException;
 import sonia.scm.mail.api.MailService;
+import sonia.scm.mail.api.MailTemplateType;
 import sonia.scm.repository.Changeset;
 import sonia.scm.repository.Repository;
 import sonia.scm.security.KeyGenerator;
@@ -54,8 +55,8 @@ import sonia.scm.store.DataStore;
 import sonia.scm.store.DataStoreFactory;
 import sonia.scm.util.HttpUtil;
 
-import javax.mail.Message;
 import java.util.List;
+import java.util.Map;
 
 //~--- JDK imports ------------------------------------------------------------
 
@@ -74,19 +75,22 @@ public class MessageProblemHandler
   private static final Logger logger =
     LoggerFactory.getLogger(MessageProblemHandler.class);
 
+  /** notification email template */
+  private static final String TEMPLATE = "/sonia/scm/jira/resubmit/notification.mustache";
+
   //~--- constructors ---------------------------------------------------------
 
   /**
    * Creates class to handle problems with message to a corresponding comment.
-   * 
+   *
    * @param configuration main configuration
    * @param mailService mail service
    * @param keyGenerator generate comment ids
    * @param dataStoreFactory data store factory
    */
   @Inject
-  public MessageProblemHandler(ScmConfiguration configuration, 
-    MailService mailService, KeyGenerator keyGenerator, 
+  public MessageProblemHandler(ScmConfiguration configuration,
+    MailService mailService, KeyGenerator keyGenerator,
     DataStoreFactory dataStoreFactory)
   {
     this.configuration = configuration;
@@ -125,8 +129,8 @@ public class MessageProblemHandler
     //J-
     CommentData commentData = new CommentData(
       keyGenerator.createKey(),
-      request.getRepository().getId(), 
-      changeset.getId(), 
+      request.getRepository().getId(),
+      changeset.getId(),
       issueId,
       request.getCommitter().orElse(null),
       body,
@@ -150,14 +154,24 @@ public class MessageProblemHandler
     logger.debug("send mail for comment {} of {}", commentData.getId(),
       commentData.getIssueId());
 
-    if (mailService.isConfigured())
-    {
-      Email mail = new Email();
+    if (mailService.isConfigured()) {
+      try {
+        Map<String,Object> model = ImmutableMap.of(
+          "comment", commentData,
+          "removeLink", createRemoteLink(commentData)
+        );
 
-      mail.addRecipient(null, address, Message.RecipientType.TO);
-      mail.setSubject("A Jira comment could not be sent");
-      mail.setTextHTML(generateMailMessage(commentData));
-      sendMail(mail);
+        mailService.emailTemplateBuilder()
+          .toAddress(address)
+          .withSubject("A Jira comment could not be sent")
+          .withTemplate(TEMPLATE, MailTemplateType.MARKDOWN_HTML)
+          .andModel(model)
+          .send();
+
+        logger.debug("send mail completed.");
+      } catch (MailSendBatchException ex) {
+        logger.error("could not send mail", ex);
+      }
     }
     else
     {
@@ -214,39 +228,10 @@ public class MessageProblemHandler
 
   //~--- methods --------------------------------------------------------------
 
-  /**
-   * Generates a HTML-message-text for a stopped comment.
-   *
-   * @param commentData The given data for the comment to inform about.
-   *
-   * @return html mail content
-   */
-  private String generateMailMessage(CommentData commentData)
-  {
-    StringBuilder c = new StringBuilder();
+  private static final String REMOVE_LINK = "api/v2/plugins/jira/resubmit/comment/%s/remove";
 
-    c.append("The following comment could not be sent to the jira server:");
-    c.append("<br/>");
-    c.append("<br/>Committer: ").append(commentData.getCommitter());
-    c.append("<br/> IssueId: ").append(commentData.getIssueId());
-    c.append("<br/> Body: <br/>");
-    c.append("<pre>").append(commentData.getBody()).append("</pre>");
-    c.append("<br/>");
-    c.append("<a href='");
-    appendRemoveLink(c, commentData);
-    c.append("'>");
-    c.append("remove comment from resubmit queue");
-    c.append("</a>");
-
-    return c.toString();
-  }
-  
-  private static final String REMOVE_LINK = "api/rest/plugins/jira/resubmit/comment/%s/remove";
-  
-  private void appendRemoveLink(StringBuilder c, CommentData data){
-    c.append(
-      HttpUtil.getCompleteUrl(configuration, String.format(REMOVE_LINK, data.getId()))
-    );
+  private String createRemoteLink(CommentData data){
+      return HttpUtil.getCompleteUrl(configuration, String.format(REMOVE_LINK, data.getId()));
   }
 
   /**
@@ -259,25 +244,6 @@ public class MessageProblemHandler
     logger.debug("save comment {}", commentData);
 
     getStore().put(commentData.getId(), commentData);
-  }
-
-  /**
-   * Sends the email.
-   *
-   *
-   * @param email email to send
-   */
-  private void sendMail(Email email)
-  {
-    try
-    {
-      mailService.send(email);
-      logger.debug("send mail completed.");
-    }
-    catch (MailSendBatchException ex)
-    {
-      logger.error("could not send mail", ex);
-    }
   }
 
   private List<CommentData> sort(Iterable<CommentData> commentData)
@@ -329,7 +295,7 @@ public class MessageProblemHandler
 
   /** scm-manager main configuration */
   private final ScmConfiguration configuration;
-  
+
   /** key generator */
   private final KeyGenerator keyGenerator;
 
