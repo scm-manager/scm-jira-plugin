@@ -1,0 +1,17 @@
+# A Jira comment could not be sent
+
+The following comment could not be sent to the jira server:
+
+Issue-Id: {{ comment.issueId }}
+
+{{#comment.committer}}
+Committer: {{ comment.committer.displayName }}
+{{/comment.committer}}
+
+Body:
+
+```
+{{{ comment.body }}}
+```
+
+[Remove comment from resubmit queue]({{ removeLink }})
