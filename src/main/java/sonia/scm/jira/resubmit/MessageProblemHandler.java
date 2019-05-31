@@ -96,7 +96,7 @@ public class MessageProblemHandler
     this.configuration = configuration;
     this.mailService = mailService;
     this.keyGenerator = keyGenerator;
-    this.storeFactory = dataStoreFactory;//.getStore(CommentData.class, STORE);
+    this.storeFactory = dataStoreFactory;
   }
 
   //~--- methods --------------------------------------------------------------
@@ -228,10 +228,10 @@ public class MessageProblemHandler
 
   //~--- methods --------------------------------------------------------------
 
-  private static final String REMOVE_LINK = "api/v2/plugins/jira/resubmit/comment/%s/remove";
+  private static final String REMOVE_LINK = "api/v2/config/jira/resubmit/comment/%s/remove";
 
   private String createRemoteLink(CommentData data){
-      return HttpUtil.getCompleteUrl(configuration, String.format(REMOVE_LINK, data.getId()));
+    return HttpUtil.getCompleteUrl(configuration, String.format(REMOVE_LINK, data.getId()));
   }
 
   /**

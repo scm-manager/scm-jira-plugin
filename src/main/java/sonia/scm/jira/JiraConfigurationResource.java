@@ -186,6 +186,19 @@ public class JiraConfigurationResource {
     return Response.noContent().build();
   }
 
+  @POST
+  @Path("/resubmit/comment/{id}/remove")
+  @StatusCodes({
+    @ResponseCode(code = 201, condition = "comment removed"),
+    @ResponseCode(code = 401, condition = "not authenticated / invalid credentials"),
+    @ResponseCode(code = 403, condition = "not authorized, the current user does not have the privilege to change the configuration"),
+    @ResponseCode(code = 500, condition = "internal server error")
+  })
+  public Response removeCommentFromResubmitQueue(@PathParam("id") String commentId) {
+    resubmitCommentsHandler.removeComment(commentId);
+    return Response.noContent().build();
+  }
+
   private Repository loadRepository(String namespace, String name) {
     Repository repository = repositoryManager.get(new NamespaceAndName(namespace, name));
     if (repository == null) {
