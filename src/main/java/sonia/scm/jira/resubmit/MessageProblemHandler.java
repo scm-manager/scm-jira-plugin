@@ -228,7 +228,7 @@ public class MessageProblemHandler
 
   //~--- methods --------------------------------------------------------------
 
-  private static final String REMOVE_LINK = "api/v2/config/jira/resubmit/comment/%s/remove";
+  private static final String REMOVE_LINK = "jira/resubmit/comment/%s/remove";
 
   private String createRemoteLink(CommentData data){
     return HttpUtil.getCompleteUrl(configuration, String.format(REMOVE_LINK, data.getId()));

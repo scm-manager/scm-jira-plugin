@@ -43,6 +43,7 @@ import sonia.scm.repository.RepositoryManager;
 
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -186,8 +187,8 @@ public class JiraConfigurationResource {
     return Response.noContent().build();
   }
 
-  @POST
-  @Path("/resubmit/comment/{id}/remove")
+  @DELETE
+  @Path("/resubmit/comment/{id}")
   @StatusCodes({
     @ResponseCode(code = 201, condition = "comment removed"),
     @ResponseCode(code = 401, condition = "not authenticated / invalid credentials"),

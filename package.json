@@ -12,8 +12,10 @@
     "@scm-manager/ui-components": "latest",
     "@scm-manager/ui-extensions": "^0.1.1",
     "@scm-manager/ui-types": "latest",
+    "react": "latest",
     "react-i18next": "latest",
-    "react": "latest"
+    "react-redux": "^7.0.3",
+    "react-router-dom": "^5.0.0"
   },
   "devDependencies": {
     "@scm-manager/ui-bundler": "^0.0.25"
