@@ -49,7 +49,7 @@ public class JiraConfigurationResourceTest {
 
   @Before
   public void init() {
-    InMemoryConfigurationStoreFactory storeFactory = new InMemoryConfigurationStoreFactory(new InMemoryConfigurationStore());
+    InMemoryConfigurationStoreFactory storeFactory = new InMemoryConfigurationStoreFactory();
     JiraPermissions permissions = new JiraPermissions();
     JiraGlobalContext context = new JiraGlobalContext(storeFactory, permissions);
     repositoryManager = mock(RepositoryManager.class);
