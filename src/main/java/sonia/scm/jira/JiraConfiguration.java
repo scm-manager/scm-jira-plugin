@@ -266,7 +266,7 @@ public class JiraConfiguration implements Validateable
     return commentMonospace; 
   }
 
-  void setAutoCloseWordsForMapping(Map<String, String> autoCloseWords) {
+  public void setAutoCloseWordsForMapping(Map<String, String> autoCloseWords) {
     this.autoCloseWords = autoCloseWords;
   }
 
@@ -333,7 +333,25 @@ public class JiraConfiguration implements Validateable
   public void setCommentMonospace(boolean commentMonospace) {
     this.commentMonospace = commentMonospace;
   }
-//~--- fields ---------------------------------------------------------------
+
+  public void copyFrom(JiraConfiguration other) {
+    this.setUrl(other.getUrl());
+    this.setAutoClose(other.isAutoClose());
+    this.setCommentMonospace(other.getCommentMonospace());
+    this.setUsername(other.getUsername());
+    this.setPassword(other.getPassword());
+    this.setCommentPrefix(other.getCommentPrefix());
+    this.setUpdateIssues(other.isUpdateIssues());
+    this.setAutoCloseWordsForMapping(other.getAutoCloseWordsForMapping());
+    this.setRestApiEnabled(other.isRestApiEnabled());
+    this.setMailAddress(other.getMailAddress());
+    this.setCommentWrap(other.getCommentWrap());
+    this.setFilter(other.getFilter());
+    this.setRoleLevel(other.getRoleLevel());
+    this.setResubmission(other.isResubmission());
+  }
+
+  //~--- fields ---------------------------------------------------------------
 
   /** auto close */
   @XmlElement(name = "auto-close")
