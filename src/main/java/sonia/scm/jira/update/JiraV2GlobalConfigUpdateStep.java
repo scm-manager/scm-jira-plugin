@@ -1,11 +1,14 @@
 package sonia.scm.jira.update;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sonia.scm.issuetracker.XmlEncryptionAdapter;
 import sonia.scm.jira.JiraGlobalConfiguration;
 import sonia.scm.jira.XmlStringMapAdapter;
 import sonia.scm.migration.UpdateStep;
 import sonia.scm.plugin.Extension;
 import sonia.scm.store.ConfigurationStoreFactory;
+import sonia.scm.store.StoreException;
 import sonia.scm.version.Version;
 
 import javax.inject.Inject;
@@ -15,11 +18,15 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.Map;
+import java.util.Optional;
 
+import static java.util.Optional.empty;
 import static sonia.scm.version.Version.parse;
 
 @Extension
 public class JiraV2GlobalConfigUpdateStep implements UpdateStep {
+
+  private static final Logger LOG = LoggerFactory.getLogger(JiraV2ConfigMigrationUpdateStep.class);
 
   private final ConfigurationStoreFactory storeFactory;
 
@@ -30,7 +37,7 @@ public class JiraV2GlobalConfigUpdateStep implements UpdateStep {
 
   @Override
   public void doUpdate() {
-    storeFactory.withType(V1JiraGlobalConfiguration.class).withName("jira").build().getOptional()
+    readV1JiraConfiguration()
       .ifPresent(
         v1JiraConfig -> {
           JiraGlobalConfiguration v2JiraConfig = new JiraGlobalConfiguration();
@@ -38,6 +45,15 @@ public class JiraV2GlobalConfigUpdateStep implements UpdateStep {
           storeFactory.withType(JiraGlobalConfiguration.class).withName("jira").build().set(v2JiraConfig);
         }
       );
+  }
+
+  private Optional<V1JiraGlobalConfiguration> readV1JiraConfiguration() {
+    try {
+      return storeFactory.withType(V1JiraGlobalConfiguration.class).withName("jira").build().getOptional();
+    } catch (StoreException e) {
+      LOG.debug("could not read existing jira configuration store; assume that it already is a v2 store", e);
+      return empty();
+    }
   }
 
   @Override
