@@ -14,8 +14,8 @@ import java.util.Map;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 class JiraV2ConfigMigrationUpdateStepTest {
-V1PropertyDaoTestUtil testUtil = new V1PropertyDaoTestUtil();
 
+  V1PropertyDaoTestUtil testUtil = new V1PropertyDaoTestUtil();
   ConfigurationStoreFactory storeFactory = new InMemoryConfigurationStoreFactory();
 
   private JiraV2ConfigMigrationUpdateStep updateStep;
