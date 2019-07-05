@@ -334,23 +334,6 @@ public class JiraConfiguration implements Validateable
     this.commentMonospace = commentMonospace;
   }
 
-  public void copyFrom(JiraConfiguration other) {
-    this.setUrl(other.getUrl());
-    this.setAutoClose(other.isAutoClose());
-    this.setCommentMonospace(other.getCommentMonospace());
-    this.setUsername(other.getUsername());
-    this.setPassword(other.getPassword());
-    this.setCommentPrefix(other.getCommentPrefix());
-    this.setUpdateIssues(other.isUpdateIssues());
-    this.setAutoCloseWordsForMapping(other.getAutoCloseWordsForMapping());
-    this.setRestApiEnabled(other.isRestApiEnabled());
-    this.setMailAddress(other.getMailAddress());
-    this.setCommentWrap(other.getCommentWrap());
-    this.setFilter(other.getFilter());
-    this.setRoleLevel(other.getRoleLevel());
-    this.setResubmission(other.isResubmission());
-  }
-
   //~--- fields ---------------------------------------------------------------
 
   /** auto close */
