@@ -266,7 +266,7 @@ public class JiraConfiguration implements Validateable
     return commentMonospace; 
   }
 
-  void setAutoCloseWordsForMapping(Map<String, String> autoCloseWords) {
+  public void setAutoCloseWordsForMapping(Map<String, String> autoCloseWords) {
     this.autoCloseWords = autoCloseWords;
   }
 
@@ -333,7 +333,8 @@ public class JiraConfiguration implements Validateable
   public void setCommentMonospace(boolean commentMonospace) {
     this.commentMonospace = commentMonospace;
   }
-//~--- fields ---------------------------------------------------------------
+
+  //~--- fields ---------------------------------------------------------------
 
   /** auto close */
   @XmlElement(name = "auto-close")
