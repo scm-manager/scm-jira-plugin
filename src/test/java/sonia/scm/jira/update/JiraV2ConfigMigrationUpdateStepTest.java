@@ -77,7 +77,7 @@ class JiraV2ConfigMigrationUpdateStepTest {
   }
 
   @Test
-  void shouldSkipRepositoriesWithoutRedmineConfig() {
+  void shouldSkipRepositoriesWithoutJiraConfig() {
     Map<String, String> mockedValues =
       ImmutableMap.of(
         "any", "value"
