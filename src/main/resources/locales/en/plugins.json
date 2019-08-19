@@ -44,6 +44,11 @@
       "resubmitSuccess": "Resubmit triggered",
       "resubmitFailed": "Resubmit failed"
     },
+    "remove": {
+      "title": "Comment removal",
+      "success": "The comment has been deleted successfully",
+      "failure": "The comment could not be deleted. Please check whether you have sufficient permissions."
+    },
     "configurationChangedSuccess": "Configuration changed"
   },
   "permissions": {

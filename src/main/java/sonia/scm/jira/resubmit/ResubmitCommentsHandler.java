@@ -150,6 +150,11 @@ public class ResubmitCommentsHandler
     resubmit(messageProblemHandler.getAllCommentsByRepository(repositoryId));
   }
 
+  public void removeComment(String commentId) {
+    new JiraPermissions().checkWriteGlobalConfig();
+    messageProblemHandler.deleteComment(commentId);
+  }
+
   private String createContent(JiraIssueRequest request, Changeset changeset,
     CommentData commentData)
     throws IOException

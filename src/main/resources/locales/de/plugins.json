@@ -44,6 +44,11 @@
       "resubmitSuccess": "Übertragung angestoßen",
       "resubmitFailed": "Übertragung fehlgeschlagen"
     },
+    "remove": {
+      "title": "Kommentar löschen",
+      "success": "Der Kommentar wurde erfolgreich gelöscht",
+      "failure": "Der Kommentar konnte nicht gelöscht werden. Bitte überprüfen Sie, ob Sie die notwendigen Berechtigungen haben."
+    },
     "configurationChangedSuccess": "Konfiguration geändert"
   },
   "permissions": {

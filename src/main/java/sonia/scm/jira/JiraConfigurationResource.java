@@ -43,6 +43,7 @@ import sonia.scm.repository.RepositoryManager;
 
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -183,6 +184,19 @@ public class JiraConfigurationResource {
   public Response resubmitForRepository(@PathParam("namespace") String namespace, @PathParam("name") String name) throws IOException {
     Repository repository = loadRepository(namespace, name);
     resubmitCommentsHandler.resubmitAllFromRepository(repository.getId());
+    return Response.noContent().build();
+  }
+
+  @DELETE
+  @Path("/resubmit/comment/{id}")
+  @StatusCodes({
+    @ResponseCode(code = 201, condition = "comment removed"),
+    @ResponseCode(code = 401, condition = "not authenticated / invalid credentials"),
+    @ResponseCode(code = 403, condition = "not authorized, the current user does not have the privilege to change the configuration"),
+    @ResponseCode(code = 500, condition = "internal server error")
+  })
+  public Response removeCommentFromResubmitQueue(@PathParam("id") String commentId) {
+    resubmitCommentsHandler.removeComment(commentId);
     return Response.noContent().build();
   }
 
