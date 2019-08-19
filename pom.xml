@@ -15,7 +15,7 @@
   <name>scm-jira-plugin</name>
   <packaging>smp</packaging>
   <url>https://bitbucket.org/sdorra/scm-jira-plugin</url>
-  <description>This plugin integrates Atlassian JIRA to SCM-Manager.</description>
+  <description>Integrates Atlassian JIRA to SCM-Manager</description>
   
   <scm>
     <connection>scm:hg:https://bitbucket.org/sdorra/scm-jira-plugin</connection>
