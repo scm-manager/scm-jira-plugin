@@ -14,13 +14,13 @@
   <version>2.0.0-SNAPSHOT</version>
   <name>scm-jira-plugin</name>
   <packaging>smp</packaging>
-  <url>https://bitbucket.org/sdorra/scm-jira-plugin</url>
+  <url>https://github.com/scm-manager/scm-jira-plugin</url>
   <description>Integrates Atlassian JIRA to SCM-Manager</description>
   
   <scm>
-    <connection>scm:hg:https://bitbucket.org/sdorra/scm-jira-plugin</connection>
-    <developerConnection>scm:hg:https://bitbucket.org/sdorra/scm-jira-plugin</developerConnection>
-    <url>https://bitbucket.org/sdorra/scm-jira-plugin</url>
+    <connection>scm:hg:https://github.com/scm-manager/scm-jira-plugin</connection>
+    <developerConnection>scm:hg:https://github.com/scm-manager/scm-jira-plugin</developerConnection>
+    <url>https://github.com/scm-manager/scm-jira-plugin</url>
     <tag>HEAD</tag>
   </scm>
   
