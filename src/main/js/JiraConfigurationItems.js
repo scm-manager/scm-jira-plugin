@@ -166,7 +166,7 @@ class JiraConfigurationItems extends React.Component<Props, State> {
             helpText={t("scm-jira-plugin.form.passwordHelp")}
             disabled={readOnly || !this.state.updateIssues}
             value={this.state.password}
-            type={"password"}
+            type="password"
             onChange={this.valueChangeHandler}
           />
         </div>
