@@ -29,15 +29,12 @@ class JiraConfigurationForm extends React.Component<Props, State> {
 
   resubmitHandler = () => {
     const resubmitLink = this.props.initialConfiguration._links.resubmit.href;
-    console.log(resubmitLink);
     apiClient
       .post(resubmitLink, {})
-      .then(response => {
-        console.log(response);
+      .then(() => {
         this.setState({ resubmitSend: true, resubmitError: false });
       })
-      .catch(err => {
-        console.log(err);
+      .catch(() => {
         this.setState({ resubmitError: true, resubmitSend: false });
       });
   };
