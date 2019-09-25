@@ -84,7 +84,6 @@ class JiraConfigurationItems extends React.Component<Props, State> {
 
   render() {
     const { t, readOnly } = this.props;
-    console.log("this.state.updateJiraIssues: ", this.state);
     return (
       <div className="columns is-multiline">
         <div className="column is-full">
