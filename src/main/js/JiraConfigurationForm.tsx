@@ -1,21 +1,18 @@
-//@flow
-
 import React from "react";
 import { apiClient, Configuration } from "@scm-manager/ui-components";
-import { translate } from "react-i18next";
+import { withTranslation, WithTranslation } from "react-i18next";
 import JiraConfigurationItems from "./JiraConfigurationItems";
 
-type Props = {
-  initialConfiguration: Configuration,
-  readOnly: boolean,
-  onConfigurationChange: (Configuration, boolean) => void,
-  includeGlobalConfigItem: boolean,
-  t: string => string
+type Props = WithTranslation & {
+  initialConfiguration: Configuration;
+  readOnly: boolean;
+  onConfigurationChange: (p1: Configuration, p2: boolean) => void;
+  includeGlobalConfigItem: boolean;
 };
 
 type State = {
-  resubmitSend: boolean,
-  resubmitError: boolean
+  resubmitSend: boolean;
+  resubmitError: boolean;
 };
 
 class JiraConfigurationForm extends React.Component<Props, State> {
@@ -32,10 +29,16 @@ class JiraConfigurationForm extends React.Component<Props, State> {
     apiClient
       .post(resubmitLink, {})
       .then(() => {
-        this.setState({ resubmitSend: true, resubmitError: false });
+        this.setState({
+          resubmitSend: true,
+          resubmitError: false
+        });
       })
       .catch(() => {
-        this.setState({ resubmitError: true, resubmitSend: false });
+        this.setState({
+          resubmitError: true,
+          resubmitSend: false
+        });
       });
   };
 
@@ -56,7 +59,10 @@ class JiraConfigurationForm extends React.Component<Props, State> {
         <button
           className="delete"
           onClick={() =>
-            this.setState({ resubmitError: false, resubmitSend: false })
+            this.setState({
+              resubmitError: false,
+              resubmitSend: false
+            })
           }
         />
         {this.props.t("scm-jira-plugin.form." + key)}
@@ -65,12 +71,7 @@ class JiraConfigurationForm extends React.Component<Props, State> {
   };
 
   render() {
-    const {
-      readOnly,
-      initialConfiguration,
-      onConfigurationChange,
-      includeGlobalConfigItem
-    } = this.props;
+    const { readOnly, initialConfiguration, onConfigurationChange, includeGlobalConfigItem } = this.props;
     return (
       <>
         {this.renderResubmitMessage()}
@@ -86,4 +87,4 @@ class JiraConfigurationForm extends React.Component<Props, State> {
   }
 }
 
-export default translate("plugins")(JiraConfigurationForm);
+export default withTranslation("plugins")(JiraConfigurationForm);

@@ -1,44 +1,35 @@
-//@flow
-
 import React from "react";
-import {
-  Button,
-  Checkbox,
-  Configuration,
-  InputField,
-  validation
-} from "@scm-manager/ui-components";
-import { translate } from "react-i18next";
+import { Button, Checkbox, Configuration, InputField, validation } from "@scm-manager/ui-components";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 type JiraConfiguration = {
-  url: string,
-  disableRepositoryConfiguration: boolean,
-  updateIssues: boolean,
-  autoClose: boolean,
-  autoCloseWords: string,
-  roleLevel: string,
-  commentPrefix: string,
-  filter: string,
-  username: string,
-  password: string,
-  resubmission: boolean,
-  restApiEnabled: boolean,
-  mailAddress: string,
-  commentWrap: string,
-  commentMonospace: boolean
+  url: string;
+  disableRepositoryConfiguration: boolean;
+  updateIssues: boolean;
+  autoClose: boolean;
+  autoCloseWords: string;
+  roleLevel: string;
+  commentPrefix: string;
+  filter: string;
+  username: string;
+  password: string;
+  resubmission: boolean;
+  restApiEnabled: boolean;
+  mailAddress: string;
+  commentWrap: string;
+  commentMonospace: boolean;
 };
 
-type Props = {
-  initialConfiguration: Configuration,
-  readOnly: boolean,
-  onConfigurationChange: (Configuration, boolean) => void,
-  includeGlobalConfigItem: boolean,
-  resubmitHandler: () => void,
-  t: string => string
+type Props = WithTranslation & {
+  initialConfiguration: Configuration;
+  readOnly: boolean;
+  onConfigurationChange: (p1: Configuration, p2: boolean) => void;
+  includeGlobalConfigItem: boolean;
+  resubmitHandler: () => void;
 };
 
 type State = JiraConfiguration & {
-  mailValid: boolean
+  mailValid: boolean;
 };
 
 class JiraConfigurationItems extends React.Component<Props, State> {
@@ -51,7 +42,7 @@ class JiraConfigurationItems extends React.Component<Props, State> {
   }
 
   emailChangeHandler = (value: string, name: string) => {
-    let mailValid = value === "" || validation.isMailValid(value);
+    const mailValid = value === "" || validation.isMailValid(value);
     this.setState(
       {
         mailAddress: value,
@@ -71,7 +62,12 @@ class JiraConfigurationItems extends React.Component<Props, State> {
   };
 
   configurationChangedCallback = () => {
-    this.props.onConfigurationChange({ ...this.state }, this.isValid());
+    this.props.onConfigurationChange(
+      {
+        ...this.state
+      },
+      this.isValid()
+    );
   };
 
   isValid = () => {
@@ -121,9 +117,7 @@ class JiraConfigurationItems extends React.Component<Props, State> {
             name="autoCloseWords"
             label={t("scm-jira-plugin.form.autoCloseWords")}
             helpText={t("scm-jira-plugin.form.autoCloseWordsHelp")}
-            disabled={
-              readOnly || !this.state.updateIssues || !this.state.autoClose
-            }
+            disabled={readOnly || !this.state.updateIssues || !this.state.autoClose}
             value={this.state.autoCloseWords}
             onChange={this.valueChangeHandler}
           />
@@ -218,10 +212,7 @@ class JiraConfigurationItems extends React.Component<Props, State> {
             disabled={readOnly}
             onChange={this.valueChangeHandler}
           />
-          <Button
-            label={t("scm-jira-plugin.form.resubmit")}
-            action={this.resubmit}
-          />
+          <Button label={t("scm-jira-plugin.form.resubmit")} action={this.resubmit} />
         </div>
       </div>
     );
@@ -235,9 +226,7 @@ class JiraConfigurationItems extends React.Component<Props, State> {
           <Checkbox
             name="disableRepositoryConfiguration"
             label={t("scm-jira-plugin.form.disableRepositoryConfiguration")}
-            helpText={t(
-              "scm-jira-plugin.form.disableRepositoryConfigurationHelp"
-            )}
+            helpText={t("scm-jira-plugin.form.disableRepositoryConfigurationHelp")}
             checked={this.state.disableRepositoryConfiguration}
             disabled={readOnly}
             onChange={this.valueChangeHandler}
@@ -250,4 +239,4 @@ class JiraConfigurationItems extends React.Component<Props, State> {
   }
 }
 
-export default translate("plugins")(JiraConfigurationItems);
+export default withTranslation("plugins")(JiraConfigurationItems);

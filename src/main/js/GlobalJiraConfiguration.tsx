@@ -1,12 +1,10 @@
-// @flow
 import React from "react";
 import { Title, Configuration } from "@scm-manager/ui-components";
 import GlobalJiraConfigurationForm from "./GlobalJiraConfigurationForm";
-import { translate } from "react-i18next";
+import { withTranslation, WithTranslation } from "react-i18next";
 
-type Props = {
-  link: string,
-  t: string => string
+type Props = WithTranslation & {
+  link: string;
 };
 
 class GlobalJiraConfiguration extends React.Component<Props> {
@@ -15,14 +13,10 @@ class GlobalJiraConfiguration extends React.Component<Props> {
     return (
       <>
         <Title title={t("scm-jira-plugin.global.title")} />
-        <Configuration
-          link={link}
-          t={t}
-          render={props => <GlobalJiraConfigurationForm {...props} />}
-        />
+        <Configuration link={link} t={t} render={props => <GlobalJiraConfigurationForm {...props} />} />
       </>
     );
   }
 }
 
-export default translate("plugins")(GlobalJiraConfiguration);
+export default withTranslation("plugins")(GlobalJiraConfiguration);
