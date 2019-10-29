@@ -94,7 +94,7 @@ class JiraConfigurationItems extends React.Component<Props, State> {
           />
         </div>
         {this.renderGlobalConfigItem()}
-        <div className="column is-half">
+        <div className="column is-full">
           <Checkbox
             name="updateIssues"
             label={t("scm-jira-plugin.form.updateJiraIssues")}
