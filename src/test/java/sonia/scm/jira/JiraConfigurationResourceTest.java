@@ -6,7 +6,6 @@ import com.google.common.io.Resources;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
-import org.jboss.resteasy.core.Dispatcher;
 import org.jboss.resteasy.mock.MockHttpRequest;
 import org.jboss.resteasy.mock.MockHttpResponse;
 import org.jboss.resteasy.spi.UnhandledException;
@@ -18,8 +17,8 @@ import sonia.scm.NotFoundException;
 import sonia.scm.api.v2.resources.ScmPathInfoStore;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryManager;
-import sonia.scm.store.InMemoryConfigurationStore;
 import sonia.scm.store.InMemoryConfigurationStoreFactory;
+import sonia.scm.web.RestDispatcher;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.MediaType;
@@ -29,7 +28,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import static org.jboss.resteasy.mock.MockDispatcherFactory.createDispatcher;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -41,18 +39,15 @@ public class JiraConfigurationResourceTest {
   public static final Repository REPOSITORY = new Repository("X", "git", "space", "X");
   @Rule
   public ShiroRule shiroRule = new ShiroRule();
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
 
-  private Dispatcher dispatcher;
-  private RepositoryManager repositoryManager;
+  private RestDispatcher dispatcher;
 
   @Before
   public void init() {
     InMemoryConfigurationStoreFactory storeFactory = new InMemoryConfigurationStoreFactory();
     JiraPermissions permissions = new JiraPermissions();
     JiraGlobalContext context = new JiraGlobalContext(storeFactory, permissions);
-    repositoryManager = mock(RepositoryManager.class);
+    RepositoryManager repositoryManager = mock(RepositoryManager.class);
     ScmPathInfoStore scmPathInfoStore = new ScmPathInfoStore();
     scmPathInfoStore.set(() -> URI.create("/"));
     JiraGlobalConfigurationMapperImpl jiraGlobalConfigurationMapper = new JiraGlobalConfigurationMapperImpl();
@@ -62,8 +57,8 @@ public class JiraConfigurationResourceTest {
     jenkinsConfigurationMapper.setScmPathInfoStore(scmPathInfoStore);
     jenkinsConfigurationMapper.setPermissions(permissions);
     JiraConfigurationResource resource = new JiraConfigurationResource(context, permissions, jiraGlobalConfigurationMapper, jenkinsConfigurationMapper, repositoryManager, null);
-    dispatcher = createDispatcher();
-    dispatcher.getRegistry().addSingletonResource(resource);
+    dispatcher = new RestDispatcher();
+    dispatcher.addSingletonResource(resource);
     when(repositoryManager.get(REPOSITORY.getNamespaceAndName())).thenReturn(REPOSITORY);
   }
 
@@ -107,9 +102,9 @@ public class JiraConfigurationResourceTest {
     MockHttpRequest request = MockHttpRequest.get("/" + JiraConfigurationResource.JIRA_CONFIG_PATH_V2);
     MockHttpResponse response = new MockHttpResponse();
 
-    expectedException.expect(new ExceptionMatcher<>(UnauthorizedException.class));
-
     dispatcher.invoke(request, response);
+
+    assertEquals(403, response.getStatus());
   }
 
   @Test
@@ -120,9 +115,9 @@ public class JiraConfigurationResourceTest {
     MockHttpRequest request = MockHttpRequest.put("/" + JiraConfigurationResource.JIRA_CONFIG_PATH_V2).contentType(MediaType.APPLICATION_JSON_TYPE).content(configJson);
     MockHttpResponse response = new MockHttpResponse();
 
-    expectedException.expect(new ExceptionMatcher<>(UnauthorizedException.class));
-
     dispatcher.invoke(request, response);
+
+    assertEquals(403, response.getStatus());
   }
 
   @Test
@@ -131,9 +126,9 @@ public class JiraConfigurationResourceTest {
     MockHttpRequest request = MockHttpRequest.get("/" + JiraConfigurationResource.JIRA_CONFIG_PATH_V2 + "/not/there");
     MockHttpResponse response = new MockHttpResponse();
 
-    expectedException.expect(new ExceptionMatcher<>(NotFoundException.class));
-
     dispatcher.invoke(request, response);
+
+    assertEquals(404, response.getStatus());
   }
 
   @Test
@@ -178,9 +173,9 @@ public class JiraConfigurationResourceTest {
     MockHttpRequest request = MockHttpRequest.put("/" + JiraConfigurationResource.JIRA_CONFIG_PATH_V2 + "/space/X").contentType(MediaType.APPLICATION_JSON_TYPE).content(configJson);
     MockHttpResponse response = new MockHttpResponse();
 
-    expectedException.expect(new ExceptionMatcher<>(UnauthorizedException.class));
-
     dispatcher.invoke(request, response);
+
+    assertEquals(403, response.getStatus());
   }
 
   @Test
@@ -189,9 +184,9 @@ public class JiraConfigurationResourceTest {
     MockHttpRequest request = MockHttpRequest.get("/" + JiraConfigurationResource.JIRA_CONFIG_PATH_V2 + "/space/X");
     MockHttpResponse response = new MockHttpResponse();
 
-    expectedException.expect(new ExceptionMatcher<>(UnauthorizedException.class));
-
     dispatcher.invoke(request, response);
+
+    assertEquals(403, response.getStatus());
   }
 
   private static class ExceptionMatcher<E extends Exception> extends BaseMatcher<E> {
