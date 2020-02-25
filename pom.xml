@@ -89,6 +89,15 @@
         </executions>
       </plugin>
 
+      <plugin>
+        <groupId>io.openapitools.swagger</groupId>
+        <artifactId>swagger-maven-plugin</artifactId>
+        <configuration>
+          <resourcePackages>
+            <resourcePackage>sonia.scm.jira</resourcePackage>
+          </resourcePackages>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 

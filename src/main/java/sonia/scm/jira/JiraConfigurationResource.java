@@ -36,10 +36,18 @@ package sonia.scm.jira;
 import com.google.inject.Inject;
 import com.webcohesion.enunciate.metadata.rs.ResponseCode;
 import com.webcohesion.enunciate.metadata.rs.StatusCodes;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import sonia.scm.api.v2.resources.ErrorDto;
 import sonia.scm.jira.resubmit.ResubmitCommentsHandler;
 import sonia.scm.repository.NamespaceAndName;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryManager;
+import sonia.scm.web.VndMediaType;
 
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
@@ -52,7 +60,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
 import java.io.IOException;
 
 import static sonia.scm.ContextEntry.ContextBuilder.entity;
@@ -61,9 +68,11 @@ import static sonia.scm.NotFoundException.notFound;
 //~--- JDK imports ------------------------------------------------------------
 
 /**
- *
  * @author Sebastian Sdorra
  */
+@OpenAPIDefinition(tags = {
+  @Tag(name = "Jira Plugin", description = "Jira plugin provided endpoints")
+})
 @Path(JiraConfigurationResource.JIRA_CONFIG_PATH_V2)
 public class JiraConfigurationResource {
 
@@ -95,43 +104,73 @@ public class JiraConfigurationResource {
   @GET
   @Path("/")
   @Produces({MediaType.APPLICATION_JSON})
-  @StatusCodes({
-    @ResponseCode(code = 200, condition = "success"),
-    @ResponseCode(code = 401, condition = "not authenticated / invalid credentials"),
-    @ResponseCode(code = 403, condition = "not authorized, the current user has no privileges to read the configuration"),
-    @ResponseCode(code = 500, condition = "internal server error")
-  })
+  @Operation(summary = "Get global jira configuration", description = "Returns the global jira configuration.", tags = "Jira Plugin")
+  @ApiResponse(
+    responseCode = "200",
+    description = "success",
+    content = @Content(
+      mediaType = MediaType.APPLICATION_JSON,
+      schema = @Schema(implementation = JiraGlobalConfigurationDto.class)
+    )
+  )
+  @ApiResponse(responseCode = "401", description = "not authenticated / invalid credentials")
+  @ApiResponse(responseCode = "403", description = "not authorized, the current user has no privileges to read the configuration")
+  @ApiResponse(
+    responseCode = "500",
+    description = "internal server error",
+    content = @Content(
+      mediaType = VndMediaType.ERROR_TYPE,
+      schema = @Schema(implementation = ErrorDto.class)
+    )
+  )
   public Response get() {
     permissions.checkReadGlobalConfig();
-
     return Response.ok(jiraGlobalConfigurationMapper.map(context.getGlobalConfiguration())).build();
   }
 
   @PUT
   @Path("/")
   @Consumes({MediaType.APPLICATION_JSON})
-  @StatusCodes({
-    @ResponseCode(code = 204, condition = "update success"),
-    @ResponseCode(code = 400, condition = "Invalid body,"),
-    @ResponseCode(code = 401, condition = "not authenticated / invalid credentials"),
-    @ResponseCode(code = 403, condition = "not authorized, the current user does not have the privilege to change the configuration"),
-    @ResponseCode(code = 500, condition = "internal server error")
-  })
+  @Operation(summary = "Update global jira configuration", description = "Modifies the global jira configuration.", tags = "Jira Plugin")
+  @ApiResponse(responseCode = "204", description = "update success")
+  @ApiResponse(responseCode = "400", description = "invalid body")
+  @ApiResponse(responseCode = "401", description = "not authenticated / invalid credentials")
+  @ApiResponse(responseCode = "403", description = "not authorized, the current user does not have the privilege to change the configuration")
+  @ApiResponse(
+    responseCode = "500",
+    description = "internal server error",
+    content = @Content(
+      mediaType = VndMediaType.ERROR_TYPE,
+      schema = @Schema(implementation = ErrorDto.class)
+    )
+  )
   public Response update(@Valid JiraGlobalConfigurationDto updatedConfig) {
     context.setGlobalConfiguration(jiraGlobalConfigurationMapper.map(updatedConfig, context.getGlobalConfiguration()));
-
     return Response.noContent().build();
   }
 
   @POST
   @Path("/resubmit")
-  @StatusCodes({
-    @ResponseCode(code = 204, condition = "resubmit triggered successfully"),
-    @ResponseCode(code = 401, condition = "not authenticated / invalid credentials"),
-    @ResponseCode(code = 403, condition = "not authorized, the current user does not have the privilege to change the configuration"),
-    @ResponseCode(code = 404, condition = "not found, no repository with the specified namespace and name available"),
-    @ResponseCode(code = 500, condition = "internal server error")
-  })
+  @Operation(summary = "Resubmit global jira configuration", description = "Resubmits the pending global jira configuration.", tags = "Jira Plugin")
+  @ApiResponse(responseCode = "204", description = "update success")
+  @ApiResponse(responseCode = "401", description = "not authenticated / invalid credentials")
+  @ApiResponse(responseCode = "403", description = "not authorized, the current user does not have the privilege to change the configuration")
+  @ApiResponse(
+    responseCode = "404",
+    description = "not found, no repository with the specified namespace and name available",
+    content = @Content(
+      mediaType = VndMediaType.ERROR_TYPE,
+      schema = @Schema(implementation = ErrorDto.class)
+    )
+  )
+  @ApiResponse(
+    responseCode = "500",
+    description = "internal server error",
+    content = @Content(
+      mediaType = VndMediaType.ERROR_TYPE,
+      schema = @Schema(implementation = ErrorDto.class)
+    )
+  )
   public Response resubmitAll() throws IOException {
     resubmitCommentsHandler.resubmitAll();
     return Response.noContent().build();
@@ -140,47 +179,103 @@ public class JiraConfigurationResource {
   @GET
   @Path("/{namespace}/{name}")
   @Produces({MediaType.APPLICATION_JSON})
-  @StatusCodes({
-    @ResponseCode(code = 200, condition = "success"),
-    @ResponseCode(code = 401, condition = "not authenticated / invalid credentials"),
-    @ResponseCode(code = 403, condition = "not authorized, the current user has no privileges to read the configuration"),
-    @ResponseCode(code = 404, condition = "not found, no repository with the specified namespace and name available"),
-    @ResponseCode(code = 500, condition = "internal server error")
-  })
+  @Operation(
+    summary = "Get repository jira configuration",
+    description = "Returns the repository jira configuration.",
+    tags = "Jira Plugin"
+  )
+  @ApiResponse(
+    responseCode = "200",
+    description = "success",
+    content = @Content(
+      mediaType = MediaType.APPLICATION_JSON,
+      schema = @Schema(implementation = JiraConfigurationDto.class)
+    )
+  )
+  @ApiResponse(responseCode = "401", description = "not authenticated / invalid credentials")
+  @ApiResponse(responseCode = "403", description = "not authorized, the current user has no privileges to read the configuration")
+  @ApiResponse(
+    responseCode = "404",
+    description = "not found, no repository with the specified namespace and name available",
+    content = @Content(
+      mediaType = VndMediaType.ERROR_TYPE,
+      schema = @Schema(implementation = ErrorDto.class)
+    )
+  )
+  @ApiResponse(
+    responseCode = "500",
+    description = "internal server error",
+    content = @Content(
+      mediaType = VndMediaType.ERROR_TYPE,
+      schema = @Schema(implementation = ErrorDto.class)
+    )
+  )
   public Response getForRepository(@PathParam("namespace") String namespace, @PathParam("name") String name) {
     Repository repository = loadRepository(namespace, name);
     permissions.checkReadRepositoryConfig(repository);
-
     return Response.ok(jenkinsConfigurationMapper.map(context.getConfiguration(repository), repository)).build();
   }
 
   @PUT
   @Path("/{namespace}/{name}")
   @Consumes({MediaType.APPLICATION_JSON})
-  @StatusCodes({
-    @ResponseCode(code = 204, condition = "update success"),
-    @ResponseCode(code = 400, condition = "Invalid body,"),
-    @ResponseCode(code = 401, condition = "not authenticated / invalid credentials"),
-    @ResponseCode(code = 403, condition = "not authorized, the current user does not have the privilege to change the configuration"),
-    @ResponseCode(code = 404, condition = "not found, no repository with the specified namespace and name available"),
-    @ResponseCode(code = 500, condition = "internal server error")
-  })
+  @Operation(
+    summary = "Resubmit global jira configuration",
+    description = "Resubmits the pending global jira configuration.",
+    tags = "Jira Plugin"
+  )
+  @ApiResponse(responseCode = "204", description = "update success")
+  @ApiResponse(responseCode = "400", description = "invalid body")
+  @ApiResponse(responseCode = "401", description = "not authenticated / invalid credentials")
+  @ApiResponse(responseCode = "403", description = "not authorized, the current user does not have the privilege to change the configuration")
+  @ApiResponse(
+    responseCode = "404",
+    description = "not found, no repository with the specified namespace and name available",
+    content = @Content(
+      mediaType = VndMediaType.ERROR_TYPE,
+      schema = @Schema(implementation = ErrorDto.class)
+    )
+  )
+  @ApiResponse(
+    responseCode = "500",
+    description = "internal server error",
+    content = @Content(
+      mediaType = VndMediaType.ERROR_TYPE,
+      schema = @Schema(implementation = ErrorDto.class)
+    )
+  )
   public Response updateForRepository(@PathParam("namespace") String namespace, @PathParam("name") String name, @Valid JiraConfigurationDto updatedConfig) {
     Repository repository = loadRepository(namespace, name);
     context.setConfiguration(jenkinsConfigurationMapper.map(updatedConfig, context.getConfiguration(repository)), repository);
-
     return Response.noContent().build();
   }
 
   @POST
   @Path("/{namespace}/{name}/resubmit")
-  @StatusCodes({
-    @ResponseCode(code = 204, condition = "resubmit triggered successfully"),
-    @ResponseCode(code = 401, condition = "not authenticated / invalid credentials"),
-    @ResponseCode(code = 403, condition = "not authorized, the current user does not have the privilege to change the configuration"),
-    @ResponseCode(code = 404, condition = "not found, no repository with the specified namespace and name available"),
-    @ResponseCode(code = 500, condition = "internal server error")
-  })
+  @Operation(
+    summary = "Resubmit repository jira configuration",
+    description = "Resubmits the pending repository jira configuration.",
+    tags = "Jira Plugin"
+  )
+  @ApiResponse(responseCode = "204", description = "update success")
+  @ApiResponse(responseCode = "401", description = "not authenticated / invalid credentials")
+  @ApiResponse(responseCode = "403", description = "not authorized, the current user does not have the privilege to change the configuration")
+  @ApiResponse(
+    responseCode = "404",
+    description = "not found, no repository with the specified namespace and name available",
+    content = @Content(
+      mediaType = VndMediaType.ERROR_TYPE,
+      schema = @Schema(implementation = ErrorDto.class)
+    )
+  )
+  @ApiResponse(
+    responseCode = "500",
+    description = "internal server error",
+    content = @Content(
+      mediaType = VndMediaType.ERROR_TYPE,
+      schema = @Schema(implementation = ErrorDto.class)
+    )
+  )
   public Response resubmitForRepository(@PathParam("namespace") String namespace, @PathParam("name") String name) throws IOException {
     Repository repository = loadRepository(namespace, name);
     resubmitCommentsHandler.resubmitAllFromRepository(repository.getId());
@@ -189,12 +284,22 @@ public class JiraConfigurationResource {
 
   @DELETE
   @Path("/resubmit/comment/{id}")
-  @StatusCodes({
-    @ResponseCode(code = 201, condition = "comment removed"),
-    @ResponseCode(code = 401, condition = "not authenticated / invalid credentials"),
-    @ResponseCode(code = 403, condition = "not authorized, the current user does not have the privilege to change the configuration"),
-    @ResponseCode(code = 500, condition = "internal server error")
-  })
+  @Operation(
+    summary = "Remove resubmit comment",
+    description = "Removes a resubmit comment.",
+    tags = "Jira Plugin"
+  )
+  @ApiResponse(responseCode = "204", description = "comment removed")
+  @ApiResponse(responseCode = "401", description = "not authenticated / invalid credentials")
+  @ApiResponse(responseCode = "403", description = "not authorized, the current user does not have the privilege to change the configuration")
+  @ApiResponse(
+    responseCode = "500",
+    description = "internal server error",
+    content = @Content(
+      mediaType = VndMediaType.ERROR_TYPE,
+      schema = @Schema(implementation = ErrorDto.class)
+    )
+  )
   public Response removeCommentFromResubmitQueue(@PathParam("id") String commentId) {
     resubmitCommentsHandler.removeComment(commentId);
     return Response.noContent().build();
