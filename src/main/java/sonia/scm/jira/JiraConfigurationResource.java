@@ -102,7 +102,12 @@ public class JiraConfigurationResource {
   @GET
   @Path("/")
   @Produces({MediaType.APPLICATION_JSON})
-  @Operation(summary = "Get global jira configuration", description = "Returns the global jira configuration.", tags = "Jira Plugin")
+  @Operation(
+    summary = "Get global jira configuration",
+    description = "Returns the global jira configuration.",
+    tags = "Jira Plugin",
+    operationId = "jira_get_global_config"
+  )
   @ApiResponse(
     responseCode = "200",
     description = "success",
@@ -129,7 +134,12 @@ public class JiraConfigurationResource {
   @PUT
   @Path("/")
   @Consumes({MediaType.APPLICATION_JSON})
-  @Operation(summary = "Update global jira configuration", description = "Modifies the global jira configuration.", tags = "Jira Plugin")
+  @Operation(
+    summary = "Update global jira configuration",
+    description = "Modifies the global jira configuration.",
+    tags = "Jira Plugin",
+    operationId = "jira_put_global_config"
+  )
   @ApiResponse(responseCode = "204", description = "update success")
   @ApiResponse(responseCode = "400", description = "invalid body")
   @ApiResponse(responseCode = "401", description = "not authenticated / invalid credentials")
@@ -149,7 +159,12 @@ public class JiraConfigurationResource {
 
   @POST
   @Path("/resubmit")
-  @Operation(summary = "Resubmit global jira configuration", description = "Resubmits the pending global jira configuration.", tags = "Jira Plugin")
+  @Operation(
+    summary = "Resubmit global jira configuration",
+    description = "Resubmits the pending global jira configuration.",
+    tags = "Jira Plugin",
+    operationId = "jira_resubmit_global_config"
+  )
   @ApiResponse(responseCode = "204", description = "update success")
   @ApiResponse(responseCode = "401", description = "not authenticated / invalid credentials")
   @ApiResponse(responseCode = "403", description = "not authorized, the current user does not have the privilege to change the configuration")
@@ -180,7 +195,8 @@ public class JiraConfigurationResource {
   @Operation(
     summary = "Get repository jira configuration",
     description = "Returns the repository jira configuration.",
-    tags = "Jira Plugin"
+    tags = "Jira Plugin",
+    operationId = "jira_get_repo_config"
   )
   @ApiResponse(
     responseCode = "200",
@@ -218,9 +234,10 @@ public class JiraConfigurationResource {
   @Path("/{namespace}/{name}")
   @Consumes({MediaType.APPLICATION_JSON})
   @Operation(
-    summary = "Resubmit global jira configuration",
-    description = "Resubmits the pending global jira configuration.",
-    tags = "Jira Plugin"
+    summary = "Modify repository jira configuration",
+    description = "Modifies the repository jira configuration.",
+    tags = "Jira Plugin",
+    operationId = "jira_put_repo_config"
   )
   @ApiResponse(responseCode = "204", description = "update success")
   @ApiResponse(responseCode = "400", description = "invalid body")
@@ -253,7 +270,8 @@ public class JiraConfigurationResource {
   @Operation(
     summary = "Resubmit repository jira configuration",
     description = "Resubmits the pending repository jira configuration.",
-    tags = "Jira Plugin"
+    tags = "Jira Plugin",
+    operationId = "jira_resubmit_repo_config"
   )
   @ApiResponse(responseCode = "204", description = "update success")
   @ApiResponse(responseCode = "401", description = "not authenticated / invalid credentials")
@@ -285,7 +303,8 @@ public class JiraConfigurationResource {
   @Operation(
     summary = "Remove resubmit comment",
     description = "Removes a resubmit comment.",
-    tags = "Jira Plugin"
+    tags = "Jira Plugin",
+    operationId = "jira_delete_comment"
   )
   @ApiResponse(responseCode = "204", description = "comment removed")
   @ApiResponse(responseCode = "401", description = "not authenticated / invalid credentials")
