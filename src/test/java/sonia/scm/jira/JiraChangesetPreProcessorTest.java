@@ -29,7 +29,9 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import org.junit.Before;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import sonia.scm.repository.Changeset;
 
 /**
  * Unit tests for {@link JiraChangesetPreProcessor}.
@@ -37,7 +39,10 @@ import org.mockito.runners.MockitoJUnitRunner;
  * @author Sebastian Sdorra <sebastian.sdorra@triology.de>
  */
 @RunWith(MockitoJUnitRunner.class)
-public class JiraChangesetPreProcessorTest extends JiraTestBase {
+public class JiraChangesetPreProcessorTest {
+
+  @Mock
+  protected Changeset changeset;
 
   private JiraChangesetPreProcessor processor;
 
@@ -77,7 +82,7 @@ public class JiraChangesetPreProcessorTest extends JiraTestBase {
     processor.process(changeset);
     verify(changeset).setDescription("_TST-1_ are ready to review");
   }
-  
+
   /*
    * Testing {@link JiraChangesetPreProcessor#process(Changeset)}.
    */
@@ -87,7 +92,7 @@ public class JiraChangesetPreProcessorTest extends JiraTestBase {
     processor.process(changeset);
     verify(changeset).setDescription("_TST-1_, _TST-2_ and _TST-3_ are ready to review");
   }
-  
+
   /*
    * Testing {@link JiraChangesetPreProcessor#process(Changeset)} without issue key.
    */
@@ -96,5 +101,9 @@ public class JiraChangesetPreProcessorTest extends JiraTestBase {
     description("description without key");
     processor.process(changeset);
     verify(changeset).setDescription("description without key");
+  }
+
+  protected void description(String description){
+    when(changeset.getDescription()).thenReturn(description);
   }
 }

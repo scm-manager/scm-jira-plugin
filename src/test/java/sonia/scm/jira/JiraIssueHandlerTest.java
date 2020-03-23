@@ -24,17 +24,19 @@
 package sonia.scm.jira;
 
 import com.google.common.collect.Sets;
-import java.util.Set;
-import org.junit.Test;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import sonia.scm.jira.resubmit.MessageProblemHandler;
 import sonia.scm.repository.Changeset;
+
+import java.util.Set;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for {@link JiraIssueHandler}.
@@ -68,7 +70,6 @@ public class JiraIssueHandlerTest {
     @Before
     public void setUp() {
       when(request.getConfiguration()).thenReturn(configuration);
-      when(templateHandlerFactory.create(any())).thenReturn(templateHandler);
     }
 
     /**
