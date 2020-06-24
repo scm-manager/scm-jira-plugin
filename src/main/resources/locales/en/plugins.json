@@ -51,6 +51,15 @@
     },
     "configurationChangedSuccess": "Configuration changed"
   },
+  "mailTopics": {
+    "jira-plugin": {
+      "label": "Jira",
+      "submissionFailure": {
+        "label": "Errors in transmissions",
+        "helpText": "Mails sent whenever a transmission to Jira failed."
+      }
+    }
+  },
   "permissions": {
     "configuration": {
       "read,write": {

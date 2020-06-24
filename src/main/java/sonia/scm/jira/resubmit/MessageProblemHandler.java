@@ -154,6 +154,7 @@ public class MessageProblemHandler
 
         mailService.emailTemplateBuilder()
           .toAddress(address)
+          .onTopic(Topics.TOPIC)
           .withSubject("A Jira comment could not be sent")
           .withTemplate(TEMPLATE, MailTemplateType.MARKDOWN_HTML)
           .andModel(model)
