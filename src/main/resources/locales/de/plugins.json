@@ -51,6 +51,15 @@
     },
     "configurationChangedSuccess": "Konfiguration geändert"
   },
+  "mailTopics": {
+    "jira-plugin": {
+      "label": "Jira",
+      "submissionFailure": {
+        "label": "Übermittlungsfehler",
+        "helpText": "Mails die gesendet werden, wenn Übermittlungen an Jira fehlgeschlagen sind."
+      }
+    }
+  },
   "permissions": {
     "configuration": {
       "read,write": {
