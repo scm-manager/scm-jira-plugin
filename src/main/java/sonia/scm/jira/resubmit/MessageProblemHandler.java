@@ -40,7 +40,6 @@ import sonia.scm.mail.api.MailSendBatchException;
 import sonia.scm.mail.api.MailService;
 import sonia.scm.mail.api.MailTemplateType;
 import sonia.scm.repository.Changeset;
-import sonia.scm.repository.Repository;
 import sonia.scm.security.KeyGenerator;
 import sonia.scm.store.DataStore;
 import sonia.scm.store.DataStoreFactory;
@@ -49,57 +48,46 @@ import sonia.scm.util.HttpUtil;
 import java.util.List;
 import java.util.Map;
 
-//~--- JDK imports ------------------------------------------------------------
-
 /**
  * A class to handle problems of message sending.
- *
  */
 @Singleton
-public class MessageProblemHandler
-{
+public class MessageProblemHandler {
 
-  /** name of the data store */
+  private static final Logger logger = LoggerFactory.getLogger(MessageProblemHandler.class);
+  private static final String TEMPLATE = "/sonia/scm/jira/resubmit/notification.mustache";
+  private static final String REMOVE_LINK = "jira/resubmit/comment/%s/remove";
   private static final String STORE = "jira.problem";
 
-  /** logger for MessageProblemHandler */
-  private static final Logger logger =
-    LoggerFactory.getLogger(MessageProblemHandler.class);
-
-  /** notification email template */
-  private static final String TEMPLATE = "/sonia/scm/jira/resubmit/notification.mustache";
-
-  //~--- constructors ---------------------------------------------------------
+  private final ScmConfiguration configuration;
+  private final KeyGenerator keyGenerator;
+  private final MailService mailService;
+  private final DataStoreFactory storeFactory;
 
   /**
    * Creates class to handle problems with message to a corresponding comment.
    *
-   * @param configuration main configuration
-   * @param mailService mail service
-   * @param keyGenerator generate comment ids
+   * @param configuration    main configuration
+   * @param mailService      mail service
+   * @param keyGenerator     generate comment ids
    * @param dataStoreFactory data store factory
    */
   @Inject
   public MessageProblemHandler(ScmConfiguration configuration,
-    MailService mailService, KeyGenerator keyGenerator,
-    DataStoreFactory dataStoreFactory)
-  {
+                               MailService mailService, KeyGenerator keyGenerator,
+                               DataStoreFactory dataStoreFactory) {
     this.configuration = configuration;
     this.mailService = mailService;
     this.keyGenerator = keyGenerator;
     this.storeFactory = dataStoreFactory;
   }
 
-  //~--- methods --------------------------------------------------------------
-
   /**
    * Deletes the comment data with the given id from the store.
    *
-   *
    * @param id comment data id
    */
-  public void deleteComment(String id)
-  {
+  public void deleteComment(String id) {
     logger.debug("remove comment with id {}", id);
     getStore().remove(id);
   }
@@ -108,16 +96,14 @@ public class MessageProblemHandler
   /**
    * Handles a problem with a comment that could not be sent to the Jira-Server.
    *
-   * @param request jira issue request
-   * @param issueId IssueId of the comment in Jira.
-   * @param body Body of the Jira comment.
+   * @param request   jira issue request
+   * @param issueId   IssueId of the comment in Jira.
+   * @param body      Body of the Jira comment.
    * @param changeset changeset containing the issue key
    */
   public void handleMessageProblem(JiraIssueRequest request,
-    String issueId, String body,
-    Changeset changeset)
-  {
-    //J-
+                                   String issueId, String body,
+                                   Changeset changeset) {
     CommentData commentData = new CommentData(
       keyGenerator.createKey(),
       request.getRepository().getId(),
@@ -127,7 +113,6 @@ public class MessageProblemHandler
       body,
       request.getCreation()
     );
-    //J+
 
     saveComment(commentData);
     sendMail(request.getConfiguration().getMailAddress(), commentData);
@@ -136,18 +121,16 @@ public class MessageProblemHandler
   /**
    * Send the error mail.
    *
-   *
-   * @param address recipient address
+   * @param address     recipient address
    * @param commentData comment data
    */
-  public void sendMail(String address, CommentData commentData)
-  {
+  public void sendMail(String address, CommentData commentData) {
     logger.debug("send mail for comment {} of {}", commentData.getId(),
       commentData.getIssueId());
 
     if (mailService.isConfigured()) {
       try {
-        Map<String,Object> model = ImmutableMap.of(
+        Map<String, Object> model = ImmutableMap.of(
           "comment", commentData,
           "removeLink", createRemoteLink(commentData)
         );
@@ -164,65 +147,47 @@ public class MessageProblemHandler
       } catch (MailSendBatchException ex) {
         logger.error("could not send mail", ex);
       }
-    }
-    else
-    {
+    } else {
       logger.warn("mail service is not configured");
     }
   }
 
-  //~--- get methods ----------------------------------------------------------
-
   /**
    * Returns all stored comments as sorted immutable list.
    *
-   *
    * @return all stored comments
    */
-  public List<CommentData> getAllComments()
-  {
+  public List<CommentData> getAllComments() {
     return sort(getStore().getAll().values());
   }
 
   /**
    * Get all comments filtered by repository id as sorted immutable list.
    *
-   *
    * @param repositoryId repository id
-   *
    * @return all comments from the repository
    */
-  public List<CommentData> getAllCommentsByRepository(String repositoryId)
-  {
-    //J-
+  public List<CommentData> getAllCommentsByRepository(String repositoryId) {
     return sort(
       Iterables.filter(
         getStore().getAll().values(),
         new RepositoryPredicate(repositoryId)
       )
     );
-    //J+
   }
 
   /**
    * Returns the stored comment data, with the given id or {@code null} if no
    * such comment exists.
    *
-   *
    * @param id id of stored comment.
-   *
    * @return comment data or {@code null}
    */
-  public CommentData getComment(String id)
-  {
+  public CommentData getComment(String id) {
     return getStore().get(id);
   }
 
-  //~--- methods --------------------------------------------------------------
-
-  private static final String REMOVE_LINK = "jira/resubmit/comment/%s/remove";
-
-  private String createRemoteLink(CommentData data){
+  private String createRemoteLink(CommentData data) {
     return HttpUtil.getCompleteUrl(configuration, String.format(REMOVE_LINK, data.getId()));
   }
 
@@ -231,69 +196,38 @@ public class MessageProblemHandler
    *
    * @param commentData
    */
-  private void saveComment(CommentData commentData)
-  {
+  private void saveComment(CommentData commentData) {
     logger.debug("save comment {}", commentData);
 
     getStore().put(commentData.getId(), commentData);
   }
 
-  private List<CommentData> sort(Iterable<CommentData> commentData)
-  {
+  private List<CommentData> sort(Iterable<CommentData> commentData) {
     return Ordering.natural().immutableSortedCopy(commentData);
   }
 
   private DataStore<CommentData> getStore() {
-    return getStore(null);
+    return storeFactory.withType(CommentData.class).withName(STORE).build();
   }
 
-  private DataStore<CommentData> getStore(Repository repository) {
-    return storeFactory.withType(CommentData.class).withName(STORE).forRepository(repository).build();
-  }
+  private static class RepositoryPredicate implements Predicate<CommentData> {
 
-  //~--- inner classes --------------------------------------------------------
+    private final String repositoryId;
 
-  private static class RepositoryPredicate implements Predicate<CommentData>
-  {
-    private RepositoryPredicate(String repositoryId)
-    {
+    private RepositoryPredicate(String repositoryId) {
       this.repositoryId = repositoryId;
     }
-
-    //~--- methods ------------------------------------------------------------
 
     /**
      * Returns {@code true}, if the repository id is equals with the one from
      * the stored comment.
      *
-     *
      * @param input
      * @return {@code true} if the repository ids are equal
      */
     @Override
-    public boolean apply(CommentData input)
-    {
+    public boolean apply(CommentData input) {
       return repositoryId.equals(input.getRepositoryId());
     }
-
-    //~--- fields -------------------------------------------------------------
-
-    /** repository id */
-    private final String repositoryId;
   }
-
-
-  //~--- fields ---------------------------------------------------------------
-
-  /** scm-manager main configuration */
-  private final ScmConfiguration configuration;
-
-  /** key generator */
-  private final KeyGenerator keyGenerator;
-
-  /** mail service */
-  private final MailService mailService;
-
-  /** data store */
-  private final DataStoreFactory storeFactory;
 }
