@@ -54,18 +54,15 @@ import java.util.Map;
 @Singleton
 public class MessageProblemHandler {
 
+  private static final Logger logger = LoggerFactory.getLogger(MessageProblemHandler.class);
+  private static final String TEMPLATE = "/sonia/scm/jira/resubmit/notification.mustache";
+  private static final String REMOVE_LINK = "jira/resubmit/comment/%s/remove";
+  private static final String STORE = "jira.problem";
+
   private final ScmConfiguration configuration;
   private final KeyGenerator keyGenerator;
   private final MailService mailService;
   private final DataStoreFactory storeFactory;
-
-  private static final Logger logger = LoggerFactory.getLogger(MessageProblemHandler.class);
-  private static final String TEMPLATE = "/sonia/scm/jira/resubmit/notification.mustache";
-
-  // Visible for testing
-  static final String STORE = "jira.problem";
-
-  private static final String REMOVE_LINK = "jira/resubmit/comment/%s/remove";
 
   /**
    * Creates class to handle problems with message to a corresponding comment.
