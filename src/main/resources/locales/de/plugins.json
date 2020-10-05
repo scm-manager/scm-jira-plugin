@@ -90,7 +90,7 @@
     "JiraCommitMessageIssueKeyValidator": {
       "name": "Jira Ticket Schlüssel Validator",
       "branches": "{{ branches }}",
-      "allBranches": "<alle branches>",
+      "allBranches": "<Alle Branches>",
       "description": "Nutzt das definierte Ticket Schlüssel Format aus dem Jira Plugin",
       "defaultErrorMessage": "<Standard-Fehlermeldung>"
     }

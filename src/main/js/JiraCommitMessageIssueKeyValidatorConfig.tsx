@@ -47,8 +47,8 @@ const JiraCommitMessageIssueKeyValidatorConfig: FC<ConfigProps> = ({ configurati
   return (
     <InputField
       value={branches}
-      label={t("validator.CustomRegExValidator.branches.label")}
-      helpText={t("validator.CustomRegExValidator.branches.helpText")}
+      label={t("validator.JiraCommitMessageIssueKeyValidator.branches.label")}
+      helpText={t("validator.JiraCommitMessageIssueKeyValidator.branches.helpText")}
       onChange={onBranchesChange}
     />
   );
