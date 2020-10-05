@@ -24,7 +24,7 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 @Extension
-public class CommitMessageIssueKeyValidator implements Validator {
+public class JiraCommitMessageIssueKeyValidator implements Validator {
 
   private static final String DEFAULT_ERROR_MESSAGE = "The commit message doesn't contain a valid Jira issue key.";
   private static final RegExPatternMatcher matcher = new RegExPatternMatcher();
@@ -32,7 +32,7 @@ public class CommitMessageIssueKeyValidator implements Validator {
   private final JiraGlobalContext jiraGlobalContext;
 
   @Inject
-  public CommitMessageIssueKeyValidator(JiraGlobalContext jiraGlobalContext) {
+  public JiraCommitMessageIssueKeyValidator(JiraGlobalContext jiraGlobalContext) {
     this.jiraGlobalContext = jiraGlobalContext;
   }
 
@@ -43,12 +43,12 @@ public class CommitMessageIssueKeyValidator implements Validator {
 
   @Override
   public Optional<Class<?>> getConfigurationType() {
-    return Optional.of(CommitMessageIssueKeyValidatorConfig.class);
+    return Optional.of(JiraCommitMessageIssueKeyValidatorConfig.class);
   }
 
   @Override
   public void validate(Context context, String commitMessage) {
-    CommitMessageIssueKeyValidatorConfig configuration = context.getConfiguration(CommitMessageIssueKeyValidatorConfig.class);
+    JiraCommitMessageIssueKeyValidatorConfig configuration = context.getConfiguration(JiraCommitMessageIssueKeyValidatorConfig.class);
     String commitBranch = context.getBranch();
     Pattern issueKeyPattern = IssueKeys.createPattern(JiraConfigurationResolver.resolve(jiraGlobalContext, context.getRepository()).getFilter());
 
@@ -60,7 +60,7 @@ public class CommitMessageIssueKeyValidator implements Validator {
     }
   }
 
-  private boolean shouldValidateBranch(CommitMessageIssueKeyValidatorConfig configuration, String commitBranch) {
+  private boolean shouldValidateBranch(JiraCommitMessageIssueKeyValidatorConfig configuration, String commitBranch) {
     if (Strings.isNullOrEmpty(commitBranch) || Strings.isNullOrEmpty(configuration.getBranches())) {
       return true;
     }
@@ -79,7 +79,7 @@ public class CommitMessageIssueKeyValidator implements Validator {
   @Getter
   @Setter
   @XmlRootElement
-  static class CommitMessageIssueKeyValidatorConfig {
+  static class JiraCommitMessageIssueKeyValidatorConfig {
     private String branches;
   }
 }

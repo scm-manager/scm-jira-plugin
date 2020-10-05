@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+### Added
+- Commit message issue key validator ([#11](https://github.com/scm-manager/scm-jira-plugin/pull/11))
+
 ## 2.1.0 - 2020-07-03
 ### Added
 - Documentation in German ([#4](https://github.com/scm-manager/scm-jira-plugin/pull/4))

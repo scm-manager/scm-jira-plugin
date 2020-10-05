@@ -87,7 +87,7 @@
     }
   },
   "validation": {
-    "CommitMessageIssueKeyValidator": {
+    "JiraCommitMessageIssueKeyValidator": {
       "name": "Jira Issue Key Validator",
       "branches": "{{ branches }}",
       "allBranches": "<all branches>",
@@ -96,7 +96,7 @@
     }
   },
   "validator": {
-    "CommitMessageIssueKeyValidator": {
+    "JiraCommitMessageIssueKeyValidator": {
       "name": "Jira Issue Key Validator",
       "description": "Use this to validate each commit message for Jira issue keys.",
       "branches": {

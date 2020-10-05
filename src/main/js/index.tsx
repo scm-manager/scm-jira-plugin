@@ -28,7 +28,7 @@ import RemoveCommentPage from "./RemoveCommentPage";
 import { binder } from "@scm-manager/ui-extensions";
 import React from "react";
 import { Links } from "@scm-manager/ui-types";
-import CommitMessageIssueKeyValidatorConfig from "./CommitMessageIssueKeyValidatorConfig";
+import JiraCommitMessageIssueKeyValidatorConfig from "./JiraCommitMessageIssueKeyValidatorConfig";
 
 type RouteProps = {
   authenticated: boolean;
@@ -51,4 +51,4 @@ const JiraCommentRoute = ({ authenticated, links }: RouteProps) => {
 };
 
 binder.bind("main.route", JiraCommentRoute);
-binder.bind("commitMessageChecker.validator.CommitMessageIssueKeyValidator", CommitMessageIssueKeyValidatorConfig);
+binder.bind("commitMessageChecker.validator.JiraCommitMessageIssueKeyValidator", JiraCommitMessageIssueKeyValidatorConfig);

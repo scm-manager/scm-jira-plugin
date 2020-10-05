@@ -87,7 +87,7 @@
     }
   },
   "validation": {
-    "CommitMessageIssueKeyValidator": {
+    "JiraCommitMessageIssueKeyValidator": {
       "name": "Jira Ticket Schlüssel Validator",
       "branches": "{{ branches }}",
       "allBranches": "<alle branches>",
@@ -96,7 +96,7 @@
     }
   },
   "validator": {
-    "CommitMessageIssueKeyValidator": {
+    "JiraCommitMessageIssueKeyValidator": {
       "name": "Jira Ticket Schlüssel Validator",
       "description": "Validiert alle Commits auf gültige Jira Ticket Schlüssel.",
       "branches": {

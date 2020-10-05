@@ -16,10 +16,10 @@ import sonia.scm.repository.RepositoryTestData;
 
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
-import static sonia.scm.jira.commitmessagechecker.CommitMessageIssueKeyValidator.CommitMessageIssueKeyValidatorConfig;
+import static sonia.scm.jira.commitmessagechecker.JiraCommitMessageIssueKeyValidator.JiraCommitMessageIssueKeyValidatorConfig;
 
 @ExtendWith(MockitoExtension.class)
-class CommitMessageIssueKeyValidatorTest {
+class JiraCommitMessageIssueKeyValidatorTest {
 
   private static final Repository REPOSITORY = RepositoryTestData.createHeartOfGold();
 
@@ -27,26 +27,26 @@ class CommitMessageIssueKeyValidatorTest {
   private JiraGlobalContext jiraGlobalContext;
 
   @InjectMocks
-  private CommitMessageIssueKeyValidator validator;
+  private JiraCommitMessageIssueKeyValidator validator;
 
   @Test
   void shouldValidateSuccessfully() {
     mockJiraConfig("");
-    CommitMessageIssueKeyValidatorConfig config = new CommitMessageIssueKeyValidatorConfig();
+    JiraCommitMessageIssueKeyValidatorConfig config = new JiraCommitMessageIssueKeyValidatorConfig();
     validator.validate(new Context(REPOSITORY, "master", config), "Trillian added some feature HOG-42 DONE");
   }
 
   @Test
   void shouldValidateSuccessfullyWithMultipleFilters() {
     mockJiraConfig("SCM,HOG,API");
-    CommitMessageIssueKeyValidatorConfig config = new CommitMessageIssueKeyValidatorConfig();
+    JiraCommitMessageIssueKeyValidatorConfig config = new JiraCommitMessageIssueKeyValidatorConfig();
     validator.validate(new Context(REPOSITORY, "master", config), "Trillian added some feature API-21 DONE");
   }
 
   @Test
   void shouldFailOnInvalidIssueKey() {
     mockJiraConfig("");
-    CommitMessageIssueKeyValidatorConfig config = new CommitMessageIssueKeyValidatorConfig();
+    JiraCommitMessageIssueKeyValidatorConfig config = new JiraCommitMessageIssueKeyValidatorConfig();
     Assertions.assertThrows(InvalidCommitMessageException.class,
       () -> validator.validate(new Context(REPOSITORY, "master", config), "Trillian added some feature 42 DONE"));
   }
@@ -54,7 +54,7 @@ class CommitMessageIssueKeyValidatorTest {
   @Test
   void shouldFailIfIssueKeyDoNotMatchFilter() {
     mockJiraConfig("SCM");
-    CommitMessageIssueKeyValidatorConfig config = new CommitMessageIssueKeyValidatorConfig();
+    JiraCommitMessageIssueKeyValidatorConfig config = new JiraCommitMessageIssueKeyValidatorConfig();
     Assertions.assertThrows(InvalidCommitMessageException.class,
       () -> validator.validate(new Context(REPOSITORY, "master", config), "Trillian added some feature HOG-42 DONE"));
   }

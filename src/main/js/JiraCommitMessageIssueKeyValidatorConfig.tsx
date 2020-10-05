@@ -33,7 +33,7 @@ type ConfigProps = {
   configurationChanged: (newRuleConfiguration: Configuration, valid: boolean) => void;
 };
 
-const CommitMessageIssueKeyValidatorConfig: FC<ConfigProps> = ({ configurationChanged }) => {
+const JiraCommitMessageIssueKeyValidatorConfig: FC<ConfigProps> = ({ configurationChanged }) => {
   const [t] = useTranslation("plugins");
   const [branches, setBranches] = useState<string | undefined>();
 
@@ -54,4 +54,4 @@ const CommitMessageIssueKeyValidatorConfig: FC<ConfigProps> = ({ configurationCh
   );
 };
 
-export default CommitMessageIssueKeyValidatorConfig;
+export default JiraCommitMessageIssueKeyValidatorConfig;
