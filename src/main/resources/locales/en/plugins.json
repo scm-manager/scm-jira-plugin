@@ -85,5 +85,24 @@
         "description": "May modify the repository specific Jira configurations"
       }
     }
+  },
+  "validation": {
+    "CommitMessageIssueKeyValidator": {
+      "name": "Jira Issue Key Validator",
+      "branches": "{{ branches }}",
+      "allBranches": "<all branches>",
+      "description": "Uses issue key pattern from Jira plugin configuration",
+      "defaultErrorMessage": "<default error message>"
+    }
+  },
+  "validator": {
+    "CommitMessageIssueKeyValidator": {
+      "name": "Jira Issue Key Validator",
+      "description": "Use this to validate each commit message for Jira issue keys.",
+      "branches": {
+        "label": "Branches",
+        "helpText": "List of the branches which should be validated separated by comma. Leave blank to validate all branches.\nExample: master,feature/*"
+      }
+    }
   }
 }
