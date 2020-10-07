@@ -31,7 +31,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.apache.shiro.util.RegExPatternMatcher;
 import sonia.scm.ContextEntry;
 import sonia.scm.jira.IssueKeys;
 import sonia.scm.jira.JiraConfigurationResolver;
@@ -52,7 +51,6 @@ import java.util.regex.Pattern;
 public class JiraCommitMessageIssueKeyValidator implements Validator {
 
   private static final String DEFAULT_ERROR_MESSAGE = "The commit message doesn't contain a valid Jira issue key.";
-  private static final RegExPatternMatcher matcher = new RegExPatternMatcher();
 
   private final JiraGlobalContext jiraGlobalContext;
 
@@ -96,7 +94,7 @@ public class JiraCommitMessageIssueKeyValidator implements Validator {
 
   private boolean isInvalidCommitMessage(String pattern, String commitMessage) {
     String keyPattern = MessageFormat.format(".*{0}.*", pattern);
-    return !matcher.matches(keyPattern, commitMessage);
+    return !Pattern.matches(keyPattern, commitMessage);
   }
 
   @AllArgsConstructor
