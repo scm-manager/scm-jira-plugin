@@ -85,5 +85,24 @@
         "description": "Darf die Jira Konfiguration verändern"
       }
     }
+  },
+  "validation": {
+    "JiraCommitMessageIssueKeyValidator": {
+      "name": "Jira Ticket Schlüssel Validator",
+      "branches": "{{ branches }}",
+      "allBranches": "<Alle Branches>",
+      "description": "Nutzt das definierte Ticket Schlüssel Format aus dem Jira Plugin",
+      "defaultErrorMessage": "<Standard-Fehlermeldung>"
+    }
+  },
+  "validator": {
+    "JiraCommitMessageIssueKeyValidator": {
+      "name": "Jira Ticket Schlüssel Validator",
+      "description": "Validiert alle Commits auf gültige Jira Ticket Schlüssel.",
+      "branches": {
+        "label": "Branches",
+        "helpText": "Komma-separierte Liste der zu validierenden Branches. Leer lassen um alle Branches zu validieren.\nBeispiel: master,feature/*"
+      }
+    }
   }
 }
