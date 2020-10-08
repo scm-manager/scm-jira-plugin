@@ -27,12 +27,14 @@ import com.cloudogu.scm.commitmessagechecker.Context;
 import com.cloudogu.scm.commitmessagechecker.InvalidCommitMessageException;
 import com.cloudogu.scm.commitmessagechecker.Validator;
 import com.google.common.base.Strings;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import sonia.scm.ContextEntry;
-import sonia.scm.jira.IssueKeys;
 import sonia.scm.jira.JiraConfigurationResolver;
 import sonia.scm.jira.JiraGlobalContext;
 import sonia.scm.plugin.Extension;
@@ -44,13 +46,29 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
+
+import static sonia.scm.jira.IssueKeys.PATTERN_EXPRESSION_LOADER;
 
 @Extension
 @Requires("scm-commit-message-checker-plugin")
 public class JiraCommitMessageIssueKeyValidator implements Validator {
 
   private static final String DEFAULT_ERROR_MESSAGE = "The commit message doesn't contain a valid Jira issue key.";
+
+  private static final CacheLoader<String, Pattern> PATTERN_LOADER = new CacheLoader<String, Pattern>() {
+    @Override
+    public Pattern load(String key) {
+      String pattern = PATTERN_EXPRESSION_LOADER.apply(key);
+      return Pattern.compile(MessageFormat.format(".*{0}.*", pattern));
+    }
+  };
+
+  private static final LoadingCache<String, Pattern> PATTERN_CACHE = CacheBuilder
+    .newBuilder()
+    .expireAfterAccess(2, TimeUnit.HOURS)
+    .build(PATTERN_LOADER);
 
   private final JiraGlobalContext jiraGlobalContext;
 
@@ -73,9 +91,9 @@ public class JiraCommitMessageIssueKeyValidator implements Validator {
   public void validate(Context context, String commitMessage) {
     JiraCommitMessageIssueKeyValidatorConfig configuration = context.getConfiguration(JiraCommitMessageIssueKeyValidatorConfig.class);
     String commitBranch = context.getBranch();
-    Pattern issueKeyPattern = IssueKeys.createPattern(JiraConfigurationResolver.resolve(jiraGlobalContext, context.getRepository()).getFilter());
 
-    if (shouldValidateBranch(configuration, commitBranch) && isInvalidCommitMessage(issueKeyPattern.pattern(), commitMessage)) {
+    final String filter = JiraConfigurationResolver.resolve(jiraGlobalContext, context.getRepository()).getFilter();
+    if (shouldValidateBranch(configuration, commitBranch) && isInvalidCommitMessage(filter, commitMessage)) {
       throw new InvalidCommitMessageException(
         ContextEntry.ContextBuilder.entity(context.getRepository()),
         DEFAULT_ERROR_MESSAGE
@@ -92,9 +110,8 @@ public class JiraCommitMessageIssueKeyValidator implements Validator {
       .anyMatch(branch -> GlobUtil.matches(branch.trim(), commitBranch));
   }
 
-  private boolean isInvalidCommitMessage(String pattern, String commitMessage) {
-    String keyPattern = MessageFormat.format(".*{0}.*", pattern);
-    return !Pattern.matches(keyPattern, commitMessage);
+  private boolean isInvalidCommitMessage(String filter, String commitMessage) {
+    return !PATTERN_CACHE.getUnchecked(filter).matcher(commitMessage).matches();
   }
 
   @AllArgsConstructor

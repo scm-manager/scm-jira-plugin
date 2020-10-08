@@ -28,16 +28,18 @@ import com.google.common.base.Strings;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import java.util.Iterator;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
+import java.util.regex.Pattern;
+
 /**
  * Util methods for handling jira issue keys.
- * 
+ *
  * @author Sebastian Sdorra <s.sdorra@gmail.com>
  */
 public final class IssueKeys {
@@ -46,32 +48,38 @@ public final class IssueKeys {
 
     private static final char KEY_SEPARATOR = ',';
 
+    public static final Function<String, String> PATTERN_EXPRESSION_LOADER = rawKey -> {
+        String key = Strings.nullToEmpty(rawKey).trim();
+        StringBuilder buffer = new StringBuilder("\\b(");
+        if (Strings.isNullOrEmpty(key)) {
+            // match all project keys
+            buffer.append("[A-Z]+");
+        } else {
+            List<String> keys = Splitter.on(KEY_SEPARATOR).omitEmptyStrings().trimResults().splitToList(key);
+            if (keys.size() == 1) {
+                // match only one project
+                buffer.append(keys.get(0));
+            } else {
+                //create non capturing "or" group
+                buffer.append("(?:");
+                Iterator<String> it = keys.iterator();
+                while (it.hasNext()) {
+                    buffer.append(it.next());
+                    if (it.hasNext()) {
+                        buffer.append('|');
+                    }
+                }
+                buffer.append(')');
+            }
+        }
+        buffer.append("-\\d+)");
+        return buffer.toString();
+    };
+
     private static final CacheLoader<String, Pattern> PATTERN_LOADER = new CacheLoader<String, Pattern>() {
         @Override
-        public Pattern load(String key) throws Exception {
-            StringBuilder buffer = new StringBuilder("\\b(");
-            if (Strings.isNullOrEmpty(key)) {
-                // match all project keys
-                buffer.append("[A-Z]+");
-            } else {
-                List<String> keys = Splitter.on(KEY_SEPARATOR).omitEmptyStrings().trimResults().splitToList(key);
-                if (keys.size() == 1) {
-                    // match only one project
-                    buffer.append(keys.get(0));
-                } else {
-                    //create non capturing "or" group
-                    buffer.append("(?:");
-                    Iterator<String> it = keys.iterator();
-                    while (it.hasNext()) {
-                        buffer.append(it.next());
-                        if (it.hasNext()) {
-                            buffer.append('|');
-                        }
-                    }
-                    buffer.append(')');
-                }
-            }
-            String pattern = buffer.append("-\\d+)").toString();
+        public Pattern load(String key) {
+            String pattern = PATTERN_EXPRESSION_LOADER.apply(key);
             logger.trace("created pattern {} for configuration key {}", pattern, key);
             return Pattern.compile(pattern);
         }
@@ -87,22 +95,22 @@ public final class IssueKeys {
 
     /**
      * Creates and regex {@link Pattern} for the given comma separated list of issue keys. If the list is null or empty
-     * an pattern which matches every jira issues will be returned. The created pattern is cached to increase the 
+     * an pattern which matches every jira issues will be returned. The created pattern is cached to increase the
      * overall matching performance.
-     * 
+     *
      * @param commaSeparatedIssueKeys comma separated list of jira project keys
-     * 
+     *
      * @return regex pattern which matches the given jira projects
      */
     public static Pattern createPattern(String commaSeparatedIssueKeys) {
-        return PATTERN_CACHE.getUnchecked(Strings.nullToEmpty(commaSeparatedIssueKeys).trim());
+        return PATTERN_CACHE.getUnchecked(commaSeparatedIssueKeys);
     }
 
     /**
      * Shorthand method for {@link #createPattern(java.lang.String)} with {@link JiraConfiguration#getFilter()}.
-     * 
+     *
      * @param configuration jira configuration
-     * 
+     *
      * @return regex pattern which matches the configured jira projects
      */
     public static Pattern createPattern(JiraConfiguration configuration) {
