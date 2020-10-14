@@ -103,7 +103,7 @@ public final class IssueKeys {
      * @return regex pattern which matches the given jira projects
      */
     public static Pattern createPattern(String commaSeparatedIssueKeys) {
-        return PATTERN_CACHE.getUnchecked(commaSeparatedIssueKeys);
+        return PATTERN_CACHE.getUnchecked(Strings.nullToEmpty(commaSeparatedIssueKeys).trim());
     }
 
     /**
