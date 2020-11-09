@@ -24,13 +24,9 @@
 
 package sonia.scm.jira.rest;
 
-//~--- non-JDK imports --------------------------------------------------------
-
 import com.google.common.base.Strings;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import sonia.scm.jira.Comment;
 import sonia.scm.jira.Comments;
 import sonia.scm.jira.Compareables;
@@ -42,8 +38,6 @@ import sonia.scm.net.ahc.AdvancedHttpClient;
 import sonia.scm.net.ahc.AdvancedHttpResponse;
 import sonia.scm.net.ahc.ContentTransformerException;
 
-//~--- JDK imports ------------------------------------------------------------
-
 import java.io.IOException;
 
 /**
@@ -52,29 +46,30 @@ import java.io.IOException;
  *
  * @author Sebastian Sdorra
  */
-public class RestJiraHandler implements JiraHandler
-{
+public class RestJiraHandler implements JiraHandler {
 
   /**
    * the logger for RestJiraHandler
    */
   private static final Logger logger = LoggerFactory.getLogger(RestJiraHandler.class);
 
-  //~--- constructors ---------------------------------------------------------
+  private final String baseUrl;
+  private final AdvancedHttpClient client;
+  private final String password;
+  private final JiraIssueRequest request;
+  private final String username;
 
   /**
    * Constructs a new {@link RestJiraHandler}.
    *
-   *
-   * @param client advanced http client
-   * @param request jira issue request
-   * @param baseUrl rest base url
+   * @param client   advanced http client
+   * @param request  jira issue request
+   * @param baseUrl  rest base url
    * @param username jira username
    * @param password jira password
    */
   public RestJiraHandler(AdvancedHttpClient client, JiraIssueRequest request, String baseUrl, String username,
-    String password)
-  {
+                         String password) {
     this.client = client;
     this.request = request;
     this.baseUrl = baseUrl;
@@ -82,160 +77,116 @@ public class RestJiraHandler implements JiraHandler
     this.password = password;
   }
 
-  //~--- methods --------------------------------------------------------------
-
   @Override
-  public void addComment(String issueId, Comment comment) throws JiraException
-  {
+  public void addComment(String issueId, Comment comment) throws JiraException {
     logger.info("add comment to issue {}", issueId);
 
     String body = Comments.prepareComment(request, issueId, comment);
     RestComment restComment = new RestComment(body, Strings.emptyToNull(comment.getRoleLevel()));
 
-    try
-    {
+    try {
       //J-
       AdvancedHttpResponse response = client.post(baseUrl.concat(issueId).concat("/comment"))
-                                            .basicAuth(username, password)
-                                            .jsonContent(restComment)
-                                            .request();
-      if (!response.isSuccessful())
-      {
+        .spanKind("Jira")
+        .basicAuth(username, password)
+        .jsonContent(restComment)
+        .request();
+      if (!response.isSuccessful()) {
         throw new JiraException("failed to add comment to issue ".concat(issueId));
-      } 
-      else 
-      {
+      } else {
         logger.debug("user {} successfully added comment to issue {}", username, issueId);
       }
       //J+
-    }
-    catch (IOException ex)
-    {
+    } catch (IOException ex) {
       throw JiraExceptions.propagate(ex, "failed to add comment to issue ".concat(issueId));
     }
   }
 
   @Override
-  public void close(String issueId, String autoCloseWord) throws JiraException
-  {
+  public void close(String issueId, String autoCloseWord) throws JiraException {
     logger.info("try to close issue {}, with auto close word {}", issueId, autoCloseWord);
 
     String url = baseUrl.concat(issueId).concat("/transitions");
 
-    try
-    {
+    try {
       //J-
       RestTransitions transitions = client.get(url)
-                                          .basicAuth(username, password)
-                                          .request()
-                                          .contentFromJson(RestTransitions.class);
+        .spanKind("Jira")
+        .basicAuth(username, password)
+        .request()
+        .contentFromJson(RestTransitions.class);
       //J+
-      
+
       String id = null;
-      
+
       String mappedAcw = request.getConfiguration().getMappedAutoCloseWord(autoCloseWord);
-      
-      for (RestTransition transition : transitions) 
-      {
-        if (Compareables.contains(transition.getName(), mappedAcw) || transition.getId().equals(mappedAcw))
-        {
+
+      for (RestTransition transition : transitions) {
+        if (Compareables.contains(transition.getName(), mappedAcw) || transition.getId().equals(mappedAcw)) {
           id = transition.getId();
           break;
         }
       }
-      
-      if (!Strings.isNullOrEmpty(id)){
+
+      if (!Strings.isNullOrEmpty(id)) {
         //J-
         AdvancedHttpResponse response = client.post(url)
-                                              .basicAuth(username, password)
-                                              .jsonContent(new RestDoTransition(id))
-                                              .request();
+          .spanKind("Jira")
+          .basicAuth(username, password)
+          .jsonContent(new RestDoTransition(id))
+          .request();
         //J+
-        
-        if (!response.isSuccessful())
-        {
+
+        if (!response.isSuccessful()) {
           throw new JiraException("failed to change transition on issue ".concat(issueId));
-        } 
-        else 
-        {
+        } else {
           logger.debug("user {} successfully changed transition to issue {}", username, issueId);
         }
-        
-      } 
-      else 
-      {
+
+      } else {
         //J-
         throw new JiraException(
           String.format("could not find transition/close word %s on issue %s", autoCloseWord, issueId)
         );
         //J+
       }
-    }
-    catch (IOException ex)
-    {
+    } catch (IOException ex) {
       throw JiraExceptions.propagate(ex, "failed to handle transitions from issue ".concat(issueId));
     }
   }
 
   @Override
-  public void logout() throws JiraException
-  {
+  public void logout() throws JiraException {
 
     // we need no logout for rest api
   }
 
-  //~--- get methods ----------------------------------------------------------
-
   @Override
-  public boolean isCommentAlreadyExists(String issueId, String... contains) throws JiraException
-  {
+  public boolean isCommentAlreadyExists(String issueId, String... contains) throws JiraException {
     boolean result = false;
 
-    try
-    {
+    try {
       //J-
       RestComments comments = client.get(baseUrl.concat(issueId).concat("/comment"))
-                                    .basicAuth(username, password)
-                                    .request()
-                                    .contentFromJson(RestComments.class);
+        .spanKind("Jira")
+        .basicAuth(username, password)
+        .request()
+        .contentFromJson(RestComments.class);
       //J+
-      
-      for (RestComment comment : comments) 
-      {
-        if (Compareables.contains(comment.getBody(), contains))
-        {
+
+      for (RestComment comment : comments) {
+        if (Compareables.contains(comment.getBody(), contains)) {
           result = true;
 
           break;
         }
       }
-    }
-    catch (ContentTransformerException ex)
-    {
+    } catch (ContentTransformerException ex) {
       throw JiraExceptions.propagate(ex, "failed to transform response from ".concat(issueId));
-    }
-    catch (IOException ex)
-    {
+    } catch (IOException ex) {
       throw JiraExceptions.propagate(ex, "failed to get comments from issue ".concat(issueId));
     }
 
     return result;
   }
-
-  //~--- fields ---------------------------------------------------------------
-
-  /** jira rest base url */
-  private final String baseUrl;
-
-  /** advanced http client */
-  private final AdvancedHttpClient client;
-
-  /** jira password */
-  private final String password;
-
-  /** jira issue request */
-  private final JiraIssueRequest request;
-
-  /** jira username */
-  private final String username;
 }
