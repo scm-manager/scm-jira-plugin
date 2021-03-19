@@ -24,8 +24,7 @@
 
 
 plugins {
-  id 'org.scm-manager.smp' version '0.7.2'
-  id 'com.intershop.gradle.wsdl' version '3.1.0'
+  id 'org.scm-manager.smp' version '0.7.5'
 }
 
 dependencies {
@@ -47,20 +46,13 @@ scmPlugin {
       "sonia.scm.jira",
     ]
   }
+
+  sonar {
+    // We don't want to check classes which were generated using jirasoapservice-v2.wsdl
+    property 'sonar.exclusions', 'src/main/java/sonia/scm/jira/soap/**'
+  }
 }
 
 license {
   exclude '**/soap/*.java'
 }
-
-// This only works with java 8
-// wsdl {
-//   axis1 {
-//     genNameAxis1 {
-//       wsdlFile = file('src/main/wsdl/jirasoapservice-v2.wsdl')
-//       serverSide = false
-//       outputDir = file('generated-sources/annotations')
-//       packageName = 'sonia.scm.jira.soap'
-//     }
-//   }
-// }
