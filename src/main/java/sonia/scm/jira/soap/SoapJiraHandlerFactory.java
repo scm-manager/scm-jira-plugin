@@ -29,11 +29,11 @@ package sonia.scm.jira.soap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sonia.scm.jira.JiraConfiguration;
 import sonia.scm.jira.JiraConnectException;
 import sonia.scm.jira.JiraExceptions;
 import sonia.scm.jira.JiraHandler;
 import sonia.scm.jira.JiraHandlerFactory;
-import sonia.scm.jira.JiraIssueRequest;
 import sonia.scm.util.HttpUtil;
 
 //~--- JDK imports ------------------------------------------------------------
@@ -71,16 +71,16 @@ public class SoapJiraHandlerFactory implements JiraHandlerFactory
    * {@inheritDoc}
    */
   @Override
-  public JiraHandler createJiraHandler(JiraIssueRequest request)
+  public JiraHandler createJiraHandler(JiraConfiguration request)
     throws JiraConnectException
   {
     JiraHandler handler = null;
 
-    String urlString = request.getConfiguration().getUrl();
+    String urlString = request.getUrl();
 
     try
     {
-      URL url = createSoapUrl(request.getConfiguration().getUrl());
+      URL url = createSoapUrl(request.getUrl());
 
       logger.debug("connect to jira {} as user {}", url, username);
 

@@ -32,42 +32,30 @@ package sonia.scm.jira;
 public enum CommentTemplate
 {
 
-  //J-
   /** update template */
-  UPADTE("update", "sonia/scm/jira/template/update.mustache"),
-  
+  UPADTE("sonia/scm/jira/template/update.mustache"),
+
   /** autoclose template */
-  AUTOCLOSE("autoclose", "sonia/scm/jira/template/autoclose.mustache"),
-  
+  AUTOCLOSE("sonia/scm/jira/template/autoclose.mustache"),
+
   /** resend template */
-  RESEND("resend", "sonia/scm/jira/template/resend.mustache");
-  //J+
+  RESEND("sonia/scm/jira/template/resend.mustache"),
+
+  /** pull request template */
+  PR("sonia/scm/jira/template/pr.mustache");
 
   /**
    * Constructs new CommentTemplate.
    *
    *
-   * @param name template name
    * @param resource template resource
    */
-  private CommentTemplate(String name, String resource)
+  CommentTemplate(String resource)
   {
-    this.name = name;
     this.resource = resource;
   }
 
   //~--- get methods ----------------------------------------------------------
-
-  /**
-   * Returns the name of the template.
-   *
-   *
-   * @return template name
-   */
-  public String getName()
-  {
-    return name;
-  }
 
   /**
    * Returns the classpath path for the resource.
@@ -79,11 +67,6 @@ public enum CommentTemplate
   {
     return resource;
   }
-
-  //~--- fields ---------------------------------------------------------------
-
-  /** template name */
-  private final String name;
 
   /** template resource */
   private final String resource;

@@ -27,19 +27,15 @@ package sonia.scm.jira.soap;
 //~--- non-JDK imports --------------------------------------------------------
 
 import com.google.common.base.Strings;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import sonia.scm.jira.Comment;
 import sonia.scm.jira.Comments;
 import sonia.scm.jira.Compareables;
+import sonia.scm.jira.JiraConfiguration;
 import sonia.scm.jira.JiraException;
 import sonia.scm.jira.JiraExceptions;
 import sonia.scm.jira.JiraHandler;
-import sonia.scm.jira.JiraIssueRequest;
-
-//~--- JDK imports ------------------------------------------------------------
 
 import java.rmi.RemoteException;
 
@@ -69,7 +65,7 @@ public class SoapJiraHandler implements JiraHandler
    * @param token authentication token
    * @param username connection username
    */
-  public SoapJiraHandler(JiraSoapService service, JiraIssueRequest request, String token, String username)
+  public SoapJiraHandler(JiraSoapService service, JiraConfiguration request, String token, String username)
   {
     this.service = service;
     this.request = request;
@@ -127,8 +123,8 @@ public class SoapJiraHandler implements JiraHandler
       RemoteNamedObject[] rnms = service.getAvailableActions(token, issueId);
       String id = ACTION_DEFAULT_CLOSE;
 
-      String mappedAcw = request.getConfiguration().getMappedAutoCloseWord(autoCloseWord);
-      
+      String mappedAcw = request.getMappedAutoCloseWord(autoCloseWord);
+
       for (RemoteNamedObject rnm : rnms)
       {
         if (Compareables.contains(rnm.getName(), mappedAcw) || rnm.getId().equals(mappedAcw))
@@ -203,7 +199,7 @@ public class SoapJiraHandler implements JiraHandler
   //~--- fields ---------------------------------------------------------------
 
   /** jira issue request */
-  private final JiraIssueRequest request;
+  private final JiraConfiguration request;
 
   /** jira soap service */
   private final JiraSoapService service;

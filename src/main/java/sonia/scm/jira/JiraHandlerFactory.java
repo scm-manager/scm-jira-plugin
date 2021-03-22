@@ -36,12 +36,12 @@ public interface JiraHandlerFactory
    * Creates a new {@link JiraHandler}.
    *
    *
-   * @param request jira issue request
+   * @param jiraConfiguration jira configuration
    *
    * @return new {@link JiraHandler}.
    *
    * @throws JiraConnectException
    */
-  public JiraHandler createJiraHandler(JiraIssueRequest request)
+  JiraHandler createJiraHandler(JiraConfiguration jiraConfiguration)
     throws JiraConnectException;
 }

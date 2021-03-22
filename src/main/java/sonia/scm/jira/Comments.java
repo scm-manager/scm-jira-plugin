@@ -27,14 +27,10 @@ package sonia.scm.jira;
 //~--- non-JDK imports --------------------------------------------------------
 
 import com.google.common.base.Strings;
-
 import sonia.scm.util.Util;
-
-//~--- JDK imports ------------------------------------------------------------
 
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
-
 import java.util.Calendar;
 import java.util.regex.Matcher;
 
@@ -66,9 +62,9 @@ public final class Comments
    *
    * @return new comment
    */
-  public static Comment createComment(JiraIssueRequest request, String body)
+  public static Comment createComment(JiraConfiguration configuration, Calendar creation, String body)
   {
-    String prefix = request.getConfiguration().getCommentPrefix();
+    String prefix = configuration.getCommentPrefix();
 
     if (!Strings.isNullOrEmpty(prefix))
     {
@@ -78,8 +74,8 @@ public final class Comments
     //J-
     return new Comment(
       Strings.nullToEmpty(prefix).concat(Strings.nullToEmpty(body)),
-      request.getCreation(),
-      request.getConfiguration().getRoleLevel()
+      creation,
+      configuration.getRoleLevel()
     );
     //J+
   }
@@ -94,10 +90,10 @@ public final class Comments
    *
    * @return prepared comment content
    */
-  public static String prepareComment(JiraIssueRequest request, String issueId,
-    Comment comment)
+  public static String prepareComment(JiraConfiguration request, String issueId,
+                                      Comment comment)
   {
-    return prepareComment(request.getConfiguration().getUrl(), issueId,
+    return prepareComment(request.getUrl(), issueId,
       comment);
   }
 

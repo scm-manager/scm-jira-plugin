@@ -26,8 +26,8 @@ package sonia.scm.jira.rest;
 
 //~--- non-JDK imports --------------------------------------------------------
 
+import sonia.scm.jira.JiraConfiguration;
 import sonia.scm.jira.JiraHandlerFactory;
-import sonia.scm.jira.JiraIssueRequest;
 import sonia.scm.net.ahc.AdvancedHttpClient;
 import sonia.scm.util.HttpUtil;
 
@@ -60,14 +60,14 @@ public class RestJiraHandlerFactory implements JiraHandlerFactory
   //~--- methods --------------------------------------------------------------
 
   @Override
-  public RestJiraHandler createJiraHandler(JiraIssueRequest request)
+  public RestJiraHandler createJiraHandler(JiraConfiguration jiraConfiguration)
   {
-    return new RestJiraHandler(client, request, createUrl(request), username, password);
+    return new RestJiraHandler(client, jiraConfiguration, createUrl(jiraConfiguration), username, password);
   }
 
-  private String createUrl(JiraIssueRequest request)
+  private String createUrl(JiraConfiguration request)
   {
-    return HttpUtil.getUriWithoutEndSeperator(request.getConfiguration().getUrl()).concat(PATH_REST_API);
+    return HttpUtil.getUriWithoutEndSeperator(request.getUrl()).concat(PATH_REST_API);
   }
 
   //~--- fields ---------------------------------------------------------------

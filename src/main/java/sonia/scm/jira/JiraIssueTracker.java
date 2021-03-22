@@ -40,8 +40,6 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import java.text.MessageFormat;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
@@ -53,36 +51,30 @@ public class JiraIssueTracker extends DataStoreBasedIssueTracker {
   public static final String JIRA_ISSUE_TRACKER_NAME = "jira";
   public static final String JIRA_URL_TEMPLATE = "{0}/browse/{1}";
 
-  private static final Logger logger = LoggerFactory.getLogger(JiraIssueTracker.class);
-
   private final JiraGlobalContext context;
   private final MessageProblemHandler messageProblemHandler;
   private final Provider<CommentTemplateHandlerFactory> templateHandlerFactoryProvider;
   private final JiraIssueRequestFactory requestFactory;
+  private final JiraMatcherProvider matcherProvider;
 
   @Inject
-  public JiraIssueTracker(JiraGlobalContext context, DataStoreFactory storeFactory, MessageProblemHandler messageProblemHandler, Provider<CommentTemplateHandlerFactory> templateHandlerFactoryProvider, JiraIssueRequestFactory requestFactory) {
+  public JiraIssueTracker(JiraGlobalContext context,
+                          DataStoreFactory storeFactory,
+                          MessageProblemHandler messageProblemHandler,
+                          Provider<CommentTemplateHandlerFactory> templateHandlerFactoryProvider,
+                          JiraIssueRequestFactory requestFactory,
+                          JiraMatcherProvider matcherProvider) {
     super(JIRA_ISSUE_TRACKER_NAME, storeFactory);
     this.context = context;
     this.messageProblemHandler = messageProblemHandler;
     this.templateHandlerFactoryProvider = templateHandlerFactoryProvider;
     this.requestFactory = requestFactory;
+    this.matcherProvider = matcherProvider;
   }
 
   @Override
   public Optional<IssueMatcher> createMatcher(Repository repository) {
-    Pattern pattern = IssueKeys.createPattern(JiraConfigurationResolver.resolve(context, repository).getFilter());
-    return of(new IssueMatcher() {
-      @Override
-      public String getKey(Matcher matcher) {
-        return matcher.group();
-      }
-
-      @Override
-      public Pattern getKeyPattern() {
-        return pattern;
-      }
-    });
+    return matcherProvider.createMatcher(repository);
   }
 
   @Override

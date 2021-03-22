@@ -104,7 +104,7 @@ public class JiraIssueRequest implements Closeable
   {
     if (handler == null)
     {
-      handler = handlerFactory.createJiraHandler(this);
+      handler = handlerFactory.createJiraHandler(getConfiguration());
     }
 
     return handler;

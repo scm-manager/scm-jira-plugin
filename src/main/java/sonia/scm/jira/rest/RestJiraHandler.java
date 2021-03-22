@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import sonia.scm.jira.Comment;
 import sonia.scm.jira.Comments;
 import sonia.scm.jira.Compareables;
+import sonia.scm.jira.JiraConfiguration;
 import sonia.scm.jira.JiraException;
 import sonia.scm.jira.JiraExceptions;
 import sonia.scm.jira.JiraHandler;
@@ -56,7 +57,7 @@ public class RestJiraHandler implements JiraHandler {
   private final String baseUrl;
   private final AdvancedHttpClient client;
   private final String password;
-  private final JiraIssueRequest request;
+  private final JiraConfiguration request;
   private final String username;
 
   /**
@@ -68,7 +69,7 @@ public class RestJiraHandler implements JiraHandler {
    * @param username jira username
    * @param password jira password
    */
-  public RestJiraHandler(AdvancedHttpClient client, JiraIssueRequest request, String baseUrl, String username,
+  public RestJiraHandler(AdvancedHttpClient client, JiraConfiguration request, String baseUrl, String username,
                          String password) {
     this.client = client;
     this.request = request;
@@ -119,7 +120,7 @@ public class RestJiraHandler implements JiraHandler {
 
       String id = null;
 
-      String mappedAcw = request.getConfiguration().getMappedAutoCloseWord(autoCloseWord);
+      String mappedAcw = request.getMappedAutoCloseWord(autoCloseWord);
 
       for (RestTransition transition : transitions) {
         if (Compareables.contains(transition.getName(), mappedAcw) || transition.getId().equals(mappedAcw)) {

@@ -21,40 +21,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package sonia.scm.jira;
 
+import sonia.scm.issuetracker.IssueMatcher;
+import sonia.scm.issuetracker.MatcherProvider;
+import sonia.scm.repository.Repository;
 
-plugins {
-  id 'org.scm-manager.smp' version '0.7.5'
-}
+import javax.inject.Inject;
+import java.util.Optional;
 
-dependencies {
-  implementation "axis:axis:1.4"
-  plugin "sonia.scm.plugins:scm-mail-plugin:2.1.0"
-  plugin "sonia.scm.plugins:scm-issuetracker-plugin:2.1.1-SNAPSHOT"
-  optionalPlugin "sonia.scm.plugins:scm-commit-message-checker-plugin:1.0.0"
+public class JiraMatcherProvider implements MatcherProvider {
 
-  testImplementation "com.github.sdorra:shiro-unit:1.0.1"
-}
+  private final JiraGlobalContext context;
 
-scmPlugin {
-  scmVersion = "2.15.0"
-  displayName = "Jira"
-  description = "Integrates Atlassian JIRA to SCM-Manager"
-  author = "Cloudogu GmbH"
-  category = "Issue Tracker"
-
-  openapi {
-    packages = [
-      "sonia.scm.jira",
-    ]
+  @Inject
+  public JiraMatcherProvider(JiraGlobalContext context) {
+    this.context = context;
   }
 
-  sonar {
-    // We don't want to check classes which were generated using jirasoapservice-v2.wsdl
-    property 'sonar.exclusions', 'src/main/java/sonia/scm/jira/soap/**'
+  @Override
+  public Optional<IssueMatcher> createMatcher(Repository repository) {
+    return Optional.of(new JiraIssueMatcher(context, repository));
   }
-}
-
-license {
-  exclude '**/soap/*.java'
 }

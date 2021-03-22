@@ -29,8 +29,6 @@ package sonia.scm.jira;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
-//~--- JDK imports ------------------------------------------------------------
-
 import java.util.Calendar;
 
 /**
