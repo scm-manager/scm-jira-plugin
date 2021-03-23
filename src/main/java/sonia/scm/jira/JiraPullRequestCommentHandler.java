@@ -27,9 +27,13 @@ import com.google.common.base.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sonia.scm.issuetracker.PullRequestCommentHandler;
-import sonia.scm.issuetracker.PullRequestIssueRequestData;
+import sonia.scm.issuetracker.RequestData;
 
 import java.util.GregorianCalendar;
+import java.util.Optional;
+
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 
 public class JiraPullRequestCommentHandler implements PullRequestCommentHandler {
 
@@ -39,11 +43,12 @@ public class JiraPullRequestCommentHandler implements PullRequestCommentHandler 
   private final CommentTemplateHandlerFactory commentTemplateHandlerFactory;
   private final JiraHandlerFactory handlerFactory;
 
-  private final PullRequestIssueRequestData data;
+  private final RequestData data;
 
   public JiraPullRequestCommentHandler(JiraGlobalContext context,
                                        CommentTemplateHandlerFactory commentTemplateHandlerFactory,
-                                       JiraHandlerFactory handlerFactory, PullRequestIssueRequestData data) {
+                                       JiraHandlerFactory handlerFactory,
+                                       RequestData data) {
     this.context = context;
     this.commentTemplateHandlerFactory = commentTemplateHandlerFactory;
     this.handlerFactory = handlerFactory;
@@ -51,10 +56,28 @@ public class JiraPullRequestCommentHandler implements PullRequestCommentHandler 
   }
 
   @Override
-  public void mentionedInTitleOrDescription(String issueId) {
+  public void forIssue(String issueId) {
     JiraConfiguration configuration = JiraConfigurationResolver.resolve(context, data.getRepository());
+    determineTemplate()
+      .map(commentTemplateHandlerFactory::create)
+      .ifPresent(handler -> createAndSendComment(issueId, configuration, handler));
+  }
+
+  private Optional<CommentTemplate> determineTemplate() {
+    switch (data.getRequestType()) {
+      case PR_CREATED:
+      case PR_MODIFIED:
+        return of(CommentTemplate.PR);
+      case PR_COMMENT_CREATED:
+      case PR_COMMENT_MODIFIED:
+        return of(CommentTemplate.PR_COMMENT);
+      default:
+        return empty();
+    }
+  }
+
+  private void createAndSendComment(String issueId, JiraConfiguration configuration, CommentTemplateHandler commentTemplateHandler) {
     try {
-      CommentTemplateHandler commentTemplateHandler = commentTemplateHandlerFactory.create(CommentTemplate.PR);
       String comment = commentTemplateHandler.render(data);
 
       if (!Strings.isNullOrEmpty(comment)) {

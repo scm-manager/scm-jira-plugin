@@ -42,7 +42,10 @@ public enum CommentTemplate
   RESEND("sonia/scm/jira/template/resend.mustache"),
 
   /** pull request template */
-  PR("sonia/scm/jira/template/pr.mustache");
+  PR("sonia/scm/jira/template/pr.mustache"),
+
+  /** pull request template */
+  PR_COMMENT("sonia/scm/jira/template/prComment.mustache");
 
   /**
    * Constructs new CommentTemplate.

@@ -27,7 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sonia.scm.issuetracker.PullRequestCommentHandler;
 import sonia.scm.issuetracker.PullRequestCommentHandlerProvider;
-import sonia.scm.issuetracker.PullRequestIssueRequestData;
+import sonia.scm.issuetracker.RequestData;
 import sonia.scm.jira.rest.RestJiraHandlerFactory;
 import sonia.scm.jira.resubmit.MessageProblemHandler;
 import sonia.scm.jira.soap.SoapJiraHandlerFactory;
@@ -54,7 +54,7 @@ public class JiraPullRequestCommentHandlerProvider implements PullRequestComment
   }
 
   @Override
-  public PullRequestCommentHandler getCommentHandler(PullRequestIssueRequestData data) {
+  public PullRequestCommentHandler getCommentHandler(RequestData data) {
     JiraConfiguration configuration = JiraConfigurationResolver.resolve(context, data.getRepository());
     JiraHandlerFactory handlerFactory = createJiraHandlerFactory(configuration);
     return new JiraPullRequestCommentHandler(context, templateHandlerFactoryProvider.get(), handlerFactory, data);
