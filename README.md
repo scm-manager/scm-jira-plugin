@@ -11,7 +11,7 @@ This plugin integrates Atlassian JIRA to SCM-Manager.
 
 ## Usage
 
-Find out how this plugin can be used on the [user documentation page](https://scm-manager.org/plugins/scm-redmine-plugin/docs).
+Find out how this plugin can be used on the [user documentation page](https://scm-manager.org/plugins/scm-jira-plugin/docs).
 
 ## Build and testing
 
