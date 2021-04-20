@@ -21,12 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package sonia.scm.jira;
+package sonia.scm.jira.config;
 
 import com.github.sdorra.shiro.ShiroRule;
 import com.github.sdorra.shiro.SubjectAware;
 import com.google.common.io.Resources;
-import org.apache.shiro.authz.UnauthorizedException;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.jboss.resteasy.mock.MockHttpRequest;
@@ -35,9 +34,8 @@ import org.jboss.resteasy.spi.UnhandledException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import sonia.scm.NotFoundException;
 import sonia.scm.api.v2.resources.ScmPathInfoStore;
+import sonia.scm.jira.JiraPermissions;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryManager;
 import sonia.scm.store.InMemoryConfigurationStoreFactory;
@@ -69,7 +67,7 @@ public class JiraConfigurationResourceTest {
   public void init() {
     InMemoryConfigurationStoreFactory storeFactory = new InMemoryConfigurationStoreFactory();
     JiraPermissions permissions = new JiraPermissions();
-    JiraGlobalContext context = new JiraGlobalContext(storeFactory, permissions);
+    JiraConfigurationStore context = new JiraConfigurationStore(storeFactory, permissions);
     RepositoryManager repositoryManager = mock(RepositoryManager.class);
     ScmPathInfoStore scmPathInfoStore = new ScmPathInfoStore();
     scmPathInfoStore.set(() -> URI.create("/"));

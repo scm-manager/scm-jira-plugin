@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package sonia.scm.jira;
+package sonia.scm.jira.config;
 
 import de.otto.edison.hal.Links;
 import org.mapstruct.AfterMapping;
@@ -31,6 +31,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import sonia.scm.api.v2.resources.LinkBuilder;
 import sonia.scm.api.v2.resources.ScmPathInfoStore;
+import sonia.scm.jira.JiraPermissions;
 import sonia.scm.repository.Repository;
 
 import javax.inject.Inject;

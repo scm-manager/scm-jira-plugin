@@ -24,6 +24,7 @@
 package sonia.scm.jira;
 
 import sonia.scm.issuetracker.IssueMatcher;
+import sonia.scm.jira.config.JiraConfiguration;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

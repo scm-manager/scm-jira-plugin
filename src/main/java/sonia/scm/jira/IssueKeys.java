@@ -30,6 +30,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sonia.scm.jira.config.JiraConfiguration;
 
 import java.util.Iterator;
 import java.util.List;

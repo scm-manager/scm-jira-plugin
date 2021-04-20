@@ -21,7 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package sonia.scm.jira;
+package sonia.scm.jira.config;
+
+import sonia.scm.jira.AutoCloseWords;
 
 import java.util.Map;
 import javax.xml.bind.annotation.adapters.XmlAdapter;

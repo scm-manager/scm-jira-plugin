@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package sonia.scm.jira;
+package sonia.scm.jira.config;
 
 //~--- non-JDK imports --------------------------------------------------------
 
@@ -33,6 +33,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import sonia.scm.api.v2.resources.ErrorDto;
+import sonia.scm.jira.JiraPermissions;
 import sonia.scm.repository.NamespaceAndName;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryManager;
@@ -64,7 +65,7 @@ public class JiraConfigurationResource {
 
   static final String JIRA_CONFIG_PATH_V2 = "v2/config/jira";
 
-  private final JiraGlobalContext context;
+  private final JiraConfigurationStore context;
   private final JiraPermissions permissions;
   private final JiraGlobalConfigurationMapper jiraGlobalConfigurationMapper;
   private final JiraConfigurationMapper jenkinsConfigurationMapper;
@@ -72,7 +73,7 @@ public class JiraConfigurationResource {
 
   @Inject
   public JiraConfigurationResource(
-    JiraGlobalContext context,
+    JiraConfigurationStore context,
     JiraPermissions permissions,
     JiraGlobalConfigurationMapper jiraGlobalConfigurationMapper,
     JiraConfigurationMapper jenkinsConfigurationMapper,

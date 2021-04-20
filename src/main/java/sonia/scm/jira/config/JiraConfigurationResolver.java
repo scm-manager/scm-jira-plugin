@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package sonia.scm.jira;
+package sonia.scm.jira.config;
 
 //~--- non-JDK imports --------------------------------------------------------
 
@@ -49,10 +49,10 @@ public class JiraConfigurationResolver
 
   //~--- methods --------------------------------------------------------------
 
-  private final JiraGlobalContext context;
+  private final JiraConfigurationStore context;
 
   @Inject
-  public JiraConfigurationResolver(JiraGlobalContext context) {
+  public JiraConfigurationResolver(JiraConfigurationStore context) {
     this.context = context;
   }
 

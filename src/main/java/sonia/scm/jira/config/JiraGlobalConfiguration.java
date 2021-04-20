@@ -21,12 +21,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package sonia.scm.jira;
 
-import lombok.Getter;
-import lombok.Setter;
+package sonia.scm.jira.config;
 
-@Getter @Setter
-public class JiraGlobalConfigurationDto extends JiraConfigurationDto {
-  private boolean disableRepositoryConfiguration;
+//~--- JDK imports ------------------------------------------------------------
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
+/**
+ * Global jira configuration.
+ *
+ * @author Sebastian Sdorra
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "jira-global-configuration")
+public class JiraGlobalConfiguration extends JiraConfiguration
+{
+
+  /**
+   * Returns {@code true} if the configuration per repository is disabled.
+   *
+   *
+   * @return {@code true} if the configuration per repository is disabled
+   */
+  public boolean isDisableRepositoryConfiguration()
+  {
+    return disableRepositoryConfiguration;
+  }
+
+  public void setDisableRepositoryConfiguration(boolean disableRepositoryConfiguration) {
+    this.disableRepositoryConfiguration = disableRepositoryConfiguration;
+  }
+
+  /** repository configuration is disabled */
+  @XmlElement(name = "disable-repository-configuration")
+  private boolean disableRepositoryConfiguration = false;
 }

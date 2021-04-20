@@ -22,13 +22,14 @@
  * SOFTWARE.
  */
 
-package sonia.scm.jira;
+package sonia.scm.jira.config;
 
 //~--- non-JDK imports --------------------------------------------------------
 
 import com.google.common.base.MoreObjects;
 import sonia.scm.Validateable;
 import sonia.scm.issuetracker.XmlEncryptionAdapter;
+import sonia.scm.jira.AutoCloseWords;
 import sonia.scm.util.Util;
 
 import javax.xml.bind.annotation.XmlAccessType;

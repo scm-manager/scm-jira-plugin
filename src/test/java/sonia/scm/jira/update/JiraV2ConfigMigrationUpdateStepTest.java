@@ -26,7 +26,7 @@ package sonia.scm.jira.update;
 import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import sonia.scm.jira.JiraConfiguration;
+import sonia.scm.jira.config.JiraConfiguration;
 import sonia.scm.store.ConfigurationStoreFactory;
 import sonia.scm.store.InMemoryConfigurationStoreFactory;
 import sonia.scm.update.V1PropertyDaoTestUtil;

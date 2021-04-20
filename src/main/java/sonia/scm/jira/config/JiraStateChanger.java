@@ -22,15 +22,14 @@
  * SOFTWARE.
  */
 
-package sonia.scm.jira;
+package sonia.scm.jira.config;
 
 import sonia.scm.issuetracker.spi.StateChanger;
+import sonia.scm.jira.JiraException;
 import sonia.scm.jira.rest.RestApi;
 import sonia.scm.jira.rest.RestTransition;
-import sonia.scm.jira.rest.RestTransitions;
 
 import java.io.IOException;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
 public class JiraStateChanger implements StateChanger {

@@ -31,9 +31,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import sonia.scm.jira.JiraConfiguration;
-import sonia.scm.jira.JiraGlobalConfiguration;
-import sonia.scm.jira.JiraGlobalContext;
+import sonia.scm.jira.config.JiraConfiguration;
+import sonia.scm.jira.config.JiraGlobalConfiguration;
+import sonia.scm.jira.config.JiraConfigurationStore;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryTestData;
 
@@ -47,7 +47,7 @@ class JiraCommitMessageIssueKeyValidatorTest {
   private static final Repository REPOSITORY = RepositoryTestData.createHeartOfGold();
 
   @Mock
-  private JiraGlobalContext jiraGlobalContext;
+  private JiraConfigurationStore jiraConfigurationStore;
 
   @InjectMocks
   private JiraCommitMessageIssueKeyValidator validator;
@@ -86,9 +86,9 @@ class JiraCommitMessageIssueKeyValidatorTest {
     JiraGlobalConfiguration jiraGlobalConfiguration = new JiraGlobalConfiguration();
     jiraGlobalConfiguration.setDisableRepositoryConfiguration(false);
     jiraGlobalConfiguration.setFilter(filter);
-    when(jiraGlobalContext.getGlobalConfiguration()).thenReturn(jiraGlobalConfiguration);
+    when(jiraConfigurationStore.getGlobalConfiguration()).thenReturn(jiraGlobalConfiguration);
     JiraConfiguration jiraConfiguration = new JiraConfiguration();
     jiraConfiguration.setFilter(filter);
-    lenient().when(jiraGlobalContext.getConfiguration(REPOSITORY)).thenReturn(jiraConfiguration);
+    lenient().when(jiraConfigurationStore.getConfiguration(REPOSITORY)).thenReturn(jiraConfiguration);
   }
 }

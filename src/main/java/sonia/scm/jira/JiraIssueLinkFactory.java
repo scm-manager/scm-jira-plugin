@@ -25,6 +25,7 @@
 package sonia.scm.jira;
 
 import sonia.scm.issuetracker.IssueLinkFactory;
+import sonia.scm.jira.config.JiraConfiguration;
 import sonia.scm.util.HttpUtil;
 
 public class JiraIssueLinkFactory implements IssueLinkFactory {

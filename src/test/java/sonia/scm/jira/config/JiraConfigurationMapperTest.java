@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package sonia.scm.jira;
+package sonia.scm.jira.config;
 
 import com.github.sdorra.shiro.ShiroRule;
 import com.github.sdorra.shiro.SubjectAware;
@@ -30,6 +30,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.mapstruct.factory.Mappers;
 import sonia.scm.api.v2.resources.ScmPathInfoStore;
+import sonia.scm.jira.JiraPermissions;
+import sonia.scm.jira.config.BaseMapper;
+import sonia.scm.jira.config.JiraConfiguration;
+import sonia.scm.jira.config.JiraConfigurationDto;
+import sonia.scm.jira.config.JiraConfigurationMapper;
 import sonia.scm.repository.Repository;
 
 import java.net.URI;

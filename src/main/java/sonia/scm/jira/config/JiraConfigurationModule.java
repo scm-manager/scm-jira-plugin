@@ -22,34 +22,24 @@
  * SOFTWARE.
  */
 
-package sonia.scm.jira;
+package sonia.scm.jira.config;
 
 //~--- non-JDK imports --------------------------------------------------------
 
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+import com.google.inject.AbstractModule;
+import org.mapstruct.factory.Mappers;
+import sonia.scm.plugin.Extension;
 
 /**
  *
  * @author Sebastian Sdorra
  */
-public class CompareablesTest
-{
-
-  /**
-   * Method description
-   *
-   */
-  @Test
-  public void testContains()
-  {
-    String value = "close issue TST-12";
-
-    assertTrue(Compareables.contains(value, "close"));
-    assertTrue(Compareables.contains(value, "TST-12"));
-    assertTrue(Compareables.contains(value, "close", "TST-12"));
-    assertFalse(Compareables.contains(value, "trillian"));
-    assertFalse(Compareables.contains(value, "close", "TST-132"));
+@Extension
+public class JiraConfigurationModule extends AbstractModule {
+  @Override
+  protected void configure() {
+    bind(JiraConfigurationStore.class);
+    bind(JiraConfigurationMapper.class).to(Mappers.getMapper(JiraConfigurationMapper.class).getClass());
+    bind(JiraGlobalConfigurationMapper.class).to(Mappers.getMapper(JiraGlobalConfigurationMapper.class).getClass());
   }
 }

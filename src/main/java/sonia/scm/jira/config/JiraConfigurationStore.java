@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package sonia.scm.jira;
+package sonia.scm.jira.config;
 
 //~--- non-JDK imports --------------------------------------------------------
 
@@ -32,6 +32,7 @@ import com.google.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sonia.scm.jira.JiraPermissions;
 import sonia.scm.repository.Repository;
 import sonia.scm.store.ConfigurationStore;
 import sonia.scm.store.ConfigurationStoreFactory;
@@ -42,7 +43,7 @@ import sonia.scm.store.ConfigurationStoreFactory;
  * @author Sebastian Sdorra
  */
 @Singleton
-public class JiraGlobalContext
+public class JiraConfigurationStore
 {
 
   /** configuration store name */
@@ -52,7 +53,7 @@ public class JiraGlobalContext
    * the logger for JiraGlobalContext
    */
   private static final Logger logger =
-    LoggerFactory.getLogger(JiraGlobalContext.class);
+    LoggerFactory.getLogger(JiraConfigurationStore.class);
 
   //~--- constructors ---------------------------------------------------------
 
@@ -64,7 +65,7 @@ public class JiraGlobalContext
    * @param permissions
    */
   @Inject
-  public JiraGlobalContext(ConfigurationStoreFactory storeFactory, JiraPermissions permissions)
+  public JiraConfigurationStore(ConfigurationStoreFactory storeFactory, JiraPermissions permissions)
   {
     this.storeFactory = storeFactory;
     this.store = storeFactory.withType(JiraGlobalConfiguration.class).withName(NAME).build();

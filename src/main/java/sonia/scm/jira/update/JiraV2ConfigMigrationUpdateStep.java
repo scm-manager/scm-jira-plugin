@@ -24,7 +24,7 @@
 package sonia.scm.jira.update;
 
 import sonia.scm.jira.AutoCloseWords;
-import sonia.scm.jira.JiraConfiguration;
+import sonia.scm.jira.config.JiraConfiguration;
 import sonia.scm.migration.UpdateStep;
 import sonia.scm.plugin.Extension;
 import sonia.scm.store.ConfigurationStoreFactory;

@@ -21,42 +21,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package sonia.scm.jira.config;
 
-package sonia.scm.jira;
+import de.otto.edison.hal.HalRepresentation;
+import de.otto.edison.hal.Links;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.validator.constraints.Email;
 
-//~--- JDK imports ------------------------------------------------------------
+@Getter @Setter
+public class JiraConfigurationDto extends HalRepresentation {
+  private boolean autoClose;
+  private String autoCloseWords;
+  @Email
+  private String mailAddress;
+  private String password;
+  private boolean restApiEnabled = false;
+  private String commentPrefix;
+  private String filter;
+  private boolean resubmission;
+  private String roleLevel;
+  private boolean updateIssues;
+  private String url;
+  private String username;
+  private String commentWrap;
+  private boolean commentMonospace;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-/**
- * Global jira configuration.
- *
- * @author Sebastian Sdorra
- */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "jira-global-configuration")
-public class JiraGlobalConfiguration extends JiraConfiguration
-{
-
-  /**
-   * Returns {@code true} if the configuration per repository is disabled.
-   *
-   *
-   * @return {@code true} if the configuration per repository is disabled
-   */
-  public boolean isDisableRepositoryConfiguration()
-  {
-    return disableRepositoryConfiguration;
+  @Override
+  @SuppressWarnings("squid:S1185") // We want to have this method available in this package
+  protected HalRepresentation add(Links links) {
+    return super.add(links);
   }
-
-  public void setDisableRepositoryConfiguration(boolean disableRepositoryConfiguration) {
-    this.disableRepositoryConfiguration = disableRepositoryConfiguration;
-  }
-
-  /** repository configuration is disabled */
-  @XmlElement(name = "disable-repository-configuration")
-  private boolean disableRepositoryConfiguration = false;
 }

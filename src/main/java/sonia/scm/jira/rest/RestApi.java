@@ -27,7 +27,7 @@ package sonia.scm.jira.rest;
 import com.google.common.base.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sonia.scm.jira.JiraConfiguration;
+import sonia.scm.jira.config.JiraConfiguration;
 import sonia.scm.jira.JiraException;
 import sonia.scm.net.ahc.AdvancedHttpClient;
 import sonia.scm.net.ahc.AdvancedHttpResponse;
