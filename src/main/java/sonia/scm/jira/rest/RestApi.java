@@ -27,16 +27,13 @@ package sonia.scm.jira.rest;
 import com.google.common.base.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sonia.scm.jira.Comments;
 import sonia.scm.jira.JiraConfiguration;
 import sonia.scm.jira.JiraException;
-import sonia.scm.jira.JiraExceptions;
 import sonia.scm.net.ahc.AdvancedHttpClient;
 import sonia.scm.net.ahc.AdvancedHttpResponse;
 import sonia.scm.util.HttpUtil;
 
 import java.io.IOException;
-import java.util.stream.Collectors;
 
 public class RestApi {
 

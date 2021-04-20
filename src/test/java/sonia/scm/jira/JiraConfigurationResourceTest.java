@@ -79,7 +79,7 @@ public class JiraConfigurationResourceTest {
     JiraConfigurationMapperImpl jenkinsConfigurationMapper = new JiraConfigurationMapperImpl();
     jenkinsConfigurationMapper.setScmPathInfoStore(scmPathInfoStore);
     jenkinsConfigurationMapper.setPermissions(permissions);
-    JiraConfigurationResource resource = new JiraConfigurationResource(context, permissions, jiraGlobalConfigurationMapper, jenkinsConfigurationMapper, repositoryManager, null);
+    JiraConfigurationResource resource = new JiraConfigurationResource(context, permissions, jiraGlobalConfigurationMapper, jenkinsConfigurationMapper, repositoryManager);
     dispatcher = new RestDispatcher();
     dispatcher.addSingletonResource(resource);
     when(repositoryManager.get(REPOSITORY.getNamespaceAndName())).thenReturn(REPOSITORY);

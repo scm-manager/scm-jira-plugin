@@ -35,6 +35,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import sonia.scm.ContextEntry;
+import sonia.scm.jira.JiraConfiguration;
 import sonia.scm.jira.JiraConfigurationResolver;
 import sonia.scm.jira.JiraGlobalContext;
 import sonia.scm.plugin.Extension;
@@ -70,11 +71,11 @@ public class JiraCommitMessageIssueKeyValidator implements Validator {
     .expireAfterAccess(2, TimeUnit.HOURS)
     .build(PATTERN_LOADER);
 
-  private final JiraGlobalContext jiraGlobalContext;
+  private final JiraConfigurationResolver jiraConfigurationResolver;
 
   @Inject
-  public JiraCommitMessageIssueKeyValidator(JiraGlobalContext jiraGlobalContext) {
-    this.jiraGlobalContext = jiraGlobalContext;
+  public JiraCommitMessageIssueKeyValidator(JiraConfigurationResolver jiraConfigurationResolver) {
+    this.jiraConfigurationResolver = jiraConfigurationResolver;
   }
 
   @Override
@@ -92,7 +93,9 @@ public class JiraCommitMessageIssueKeyValidator implements Validator {
     JiraCommitMessageIssueKeyValidatorConfig configuration = context.getConfiguration(JiraCommitMessageIssueKeyValidatorConfig.class);
     String commitBranch = context.getBranch();
 
-    final String filter = JiraConfigurationResolver.resolve(jiraGlobalContext, context.getRepository()).getFilter();
+    String filter = jiraConfigurationResolver.resolve(context.getRepository())
+      .map(JiraConfiguration::getFilter)
+      .orElse(null);
     if (shouldValidateBranch(configuration, commitBranch) && isInvalidCommitMessage(filter, commitMessage)) {
       throw new InvalidCommitMessageException(
         ContextEntry.ContextBuilder.entity(context.getRepository()),

@@ -82,47 +82,4 @@ public class JiraConfigurationResolver
     return Optional.of(configuration);
   }
 
-  /**
-   * Method description
-   *
-   *
-   * @param context
-   * @param repository
-   *
-   * @return
-   */
-  public static JiraConfiguration resolve(JiraGlobalContext context,
-    Repository repository)
-  {
-    JiraConfiguration configuration;
-
-    if (context.getGlobalConfiguration().isDisableRepositoryConfiguration())
-    {
-      if (LOG.isDebugEnabled())
-      {
-        LOG.debug(
-          "repository configuration is disabled, try to use global configuration");
-      }
-
-      configuration = context.getGlobalConfiguration();
-    }
-    else
-    {
-      configuration = context.getConfiguration(repository);
-
-      if (!configuration.isValid())
-      {
-        if (LOG.isDebugEnabled())
-        {
-          LOG.debug(
-            "repository configuration is not valid, try to use global configuration");
-        }
-
-        configuration = context.getGlobalConfiguration();
-      }
-
-    }
-
-    return configuration;
-  }
 }

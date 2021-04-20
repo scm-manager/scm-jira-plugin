@@ -33,7 +33,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import sonia.scm.api.v2.resources.ErrorDto;
-import sonia.scm.jira.resubmit.ResubmitCommentsHandler;
 import sonia.scm.repository.NamespaceAndName;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryManager;
@@ -41,16 +40,13 @@ import sonia.scm.web.VndMediaType;
 
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.IOException;
 
 import static sonia.scm.ContextEntry.ContextBuilder.entity;
 import static sonia.scm.NotFoundException.notFound;
@@ -73,7 +69,6 @@ public class JiraConfigurationResource {
   private final JiraGlobalConfigurationMapper jiraGlobalConfigurationMapper;
   private final JiraConfigurationMapper jenkinsConfigurationMapper;
   private final RepositoryManager repositoryManager;
-  private final ResubmitCommentsHandler resubmitCommentsHandler;
 
   @Inject
   public JiraConfigurationResource(
@@ -81,14 +76,12 @@ public class JiraConfigurationResource {
     JiraPermissions permissions,
     JiraGlobalConfigurationMapper jiraGlobalConfigurationMapper,
     JiraConfigurationMapper jenkinsConfigurationMapper,
-    RepositoryManager repositoryManager,
-    ResubmitCommentsHandler resubmitCommentsHandler) {
+    RepositoryManager repositoryManager) {
     this.context = context;
     this.permissions = permissions;
     this.jiraGlobalConfigurationMapper = jiraGlobalConfigurationMapper;
     this.jenkinsConfigurationMapper = jenkinsConfigurationMapper;
     this.repositoryManager = repositoryManager;
-    this.resubmitCommentsHandler = resubmitCommentsHandler;
   }
 
   @GET
@@ -146,38 +139,6 @@ public class JiraConfigurationResource {
   )
   public Response update(@Valid JiraGlobalConfigurationDto updatedConfig) {
     context.setGlobalConfiguration(jiraGlobalConfigurationMapper.map(updatedConfig, context.getGlobalConfiguration()));
-    return Response.noContent().build();
-  }
-
-  @POST
-  @Path("/resubmit")
-  @Operation(
-    summary = "Resubmit global jira configuration",
-    description = "Resubmits the pending global jira configuration.",
-    tags = "Jira Plugin",
-    operationId = "jira_resubmit_global_config"
-  )
-  @ApiResponse(responseCode = "204", description = "update success")
-  @ApiResponse(responseCode = "401", description = "not authenticated / invalid credentials")
-  @ApiResponse(responseCode = "403", description = "not authorized, the current user does not have the privilege to change the configuration")
-  @ApiResponse(
-    responseCode = "404",
-    description = "not found, no repository with the specified namespace and name available",
-    content = @Content(
-      mediaType = VndMediaType.ERROR_TYPE,
-      schema = @Schema(implementation = ErrorDto.class)
-    )
-  )
-  @ApiResponse(
-    responseCode = "500",
-    description = "internal server error",
-    content = @Content(
-      mediaType = VndMediaType.ERROR_TYPE,
-      schema = @Schema(implementation = ErrorDto.class)
-    )
-  )
-  public Response resubmitAll() throws IOException {
-    resubmitCommentsHandler.resubmitAll();
     return Response.noContent().build();
   }
 
@@ -257,62 +218,6 @@ public class JiraConfigurationResource {
     return Response.noContent().build();
   }
 
-  @POST
-  @Path("/{namespace}/{name}/resubmit")
-  @Operation(
-    summary = "Resubmit repository jira configuration",
-    description = "Resubmits the pending repository jira configuration.",
-    tags = "Jira Plugin",
-    operationId = "jira_resubmit_repo_config"
-  )
-  @ApiResponse(responseCode = "204", description = "update success")
-  @ApiResponse(responseCode = "401", description = "not authenticated / invalid credentials")
-  @ApiResponse(responseCode = "403", description = "not authorized, the current user does not have the privilege to change the configuration")
-  @ApiResponse(
-    responseCode = "404",
-    description = "not found, no repository with the specified namespace and name available",
-    content = @Content(
-      mediaType = VndMediaType.ERROR_TYPE,
-      schema = @Schema(implementation = ErrorDto.class)
-    )
-  )
-  @ApiResponse(
-    responseCode = "500",
-    description = "internal server error",
-    content = @Content(
-      mediaType = VndMediaType.ERROR_TYPE,
-      schema = @Schema(implementation = ErrorDto.class)
-    )
-  )
-  public Response resubmitForRepository(@PathParam("namespace") String namespace, @PathParam("name") String name) throws IOException {
-    Repository repository = loadRepository(namespace, name);
-    resubmitCommentsHandler.resubmitAllFromRepository(repository.getId());
-    return Response.noContent().build();
-  }
-
-  @DELETE
-  @Path("/resubmit/comment/{id}")
-  @Operation(
-    summary = "Remove resubmit comment",
-    description = "Removes a resubmit comment.",
-    tags = "Jira Plugin",
-    operationId = "jira_delete_comment"
-  )
-  @ApiResponse(responseCode = "204", description = "comment removed")
-  @ApiResponse(responseCode = "401", description = "not authenticated / invalid credentials")
-  @ApiResponse(responseCode = "403", description = "not authorized, the current user does not have the privilege to change the configuration")
-  @ApiResponse(
-    responseCode = "500",
-    description = "internal server error",
-    content = @Content(
-      mediaType = VndMediaType.ERROR_TYPE,
-      schema = @Schema(implementation = ErrorDto.class)
-    )
-  )
-  public Response removeCommentFromResubmitQueue(@PathParam("id") String commentId) {
-    resubmitCommentsHandler.removeComment(commentId);
-    return Response.noContent().build();
-  }
 
   private Repository loadRepository(String namespace, String name) {
     Repository repository = repositoryManager.get(new NamespaceAndName(namespace, name));

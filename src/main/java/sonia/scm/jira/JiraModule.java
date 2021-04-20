@@ -28,8 +28,6 @@ package sonia.scm.jira;
 
 import com.google.inject.AbstractModule;
 import org.mapstruct.factory.Mappers;
-import sonia.scm.jira.resubmit.MessageProblemHandler;
-import sonia.scm.jira.resubmit.ResubmitCommentsHandler;
 import sonia.scm.plugin.Extension;
 
 /**
@@ -48,10 +46,6 @@ public class JiraModule extends AbstractModule
   protected void configure()
   {
     bind(JiraGlobalContext.class);
-    bind(JiraIssueRequestFactory.class);
-    bind(MessageProblemHandler.class);
-    bind(ResubmitCommentsHandler.class);
-    bind(CommentTemplateHandlerFactory.class).to(DefaultCommentTemplateHandlerFactory.class);
     bind(JiraConfigurationMapper.class).to(Mappers.getMapper(JiraConfigurationMapper.class).getClass());
     bind(JiraGlobalConfigurationMapper.class).to(Mappers.getMapper(JiraGlobalConfigurationMapper.class).getClass());
   }
