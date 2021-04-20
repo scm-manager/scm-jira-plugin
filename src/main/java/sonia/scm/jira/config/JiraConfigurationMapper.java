@@ -59,7 +59,6 @@ public abstract class JiraConfigurationMapper extends BaseMapper {
     Links.Builder linksBuilder = linkingTo().self(self(repository));
     if (permissions.isPermittedWriteRepositoryConfig(repository)) {
       linksBuilder.single(link("update", update(repository)));
-      linksBuilder.single(link("resubmit", resubmit(repository)));
     }
     target.add(linksBuilder.build());
   }
@@ -72,11 +71,6 @@ public abstract class JiraConfigurationMapper extends BaseMapper {
   private String update(Repository repository) {
     LinkBuilder linkBuilder = new LinkBuilder(scmPathInfoStore.get(), JiraConfigurationResource.class);
     return linkBuilder.method("updateForRepository").parameters(repository.getNamespace(), repository.getName()).href();
-  }
-
-  private String resubmit(Repository repository) {
-    LinkBuilder linkBuilder = new LinkBuilder(scmPathInfoStore.get(), JiraConfigurationResource.class);
-    return linkBuilder.method("resubmitForRepository").parameters(repository.getNamespace(), repository.getName()).href();
   }
 
   void setScmPathInfoStore(ScmPathInfoStore scmPathInfoStore) {
