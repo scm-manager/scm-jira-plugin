@@ -21,60 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package sonia.scm.jira;
 
-import java.io.IOException;
+import sonia.scm.issuetracker.IssueMatcher;
 
-/**
- *
- * @author Sebastian Sdorra
- */
-public class JiraException extends IOException
-{
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-  /** Field description */
-  private static final long serialVersionUID = 789942536863663559L;
+public class JiraIssueMatcher implements IssueMatcher {
 
-  //~--- constructors ---------------------------------------------------------
+  private final Pattern keyPattern;
 
-  /**
-   * Constructs ...
-   *
-   */
-  public JiraException() {}
-
-  /**
-   * Constructs ...
-   *
-   *
-   * @param message
-   */
-  public JiraException(String message)
-  {
-    super(message);
+  JiraIssueMatcher(JiraConfiguration configuration) {
+    this.keyPattern = IssueKeys.createPattern(configuration);
   }
 
-  /**
-   * Constructs ...
-   *
-   *
-   * @param cause
-   */
-  public JiraException(Throwable cause)
-  {
-    super(cause);
+  @Override
+  public Pattern getKeyPattern() {
+    return keyPattern;
   }
 
-  /**
-   * Constructs ...
-   *
-   *
-   * @param message
-   * @param cause
-   */
-  public JiraException(String message, Throwable cause)
-  {
-    super(message, cause);
+  @Override
+  public String getKey(Matcher matcher) {
+    return matcher.group();
   }
 }

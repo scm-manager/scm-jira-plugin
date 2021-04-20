@@ -24,57 +24,19 @@
 
 package sonia.scm.jira;
 
-import java.io.IOException;
+import sonia.scm.issuetracker.IssueLinkFactory;
+import sonia.scm.util.HttpUtil;
 
-/**
- *
- * @author Sebastian Sdorra
- */
-public class JiraException extends IOException
-{
+public class JiraIssueLinkFactory implements IssueLinkFactory {
 
-  /** Field description */
-  private static final long serialVersionUID = 789942536863663559L;
+  private final JiraConfiguration configuration;
 
-  //~--- constructors ---------------------------------------------------------
-
-  /**
-   * Constructs ...
-   *
-   */
-  public JiraException() {}
-
-  /**
-   * Constructs ...
-   *
-   *
-   * @param message
-   */
-  public JiraException(String message)
-  {
-    super(message);
+  JiraIssueLinkFactory(JiraConfiguration configuration) {
+    this.configuration = configuration;
   }
 
-  /**
-   * Constructs ...
-   *
-   *
-   * @param cause
-   */
-  public JiraException(Throwable cause)
-  {
-    super(cause);
-  }
-
-  /**
-   * Constructs ...
-   *
-   *
-   * @param message
-   * @param cause
-   */
-  public JiraException(String message, Throwable cause)
-  {
-    super(message, cause);
+  @Override
+  public String createLink(String key) {
+    return HttpUtil.concatenate(configuration.getUrl(), "browse", key);
   }
 }

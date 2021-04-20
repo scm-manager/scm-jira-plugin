@@ -218,11 +218,6 @@ public class JiraIssueHandler implements CommentHandler
       // TODO use problem handler
       logger.error("could not render template", ex);
     }
-    catch (JiraException ex)
-    {
-      logger.error("could not close jira issue", ex);
-      handleException(issueId, comment, changeset);
-    }
   }
 
   private void handleException(String issueId, String comment,

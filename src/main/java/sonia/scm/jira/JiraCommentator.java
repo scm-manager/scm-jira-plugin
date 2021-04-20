@@ -24,57 +24,21 @@
 
 package sonia.scm.jira;
 
+import sonia.scm.issuetracker.spi.Commentator;
+import sonia.scm.jira.rest.RestApi;
+
 import java.io.IOException;
 
-/**
- *
- * @author Sebastian Sdorra
- */
-public class JiraException extends IOException
-{
+public class JiraCommentator implements Commentator {
 
-  /** Field description */
-  private static final long serialVersionUID = 789942536863663559L;
+  private RestApi restApi;
 
-  //~--- constructors ---------------------------------------------------------
-
-  /**
-   * Constructs ...
-   *
-   */
-  public JiraException() {}
-
-  /**
-   * Constructs ...
-   *
-   *
-   * @param message
-   */
-  public JiraException(String message)
-  {
-    super(message);
+  JiraCommentator(RestApi restApi) {
+    this.restApi = restApi;
   }
 
-  /**
-   * Constructs ...
-   *
-   *
-   * @param cause
-   */
-  public JiraException(Throwable cause)
-  {
-    super(cause);
-  }
-
-  /**
-   * Constructs ...
-   *
-   *
-   * @param message
-   * @param cause
-   */
-  public JiraException(String message, Throwable cause)
-  {
-    super(message, cause);
+  @Override
+  public void comment(String issueKey, String comment) throws IOException {
+    restApi.addComment(issueKey, comment);
   }
 }
