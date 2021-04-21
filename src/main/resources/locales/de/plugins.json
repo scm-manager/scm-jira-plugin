@@ -11,54 +11,34 @@
     "form": {
       "url": "URL",
       "urlHelp": "URL der Jira Installation (mit Kontextpfad).",
+      "urlValidationError": "Die URL ist ungültig",
       "disableRepositoryConfiguration": "Jira Konfiguration nicht für einzelne Repositories erlauben",
       "disableRepositoryConfigurationHelp": "Repository Owner dürfen Jira nicht individuell konfigurieren. Der SCM-Manager Server muss nach dieser Änderung neu gestartet werden.",
       "updateJiraIssues": "Jira Tickets aktualisieren",
       "updateJiraIssuesHelp": "Aktiviert die automatische Ticket Update Funktion. Der SCM-Manager sucht nach Ticket Schlüsseln in Commit Nachrichten. Wenn ein Ticket Schlüssel gefunden wurde, aktualisiert der SCM-Manager das Ticket mit einem Kommentar. Hinweis: Der Jira Benutzername und das Jira Passwort müssen unten konfiguriert werden.",
-      "autoClose": "Ticket Statusänderungen erlauben",
-      "autoCloseHelp": "Aktiviert die Statusänderungsfunktion. Der SCM-Manager sucht nach Ticket Schlüsseln und Status Modifizierungswörtern in Commit Nachrichten. Wenn beides in einer Commit Nachricht gefunden wurde, dann verändert der SCM-Manager den Status des Jira Tickets entsprechend. Hinweis: Der Jira Benutzername und das Jira Passwort müssen unten konfiguriert werden.",
-      "autoCloseWords": "Status Modifizierungswörter",
-      "autoCloseWordsHelp": "Mit Komma getrennte Liste mit Stichwörtern zur Statusmodifizierung. Füge den Statusübergangsnamen (Transition Name, z.B. start progress, stop progress, ...) hinzu oder definiere ein Mapping ([Name]=[JiraTransitionName], z.B. start = start progress, begin = start progress, stop = stop progress,...). Der Transition Name ist abhängig von der angebundenen Jira Instanz und dem referenzierten Projekt. Jede Commit Nachricht eines Changesets wird nach diesen Statusübergangsnamen durchsucht.",
-      "mailAddress": "E-Mail",
-      "mailAddressHelp": "An diese E-Mail-Adresse wird eine Nachricht verschickt, wenn der Jira Kommentar nicht angefügt werden kann.",
-      "mailAddressError": "Die E-Mail-Adresse ist ungültig",
       "username": "Jira Benutzername",
       "usernameHelp": "Jira Benutzername für die Verbindung zu der Jira Instanz.",
       "password": "Jira Passwort",
       "passwordHelp": "Jira Passwort für die Verbindung zu der Jira Instanz.",
-      "restApiEnabled": "Rest API v2",
-      "restApiEnabledHelp": "Aktiviert die Benutzung der Jira Rest API v2.",
-      "commentPrefix": "Kommentar Prefix",
-      "commentPrefixHelp": "Der Kommentar Prefix wird vom SCM-Manager an den Anfang jedes Jira Kommentars geschrieben. Der Standard-Prefix ist: [SCM].",
       "filter": "Project Filter",
       "filterHelp": "Filtert nach Jira Project Schlüsseln. Mehrere Project Filter können mit \",\". z.B.: SCM,TST,ASD angegeben werden.",
-      "resubmission": "Erneute Übertragung der Kommentare aktivieren",
-      "resubmissionHelp": "Mit der Aktivierung dieser Option speichert der SCM-Manager Jira Kommentare für eine erneute Übertragung an die Jira Instanz, sollte der Jira Server nicht verfügbar sein. Zudem werden Nachrichten über fehlgeschlagene Übermittlungen der Jira Kommentare an die unten zu definierende E-Mail-Adresse versendet.",
       "roleLevel": "Rollensichtbarkeit",
       "roleLevelHelp": "Definiert, welche Projektrollen die Kommentare sehen dürfen. Hinweis: der Rollenname muss eine valide Jira Rolle sein.",
-      "commentWrap": "Wrap Kommentar",
-      "commentWrapHelp": "Definiert den Text, der um die Changeset Beschreibung im Jira Kommentar gefügt wird. Der Standardwert ist kein Wrapping. Beispiele: {quote} oder {noformat}. Siehe auch https://jira.atlassian.com/secure/WikiRendererHelpAction.jspa?section=all",
-      "commentMonospace": "Monospace",
-      "commentMonospaceHelp": "Soll der Commit den Monospace Wrapper einbinden? {{ }}. Hinweis: Jira ist in der Anwendung nicht konsistent.",
-      "resubmit": "Gespeicherte Jira Kommentare erneut übertragen",
-      "resubmitSuccess": "Übertragung angestoßen",
-      "resubmitFailed": "Übertragung fehlgeschlagen"
-    },
-    "remove": {
-      "title": "Kommentar löschen",
-      "success": "Der Kommentar wurde erfolgreich gelöscht",
-      "failure": "Der Kommentar konnte nicht gelöscht werden. Bitte überprüfen Sie, ob Sie die notwendigen Berechtigungen haben."
+      "autoClose": "Ticket Statusänderungen erlauben",
+      "autoCloseHelp": "Aktiviert die Statusänderungsfunktion. Der SCM-Manager sucht nach Ticket Schlüsseln und Status Modifizierungswörtern in Commit Nachrichten. Wenn beides in einer Commit Nachricht gefunden wurde, dann verändert der SCM-Manager den Status des Jira Tickets entsprechend. Hinweis: Der Jira Benutzername und das Jira Passwort müssen unten konfiguriert werden.",
+      "autoCloseMapping": {
+        "title": "Jira Statusübergangs Mapping",
+        "help": "Ordne Schlüsselwörter einem Jira Statusübergangs zu, um Zustandsänderungen mit diesen Schlüsselwörtern auszulösen.",
+        "transition": "Jira Statusübergangs",
+        "transitionHelp": "Name des Jira Statusübergangs z.B.: Done",
+        "keywords": "Schlüsselwörter",
+        "keywordsHelp": "Kommagetrennte Liste von Schlüsselwörtern, die dem Jira Statusübergang zugeordnet werden sollen, z. B.: closes, closing",
+        "no-mapping": "Keine Mappings definiert",
+        "add": "Mapping hinzufügen",
+        "remove": "Mapping entfernen"
+      }
     },
     "configurationChangedSuccess": "Konfiguration geändert"
-  },
-  "mailTopics": {
-    "jira-plugin": {
-      "label": "Jira",
-      "submissionFailure": {
-        "label": "Übermittlungsfehler",
-        "helpText": "Mails die gesendet werden, wenn Übermittlungen an Jira fehlgeschlagen sind."
-      }
-    }
   },
   "permissions": {
     "configuration": {

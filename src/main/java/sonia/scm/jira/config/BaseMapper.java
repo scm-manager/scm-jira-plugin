@@ -34,20 +34,6 @@ public class BaseMapper {
   static final String DUMMY_PASSWORD = "__DUMMY__";
 
   @AfterMapping
-  void mapAutoCloseWords(@MappingTarget JiraConfiguration target, JiraConfigurationDto source) {
-    if (source.getAutoCloseWords() != null) {
-      target.setAutoCloseWordsForMapping(new XmlStringMapAdapter().unmarshal(source.getAutoCloseWords()));
-    }
-  }
-
-  @AfterMapping
-  void mapAutoCloseWords(@MappingTarget JiraConfigurationDto target, JiraConfiguration source) {
-    if (source.getAutoCloseWordsForMapping() != null) {
-      target.setAutoCloseWords(new XmlStringMapAdapter().marshal(source.getAutoCloseWordsForMapping()));
-    }
-  }
-
-  @AfterMapping
   void replaceDummyWithOldPassword(@MappingTarget JiraConfiguration target, @Context JiraConfiguration oldConfiguration) {
     if (DUMMY_PASSWORD.equals(target.getPassword())) {
       target.setPassword(oldConfiguration.getPassword());

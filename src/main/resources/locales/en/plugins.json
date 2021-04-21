@@ -11,54 +11,34 @@
     "form": {
       "url": "URL",
       "urlHelp": "URL of Jira installation (with context path).",
+      "urlValidationError": "URL is invalid",
       "disableRepositoryConfiguration": "Do not allow repository configuration",
       "disableRepositoryConfigurationHelp": "Do not allow repository owners to configure jira instances. You have to restart your application server after changing this value.",
       "updateJiraIssues": "Update Jira Issues",
       "updateJiraIssuesHelp": "Enable the automatic update function. SCM-Manager searches for issue keys in commit messages. If a issue id is found SCM-Manager updates the issue with a comment. Note: It is necessary to configure the username and password below.",
-      "autoClose": "Enable Status Modification",
-      "autoCloseHelp": "Enable the status modification function. SCM-Manager searches for issue keys and status modification words in commit messages. If both are found in a message SCM-Manager changes the status of the issue. Note: It is necessary to configure the username and password below.",
-      "autoCloseWords": "Status Modification Words",
-      "autoCloseWordsHelp": "Comma separated list of terms to enable the status modification function. Add the transitions name (e.g. start progress, stop progress, ...) or configure a mapping (e.g. start = start progress, beginn = start progress, stop = stop progress,...). The transition names depend on your jira workflow. Each commit message of a changeset gets searched for these words.",
-      "mailAddress": "Email",
-      "mailAddressHelp": "The email address to send a message to if a jira comment fails.",
-      "mailAddressError": "This email is invalid",
       "username": "Username",
       "usernameHelp": "Jira username for connection.",
       "password": "Password",
       "passwordHelp": "Jira password for connection.",
-      "restApiEnabled": "Rest API v2",
-      "restApiEnabledHelp": "Use Jira Rest API v2 to communicate with Jira.",
-      "commentPrefix": "Comment prefix",
-      "commentPrefixHelp": "The comment prefix is created at the beginning of every comment in Jira created by SCM-Manager. The default prefix is [SCM].",
       "filter": "Project Filter",
       "filterHelp": "Filters for jira project key. Multiple filters separated by \",\". e.g.: SCM,TST,ASD",
-      "resubmission": "Enable resubmission",
-      "resubmissionHelp": "By enabling this option SCM-Manager stores the comments for resubmission in case the Jira server is not available. An information about the failed submission will be sent to the e-mail configured below.",
-      "roleLevel": "Role visibility",
+      "roleLevel": "Role Visibility",
       "roleLevelHelp": "Defines for which Project Role the comments are visible. Note: The name must be a valid jira role name.",
-      "commentWrap": "Wrap Comment With",
-      "commentWrapHelp": "Text to place around the changeset description in the Jira comment. The default is no wrapping.  Examples:  {quote} or {noformat}.  See https://jira.atlassian.com/secure/WikiRendererHelpAction.jspa?section=all",
-      "commentMonospace": "Monospace",
-      "commentMonospaceHelp": "Should the comment include the mono-space wrapper?  {{ }}.  Note:  Jira handling for this is not consistent.",
-      "resubmit": "Resubmit stored comments",
-      "resubmitSuccess": "Resubmit triggered",
-      "resubmitFailed": "Resubmit failed"
-    },
-    "remove": {
-      "title": "Comment removal",
-      "success": "The comment has been deleted successfully",
-      "failure": "The comment could not be deleted. Please check whether you have sufficient permissions."
+      "autoClose": "Enable Status Modification",
+      "autoCloseHelp": "Enable the status modification function. SCM-Manager searches for issue keys and status modification words. If both are found in a message SCM-Manager changes the status of the issue. Note: It is necessary to configure the username and password.",
+      "autoCloseMapping": {
+        "title": "Jira transition mapping",
+        "help": "Map keywords to Jira transitions in order to trigger state changes with those keywords.",
+        "transition": "Jira transition",
+        "transitionHelp": "Name of Jira transition which should be mapped e.g.: Done",
+        "keywords": "Keywords",
+        "keywordsHelp": "Comma separated list of keywords which are mapped to the Jira transition e.g.: closes, closing",
+        "no-mapping": "No mappings defined",
+        "add": "Add mapping",
+        "remove": "Remove mapping"
+      }
     },
     "configurationChangedSuccess": "Configuration changed"
-  },
-  "mailTopics": {
-    "jira-plugin": {
-      "label": "Jira",
-      "submissionFailure": {
-        "label": "Errors in transmissions",
-        "helpText": "Mails sent whenever a transmission to Jira failed."
-      }
-    }
   },
   "permissions": {
     "configuration": {

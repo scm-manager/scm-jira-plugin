@@ -63,11 +63,11 @@ public class JiraIssueTrackerProvider implements IssueTrackerProvider {
       NAME, new JiraIssueMatcher(configuration), new JiraIssueLinkFactory(configuration)
     );
 
-    if (configuration.isUpdateIssuesEnabled()) {
+    if (configuration.isUpdateIssues()) {
       RestApi restApi = new RestApi(httpClient.get(), configuration);
       IssueTrackerBuilder.ChangeStateStage changeStateStage = readStage.commenting(repository, new JiraCommentator(restApi))
         .template("/sonia/scm/jira/{0}_reference.mustache");
-      if (configuration.isAutoCloseEnabled()) {
+      if (configuration.isAutoClose()) {
         return changeStateStage.stateChanging(new JiraStateChanger(restApi, configuration))
           .template("/sonia/scm/jira/{0}_statechange.mustache")
           .build();

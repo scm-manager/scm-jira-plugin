@@ -23,7 +23,6 @@
  */
 package sonia.scm.jira.update;
 
-import sonia.scm.jira.AutoCloseWords;
 import sonia.scm.jira.config.JiraConfiguration;
 import sonia.scm.migration.UpdateStep;
 import sonia.scm.plugin.Extension;
@@ -34,7 +33,6 @@ import sonia.scm.version.Version;
 
 import javax.inject.Inject;
 
-import static java.util.Optional.ofNullable;
 import static sonia.scm.update.V1PropertyReader.REPOSITORY_PROPERTY_READER;
 import static sonia.scm.version.Version.parse;
 
@@ -69,7 +67,7 @@ public class JiraV2ConfigMigrationUpdateStep implements UpdateStep {
         "jira.filter",
         "jira.role-level",
         "jira.resubmission")
-      .forEachEntry((key, properties) -> setConfiguration(buildConfig(key, properties), key));
+      .forEachEntry((key, properties) -> setConfiguration(buildConfig(properties), key));
   }
 
   private void setConfiguration(JiraConfiguration config, String repositoryId) {
@@ -81,22 +79,15 @@ public class JiraV2ConfigMigrationUpdateStep implements UpdateStep {
       .set(config);
   }
 
-  private JiraConfiguration buildConfig(String key, V1Properties properties) {
+  private JiraConfiguration buildConfig(V1Properties properties) {
     JiraConfiguration v2JiraConfig = new JiraConfiguration();
     v2JiraConfig.setUrl(properties.get("jira.url"));
     properties.getBoolean("jira.auto-close").ifPresent(v2JiraConfig::setAutoClose);
-    properties.getBoolean("jira.comment-monospace").ifPresent(v2JiraConfig::setCommentMonospace);
     v2JiraConfig.setUsername(properties.get("jira.username"));
     v2JiraConfig.setPassword(properties.get("jira.password"));
-    v2JiraConfig.setCommentPrefix(properties.get("jira.comment-prefix"));
     properties.getBoolean("jira.update-issues").ifPresent(v2JiraConfig::setUpdateIssues);
-    ofNullable(properties.get("jira.auto-close-words")).map(AutoCloseWords::parse).ifPresent(v2JiraConfig::setAutoCloseWordsForMapping);
-    properties.getBoolean("jira.rest-api-enabled").ifPresent(v2JiraConfig::setRestApiEnabled);
-    v2JiraConfig.setMailAddress(properties.get("jira.mail-error-address"));
-    v2JiraConfig.setCommentWrap(properties.get("jira.comment-wrap"));
     v2JiraConfig.setFilter(properties.get("jira.filter"));
     v2JiraConfig.setRoleLevel(properties.get("jira.role-level"));
-    properties.getBoolean("jira.resubmission").ifPresent(v2JiraConfig::setResubmission);
     return v2JiraConfig;
   }
 

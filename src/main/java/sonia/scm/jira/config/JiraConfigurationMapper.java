@@ -47,11 +47,9 @@ public abstract class JiraConfigurationMapper extends BaseMapper {
   @Inject
   private JiraPermissions permissions;
 
-  @Mapping(target = "autoCloseWords", ignore = true)
   @Mapping(target = "attributes", ignore = true)
   public abstract JiraConfigurationDto map(JiraConfiguration config, @Context Repository repository);
 
-  @Mapping(target = "autoCloseWords", ignore = true)
   public abstract JiraConfiguration map(JiraConfigurationDto dto, @Context JiraConfiguration oldConfiguration);
 
   @AfterMapping

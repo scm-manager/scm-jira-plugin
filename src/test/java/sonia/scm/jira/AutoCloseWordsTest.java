@@ -34,19 +34,6 @@ import static org.junit.Assert.*;
  * @author Sebastian Sdorra <sebastian.sdorra@triology.de>
  */
 public class AutoCloseWordsTest {
-
-    /**
-     * Tests {@link AutoCloseWords#find(String, String)}.
-     */
-    @Test
-    public void testFind() {
-        assertTrue(AutoCloseWords.find("fixed", "fixed"));
-        assertTrue(AutoCloseWords.find("FiXed", "fixed"));
-        assertFalse(AutoCloseWords.find("fixed", "fix"));
-        assertTrue(AutoCloseWords.find("issue is fixed", "fixed"));
-        assertTrue(AutoCloseWords.find("fixed the issue", "fixed"));
-        assertTrue(AutoCloseWords.find("auto close the issue", "auto close"));
-    }
     
    /**
      * Tests {@link AutoCloseWords#format(Map)}.

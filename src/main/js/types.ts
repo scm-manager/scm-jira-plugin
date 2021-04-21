@@ -21,33 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package sonia.scm.jira.config;
 
-import de.otto.edison.hal.HalRepresentation;
-import de.otto.edison.hal.Links;
-import lombok.Getter;
-import lombok.Setter;
+import { HalRepresentation } from "@scm-manager/ui-types";
 
-import java.util.Map;
+export type JiraConfiguration = HalRepresentation & {
+  url: string;
+  filter: string;
+  updateIssues: boolean;
+  username: string;
+  password: string;
+  roleLevel: string;
+  autoClose: boolean;
+  autoCloseWords: Record<string,string>;
 
-@Getter
-@Setter
-@SuppressWarnings("java:S2160") // we need no equals for a dto
-public class JiraConfigurationDto extends HalRepresentation {
-  private String url;
-  private String filter;
+  disableRepositoryConfiguration: boolean;
+};
 
-  private boolean updateIssues;
-  private String username;
-  private String password;
-  private String roleLevel;
-
-  private boolean autoClose;
-  private Map<String,String> autoCloseWords;
-
-  @Override
-  @SuppressWarnings("squid:S1185") // We want to have this method available in this package
-  protected HalRepresentation add(Links links) {
-    return super.add(links);
-  }
-}

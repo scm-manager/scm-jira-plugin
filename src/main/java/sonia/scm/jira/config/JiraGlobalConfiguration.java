@@ -24,7 +24,7 @@
 
 package sonia.scm.jira.config;
 
-//~--- JDK imports ------------------------------------------------------------
+import lombok.Data;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -36,25 +36,10 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author Sebastian Sdorra
  */
+@Data
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "jira-global-configuration")
-public class JiraGlobalConfiguration extends JiraConfiguration
-{
-
-  /**
-   * Returns {@code true} if the configuration per repository is disabled.
-   *
-   *
-   * @return {@code true} if the configuration per repository is disabled
-   */
-  public boolean isDisableRepositoryConfiguration()
-  {
-    return disableRepositoryConfiguration;
-  }
-
-  public void setDisableRepositoryConfiguration(boolean disableRepositoryConfiguration) {
-    this.disableRepositoryConfiguration = disableRepositoryConfiguration;
-  }
+public class JiraGlobalConfiguration extends JiraConfiguration {
 
   /** repository configuration is disabled */
   @XmlElement(name = "disable-repository-configuration")

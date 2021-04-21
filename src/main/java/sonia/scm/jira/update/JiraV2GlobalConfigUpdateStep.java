@@ -49,7 +49,7 @@ import static sonia.scm.version.Version.parse;
 @Extension
 public class JiraV2GlobalConfigUpdateStep implements UpdateStep {
 
-  private static final Logger LOG = LoggerFactory.getLogger(JiraV2ConfigMigrationUpdateStep.class);
+  private static final Logger LOG = LoggerFactory.getLogger(JiraV2GlobalConfigUpdateStep.class);
 
   private final ConfigurationStoreFactory storeFactory;
 
@@ -125,18 +125,11 @@ public class JiraV2GlobalConfigUpdateStep implements UpdateStep {
     public void copyTo(JiraGlobalConfiguration v2JiraConfig) {
         v2JiraConfig.setUrl(this.url);
         v2JiraConfig.setAutoClose(this.autoClose);
-        v2JiraConfig.setCommentMonospace(this.commentMonospace);
         v2JiraConfig.setUsername(this.username);
         v2JiraConfig.setPassword(this.password);
-        v2JiraConfig.setCommentPrefix(this.commentPrefix);
         v2JiraConfig.setUpdateIssues(this.updateIssues);
-        v2JiraConfig.setAutoCloseWordsForMapping(this.autoCloseWords);
-        v2JiraConfig.setRestApiEnabled(this.restApiEnabled);
-        v2JiraConfig.setMailAddress(this.mailAddress);
-        v2JiraConfig.setCommentWrap(this.commentWrap);
         v2JiraConfig.setFilter(this.filter);
         v2JiraConfig.setRoleLevel(this.roleLevel);
-        v2JiraConfig.setResubmission(this.resubmission);
         v2JiraConfig.setDisableRepositoryConfiguration(this.disableRepositoryConfiguration);
     }
   }
