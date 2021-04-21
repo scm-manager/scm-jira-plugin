@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+### Fixed
+- Repository specific configuration
+
+### Added
+- Support pull requests and comments
+
+### Removed
+- Resubmit functionality, it is now supported by issue tracker plugin
+- Wrapping, monospace, branches and bookmarks from comment templates 
+- Support for soap api
+
 ## 2.3.0 - 2020-11-09
 ### Changed
 - Set span kind for http requests (for Trace Monitor)
