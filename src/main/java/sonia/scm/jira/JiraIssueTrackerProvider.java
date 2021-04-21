@@ -32,12 +32,14 @@ import sonia.scm.jira.config.JiraConfigurationResolver;
 import sonia.scm.jira.config.JiraStateChanger;
 import sonia.scm.jira.rest.RestApi;
 import sonia.scm.net.ahc.AdvancedHttpClient;
+import sonia.scm.plugin.Extension;
 import sonia.scm.repository.Repository;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 import java.util.Optional;
 
+@Extension
 public class JiraIssueTrackerProvider implements IssueTrackerProvider {
 
   private static final String NAME = "jira";
