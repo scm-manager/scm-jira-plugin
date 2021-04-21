@@ -24,30 +24,21 @@
 
 package sonia.scm.jira;
 
-import com.google.common.base.Strings;
-import sonia.scm.issuetracker.spi.Commentator;
+import org.junit.jupiter.api.Test;
 import sonia.scm.jira.config.JiraConfiguration;
-import sonia.scm.jira.rest.RestApi;
-import sonia.scm.jira.rest.RestComment;
 
-import java.io.IOException;
+import static org.assertj.core.api.Assertions.assertThat;
 
-public class JiraCommentator implements Commentator {
+class JiraIssueLinkFactoryTest {
 
-  private final RestApi restApi;
-  private final JiraConfiguration configuration;
+  @Test
+  void shouldCreateJiraIssueLink() {
+    JiraConfiguration configuration = new JiraConfiguration();
+    configuration.setUrl("https://jira.hitchhiker.com");
+    JiraIssueLinkFactory linkFactory = new JiraIssueLinkFactory(configuration);
 
-  JiraCommentator(RestApi restApi, JiraConfiguration configuration) {
-    this.restApi = restApi;
-    this.configuration = configuration;
+    String link = linkFactory.createLink("SCM-42");
+    assertThat(link).isEqualTo("https://jira.hitchhiker.com/browse/SCM-42");
   }
 
-  @Override
-  public void comment(String issueKey, String content) throws IOException {
-    restApi.addComment(issueKey, comment(content));
-  }
-
-  private RestComment comment(String content) {
-    return new RestComment(content, Strings.emptyToNull(configuration.getRoleLevel()));
-  }
 }

@@ -24,16 +24,16 @@
 
 package sonia.scm.jira.rest;
 
-import com.google.common.base.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sonia.scm.jira.config.JiraConfiguration;
 import sonia.scm.jira.JiraException;
+import sonia.scm.jira.config.JiraConfiguration;
 import sonia.scm.net.ahc.AdvancedHttpClient;
 import sonia.scm.net.ahc.AdvancedHttpResponse;
 import sonia.scm.util.HttpUtil;
 
 import java.io.IOException;
+import java.util.Collection;
 
 public class RestApi {
 
@@ -53,15 +53,12 @@ public class RestApi {
     return HttpUtil.concatenate(configuration.getUrl(), "rest", "api", "2", "issue");
   }
 
-  public void addComment(String issueId, String comment) throws IOException {
+  public void addComment(String issueId, RestComment comment) throws IOException {
     LOG.info("add comment to issue {}", issueId);
-
-    RestComment restComment = new RestComment(comment, Strings.emptyToNull(configuration.getRoleLevel()));
-
     AdvancedHttpResponse response = client.post(commentUrl(issueId))
       .spanKind("Jira")
       .basicAuth(configuration.getUsername(), configuration.getPassword())
-      .jsonContent(restComment)
+      .jsonContent(comment)
       .request();
 
     if (!response.isSuccessful()) {
@@ -71,12 +68,13 @@ public class RestApi {
     }
   }
 
-  public RestTransitions getTransitions(String issueId) throws IOException {
+  public Collection<RestTransition> getTransitions(String issueId) throws IOException {
     return client.get(transitionsUrl(issueId))
       .spanKind("Jira")
       .basicAuth(configuration.getUsername(), configuration.getPassword())
       .request()
-      .contentFromJson(RestTransitions.class);
+      .contentFromJson(RestTransitions.class)
+      .getTransitions();
   }
 
   private String commentUrl(String issueId) {

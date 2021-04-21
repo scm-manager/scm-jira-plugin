@@ -35,7 +35,7 @@ import sonia.scm.jira.config.JiraConfiguration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 
 /**
@@ -49,7 +49,7 @@ public final class IssueKeys {
 
     private static final char KEY_SEPARATOR = ',';
 
-    public static final Function<String, String> PATTERN_EXPRESSION_LOADER = rawKey -> {
+    public static final UnaryOperator<String> PATTERN_EXPRESSION_LOADER = rawKey -> {
         String key = Strings.nullToEmpty(rawKey).trim();
         StringBuilder buffer = new StringBuilder("\\b(");
         if (Strings.isNullOrEmpty(key)) {

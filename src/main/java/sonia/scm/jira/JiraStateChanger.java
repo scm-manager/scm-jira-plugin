@@ -22,33 +22,39 @@
  * SOFTWARE.
  */
 
-package sonia.scm.jira.config;
+package sonia.scm.jira;
 
+import com.google.common.base.Splitter;
 import sonia.scm.issuetracker.spi.StateChanger;
-import sonia.scm.jira.JiraException;
+import sonia.scm.jira.config.JiraConfiguration;
 import sonia.scm.jira.rest.RestApi;
 import sonia.scm.jira.rest.RestTransition;
 
 import java.io.IOException;
-import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 public class JiraStateChanger implements StateChanger {
 
   private final RestApi restApi;
+  private final JiraConfiguration configuration;
 
   public JiraStateChanger(RestApi restApi, JiraConfiguration configuration) {
     this.restApi = restApi;
+    this.configuration = configuration;
   }
 
   @Override
   public void changeState(String issueKey, String keyWord) throws IOException {
-    String transitionId = findTransition(issueKey, keyWord);
+    String transitionId = findTransition(issueKey, createMapping().getOrDefault(keyWord, keyWord));
     restApi.changeState(issueKey, transitionId);
   }
 
   private String findTransition(String issueKey, String keyWord) throws IOException {
     return restApi.getTransitions(issueKey)
-      .getTransitions()
       .stream()
       .filter(transition -> keyWord.equalsIgnoreCase(transition.getName()))
       .map(RestTransition::getId)
@@ -60,10 +66,24 @@ public class JiraStateChanger implements StateChanger {
 
   @Override
   public Iterable<String> getKeyWords(String issueKey) throws IOException {
-    return restApi.getTransitions(issueKey)
-      .getTransitions()
+    Set<String> keyWords = new HashSet<>(createMapping().keySet());
+
+    restApi.getTransitions(issueKey)
       .stream()
       .map(RestTransition::getName)
-      .collect(Collectors.toSet());
+      .map(name -> name.toLowerCase(Locale.ENGLISH))
+      .forEach(keyWords::add);
+
+    return keyWords;
+  }
+
+  private Map<String,String> createMapping() {
+    Map<String, String> mapping = new HashMap<>();
+    for (Map.Entry<String,String> e : configuration.getAutoCloseWords().entrySet()) {
+      for (String s : Splitter.on(',').omitEmptyStrings().trimResults().splitToList(e.getKey())) {
+        mapping.put(s.toLowerCase(Locale.ENGLISH), e.getValue().toLowerCase(Locale.ENGLISH));
+      }
+    }
+    return mapping;
   }
 }

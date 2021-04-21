@@ -35,6 +35,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -93,5 +94,12 @@ public class JiraConfiguration implements Validateable {
   @Override
   public boolean isValid() {
     return Util.isNotEmpty(url) && Util.isNotEmpty(username) && Util.isNotEmpty(password);
+  }
+
+  public Map<String, String> getAutoCloseWords() {
+    if (autoCloseWords == null) {
+      return Collections.emptyMap();
+    }
+    return autoCloseWords;
   }
 }

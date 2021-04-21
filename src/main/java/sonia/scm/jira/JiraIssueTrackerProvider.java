@@ -29,7 +29,6 @@ import sonia.scm.issuetracker.spi.IssueTrackerBuilder;
 import sonia.scm.issuetracker.spi.IssueTrackerProvider;
 import sonia.scm.jira.config.JiraConfiguration;
 import sonia.scm.jira.config.JiraConfigurationResolver;
-import sonia.scm.jira.config.JiraStateChanger;
 import sonia.scm.jira.rest.RestApi;
 import sonia.scm.net.ahc.AdvancedHttpClient;
 import sonia.scm.plugin.Extension;
@@ -65,7 +64,7 @@ public class JiraIssueTrackerProvider implements IssueTrackerProvider {
 
     if (configuration.isUpdateIssues()) {
       RestApi restApi = new RestApi(httpClient.get(), configuration);
-      IssueTrackerBuilder.ChangeStateStage changeStateStage = readStage.commenting(repository, new JiraCommentator(restApi))
+      IssueTrackerBuilder.ChangeStateStage changeStateStage = readStage.commenting(repository, new JiraCommentator(restApi, configuration))
         .template("/sonia/scm/jira/{0}_reference.mustache");
       if (configuration.isAutoClose()) {
         return changeStateStage.stateChanging(new JiraStateChanger(restApi, configuration))
