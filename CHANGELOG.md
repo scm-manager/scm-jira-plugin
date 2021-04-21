@@ -6,15 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 ### Fixed
-- Repository specific configuration
+- Repository specific configuration ([#17](https://github.com/scm-manager/scm-jira-plugin/pull/17))
 
 ### Added
-- Support pull requests and comments
+- Support pull requests and comments ([#17](https://github.com/scm-manager/scm-jira-plugin/pull/17))
 
 ### Removed
-- Resubmit functionality, it is now supported by issue tracker plugin
-- Wrapping, monospace, branches and bookmarks from comment templates 
-- Support for soap api
+- Resubmit functionality, it is now supported by issue tracker plugin ([#17](https://github.com/scm-manager/scm-jira-plugin/pull/17))
+- Wrapping, monospace, branches and bookmarks from comment templates ([#17](https://github.com/scm-manager/scm-jira-plugin/pull/17))
+- Support for soap api ([#17](https://github.com/scm-manager/scm-jira-plugin/pull/17))
 
 ## 2.3.0 - 2020-11-09
 ### Changed
