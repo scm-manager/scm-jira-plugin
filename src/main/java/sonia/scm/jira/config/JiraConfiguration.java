@@ -93,7 +93,7 @@ public class JiraConfiguration implements Validateable {
    */
   @Override
   public boolean isValid() {
-    return Util.isNotEmpty(url) && Util.isNotEmpty(username) && Util.isNotEmpty(password);
+    return Util.isNotEmpty(url);
   }
 
   public Map<String, String> getAutoCloseWords() {
