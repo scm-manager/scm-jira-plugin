@@ -58,7 +58,7 @@ public class RestApi {
 
     RestComment restComment = new RestComment(comment, Strings.emptyToNull(configuration.getRoleLevel()));
 
-    AdvancedHttpResponse response = client.post(baseUrl.concat(issueId).concat("/comment"))
+    AdvancedHttpResponse response = client.post(commentUrl(issueId))
       .spanKind("Jira")
       .basicAuth(configuration.getUsername(), configuration.getPassword())
       .jsonContent(restComment)
@@ -72,17 +72,23 @@ public class RestApi {
   }
 
   public RestTransitions getTransitions(String issueId) throws IOException {
-    String url = baseUrl.concat(issueId).concat("/transitions");
-    return client.get(url)
+    return client.get(transitionsUrl(issueId))
       .spanKind("Jira")
       .basicAuth(configuration.getUsername(), configuration.getPassword())
       .request()
       .contentFromJson(RestTransitions.class);
   }
 
+  private String commentUrl(String issueId) {
+    return HttpUtil.concatenate(baseUrl, issueId, "comment");
+  }
+
+  private String transitionsUrl(String issueId) {
+    return HttpUtil.concatenate(baseUrl, issueId, "transitions");
+  }
+
   public void changeState(String issueId, String transitionId) throws IOException {
-    String url = baseUrl.concat(issueId).concat("/transitions");
-    AdvancedHttpResponse response = client.post(url)
+    AdvancedHttpResponse response = client.post(transitionsUrl(issueId))
       .spanKind("Jira")
       .basicAuth(configuration.getUsername(), configuration.getPassword())
       .jsonContent(new RestDoTransition(transitionId))
