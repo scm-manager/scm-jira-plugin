@@ -31,14 +31,12 @@ dependencies {
   plugin "sonia.scm.plugins:scm-issuetracker-plugin:3.1.0-SNAPSHOT"
   optionalPlugin "sonia.scm.plugins:scm-commit-message-checker-plugin:1.0.0"
 
-  plugin "sonia.scm.plugins:scm-editor-plugin:2.2.1"
-  plugin "sonia.scm.plugins:scm-review-plugin:2.8.0"
-
   testImplementation "com.github.sdorra:shiro-unit:1.0.1"
+  testImplementation 'com.github.sdorra:junit-shiro-extension:1.0.1'
 }
 
 scmPlugin {
-  scmVersion = "2.16.0"
+  scmVersion = "2.15.0"
   displayName = "Jira"
   description = "Integrates Atlassian JIRA to SCM-Manager"
   author = "Cloudogu GmbH"
