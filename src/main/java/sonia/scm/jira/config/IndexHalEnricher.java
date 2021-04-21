@@ -41,17 +41,15 @@ import javax.inject.Provider;
 public class IndexHalEnricher implements HalEnricher {
 
   private final Provider<ScmPathInfoStore> scmPathInfoStore;
-  private final JiraPermissions permissions;
 
   @Inject
-  public IndexHalEnricher(Provider<ScmPathInfoStore> scmPathInfoStore, JiraPermissions permissions) {
+  public IndexHalEnricher(Provider<ScmPathInfoStore> scmPathInfoStore) {
     this.scmPathInfoStore = scmPathInfoStore;
-    this.permissions = permissions;
   }
 
   @Override
   public void enrich(HalEnricherContext context, HalAppender appender) {
-    if (permissions.isPermittedReadGlobalConfig()) {
+    if (JiraPermissions.isPermittedReadGlobalConfig()) {
       String globalJiraConfigUrl = new LinkBuilder(scmPathInfoStore.get().get(), JiraConfigurationResource.class)
         .method("get")
         .parameters()

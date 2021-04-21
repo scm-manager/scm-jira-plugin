@@ -66,18 +66,15 @@ public class JiraConfigurationResourceTest {
   @Before
   public void init() {
     InMemoryConfigurationStoreFactory storeFactory = new InMemoryConfigurationStoreFactory();
-    JiraPermissions permissions = new JiraPermissions();
-    JiraConfigurationStore context = new JiraConfigurationStore(storeFactory, permissions);
+    JiraConfigurationStore context = new JiraConfigurationStore(storeFactory);
     RepositoryManager repositoryManager = mock(RepositoryManager.class);
     ScmPathInfoStore scmPathInfoStore = new ScmPathInfoStore();
     scmPathInfoStore.set(() -> URI.create("/"));
     JiraGlobalConfigurationMapperImpl jiraGlobalConfigurationMapper = new JiraGlobalConfigurationMapperImpl();
     jiraGlobalConfigurationMapper.setScmPathInfoStore(scmPathInfoStore);
-    jiraGlobalConfigurationMapper.setPermissions(permissions);
     JiraConfigurationMapperImpl jenkinsConfigurationMapper = new JiraConfigurationMapperImpl();
     jenkinsConfigurationMapper.setScmPathInfoStore(scmPathInfoStore);
-    jenkinsConfigurationMapper.setPermissions(permissions);
-    JiraConfigurationResource resource = new JiraConfigurationResource(context, permissions, jiraGlobalConfigurationMapper, jenkinsConfigurationMapper, repositoryManager);
+    JiraConfigurationResource resource = new JiraConfigurationResource(context, jiraGlobalConfigurationMapper, jenkinsConfigurationMapper, repositoryManager);
     dispatcher = new RestDispatcher();
     dispatcher.addSingletonResource(resource);
     when(repositoryManager.get(REPOSITORY.getNamespaceAndName())).thenReturn(REPOSITORY);

@@ -43,8 +43,6 @@ public abstract class JiraGlobalConfigurationMapper extends BaseMapper {
 
   @Inject
   private ScmPathInfoStore scmPathInfoStore;
-  @Inject
-  private JiraPermissions permissions;
 
   @Mapping(target = "autoCloseWords", ignore = true)
   @Mapping(target = "attributes", ignore = true)
@@ -56,7 +54,7 @@ public abstract class JiraGlobalConfigurationMapper extends BaseMapper {
   @AfterMapping
   void appendLinks(@MappingTarget JiraGlobalConfigurationDto target) {
     Links.Builder linksBuilder = linkingTo().self(self());
-    if (permissions.isPermittedWriteGlobalConfig()) {
+    if (JiraPermissions.isPermittedWriteGlobalConfig()) {
       linksBuilder.single(link("update", update()));
     }
     target.add(linksBuilder.build());
@@ -74,9 +72,5 @@ public abstract class JiraGlobalConfigurationMapper extends BaseMapper {
 
   void setScmPathInfoStore(ScmPathInfoStore scmPathInfoStore) {
     this.scmPathInfoStore = scmPathInfoStore;
-  }
-
-  void setPermissions(JiraPermissions permissions) {
-    this.permissions = permissions;
   }
 }

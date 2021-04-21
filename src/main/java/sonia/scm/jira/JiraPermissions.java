@@ -31,39 +31,42 @@ public class JiraPermissions {
 
   private static final String PERMISSION_NAME = "jira";
 
-  public boolean isPermittedReadGlobalConfig() {
+  private JiraPermissions() {
+  }
+
+  public static boolean isPermittedReadGlobalConfig() {
     return ConfigurationPermissions.read(PERMISSION_NAME).isPermitted();
   }
 
-  public boolean isPermittedWriteGlobalConfig() {
+  public static boolean isPermittedWriteGlobalConfig() {
     return ConfigurationPermissions.write(PERMISSION_NAME).isPermitted();
   }
 
-  public void checkReadGlobalConfig() {
+  public static void checkReadGlobalConfig() {
     ConfigurationPermissions.read(PERMISSION_NAME).check();
   }
 
-  public void checkWriteGlobalConfig() {
+  public static void checkWriteGlobalConfig() {
     ConfigurationPermissions.write(PERMISSION_NAME).check();
   }
 
-  public boolean isPermittedReadRepositoryConfig(Repository repository) {
+  public static boolean isPermittedReadRepositoryConfig(Repository repository) {
     return RepositoryPermissions.custom(PERMISSION_NAME, repository).isPermitted();
   }
 
-  public boolean isPermittedWriteRepositoryConfig(Repository repository) {
+  public static boolean isPermittedWriteRepositoryConfig(Repository repository) {
     return RepositoryPermissions.custom(PERMISSION_NAME, repository).isPermitted();
   }
 
-  public void checkReadRepositoryConfig(Repository repository) {
+  public static void checkReadRepositoryConfig(Repository repository) {
     RepositoryPermissions.custom(PERMISSION_NAME, repository).check();
   }
 
-  public void checkWriteRepositoryConfig(Repository repository) {
+  public static void checkWriteRepositoryConfig(Repository repository) {
     RepositoryPermissions.custom(PERMISSION_NAME, repository).check();
   }
 
-  public void checkWriteRepositoryConfig(String repositoryId) {
+  public static void checkWriteRepositoryConfig(String repositoryId) {
     RepositoryPermissions.custom(PERMISSION_NAME, repositoryId).check();
   }
 }

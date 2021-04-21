@@ -44,8 +44,6 @@ public abstract class JiraConfigurationMapper extends BaseMapper {
 
   @Inject
   private ScmPathInfoStore scmPathInfoStore;
-  @Inject
-  private JiraPermissions permissions;
 
   @Mapping(target = "attributes", ignore = true)
   public abstract JiraConfigurationDto map(JiraConfiguration config, @Context Repository repository);
@@ -55,7 +53,7 @@ public abstract class JiraConfigurationMapper extends BaseMapper {
   @AfterMapping
   void appendLinks(@MappingTarget JiraConfigurationDto target, @Context Repository repository) {
     Links.Builder linksBuilder = linkingTo().self(self(repository));
-    if (permissions.isPermittedWriteRepositoryConfig(repository)) {
+    if (JiraPermissions.isPermittedWriteRepositoryConfig(repository)) {
       linksBuilder.single(link("update", update(repository)));
     }
     target.add(linksBuilder.build());
@@ -73,9 +71,5 @@ public abstract class JiraConfigurationMapper extends BaseMapper {
 
   void setScmPathInfoStore(ScmPathInfoStore scmPathInfoStore) {
     this.scmPathInfoStore = scmPathInfoStore;
-  }
-
-  public void setPermissions(JiraPermissions permissions) {
-    this.permissions = permissions;
   }
 }

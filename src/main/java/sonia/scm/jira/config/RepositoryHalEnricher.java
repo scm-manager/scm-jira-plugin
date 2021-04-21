@@ -42,19 +42,17 @@ public class RepositoryHalEnricher implements HalEnricher {
 
   private final Provider<ScmPathInfoStore> scmPathInfoStore;
   private final JiraConfigurationStore jiraContext;
-  private final JiraPermissions permissions;
 
   @Inject
-  public RepositoryHalEnricher(Provider<ScmPathInfoStore> scmPathInfoStore, JiraConfigurationStore jiraContext, JiraPermissions permissions) {
+  public RepositoryHalEnricher(Provider<ScmPathInfoStore> scmPathInfoStore, JiraConfigurationStore jiraContext) {
     this.scmPathInfoStore = scmPathInfoStore;
     this.jiraContext = jiraContext;
-    this.permissions = permissions;
   }
 
   @Override
   public void enrich(HalEnricherContext context, HalAppender appender) {
     Repository repository = context.oneRequireByType(Repository.class);
-    if (!jiraContext.getGlobalConfiguration().isDisableRepositoryConfiguration() && permissions.isPermittedReadRepositoryConfig(repository)) {
+    if (!jiraContext.getGlobalConfiguration().isDisableRepositoryConfiguration() && JiraPermissions.isPermittedReadRepositoryConfig(repository)) {
       String globalJiraConfigUrl = new LinkBuilder(scmPathInfoStore.get().get(), JiraConfigurationResource.class)
         .method("getForRepository")
         .parameters(repository.getNamespace(), repository.getName())

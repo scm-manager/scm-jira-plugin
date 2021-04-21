@@ -49,11 +49,9 @@ public class JiraConfigurationMapperTest {
 
   @Before
   public void init() {
-    JiraPermissions permissions = new JiraPermissions();
     ScmPathInfoStore scmPathInfoStore = new ScmPathInfoStore();
     scmPathInfoStore.set(() -> URI.create("/"));
     mapper = Mappers.getMapper(JiraConfigurationMapper.class);
-    mapper.setPermissions(permissions);
     mapper.setScmPathInfoStore(scmPathInfoStore);
   }
 

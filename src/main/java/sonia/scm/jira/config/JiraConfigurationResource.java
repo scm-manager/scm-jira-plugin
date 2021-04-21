@@ -66,7 +66,6 @@ public class JiraConfigurationResource {
   static final String JIRA_CONFIG_PATH_V2 = "v2/config/jira";
 
   private final JiraConfigurationStore context;
-  private final JiraPermissions permissions;
   private final JiraGlobalConfigurationMapper jiraGlobalConfigurationMapper;
   private final JiraConfigurationMapper jenkinsConfigurationMapper;
   private final RepositoryManager repositoryManager;
@@ -74,12 +73,10 @@ public class JiraConfigurationResource {
   @Inject
   public JiraConfigurationResource(
     JiraConfigurationStore context,
-    JiraPermissions permissions,
     JiraGlobalConfigurationMapper jiraGlobalConfigurationMapper,
     JiraConfigurationMapper jenkinsConfigurationMapper,
     RepositoryManager repositoryManager) {
     this.context = context;
-    this.permissions = permissions;
     this.jiraGlobalConfigurationMapper = jiraGlobalConfigurationMapper;
     this.jenkinsConfigurationMapper = jenkinsConfigurationMapper;
     this.repositoryManager = repositoryManager;
@@ -113,7 +110,7 @@ public class JiraConfigurationResource {
     )
   )
   public Response get() {
-    permissions.checkReadGlobalConfig();
+    JiraPermissions.checkReadGlobalConfig();
     return Response.ok(jiraGlobalConfigurationMapper.map(context.getGlobalConfiguration())).build();
   }
 
@@ -180,7 +177,7 @@ public class JiraConfigurationResource {
   )
   public Response getForRepository(@PathParam("namespace") String namespace, @PathParam("name") String name) {
     Repository repository = loadRepository(namespace, name);
-    permissions.checkReadRepositoryConfig(repository);
+    JiraPermissions.checkReadRepositoryConfig(repository);
     return Response.ok(jenkinsConfigurationMapper.map(context.getConfiguration(repository), repository)).build();
   }
 

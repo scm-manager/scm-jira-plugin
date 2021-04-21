@@ -62,14 +62,12 @@ public class JiraConfigurationStore
    *
    *
    * @param storeFactory store factory
-   * @param permissions
    */
   @Inject
-  public JiraConfigurationStore(ConfigurationStoreFactory storeFactory, JiraPermissions permissions)
+  public JiraConfigurationStore(ConfigurationStoreFactory storeFactory)
   {
     this.storeFactory = storeFactory;
     this.store = storeFactory.withType(JiraGlobalConfiguration.class).withName(NAME).build();
-    this.permissions = permissions;
   }
 
 
@@ -103,13 +101,13 @@ public class JiraConfigurationStore
    */
   public void setGlobalConfiguration(JiraGlobalConfiguration configuration)
   {
-    permissions.checkWriteGlobalConfig();
+    JiraPermissions.checkWriteGlobalConfig();
     logger.debug("store jira configuration");
     this.store.set(configuration);
   }
 
   public void setConfiguration(JiraConfiguration configuration, Repository repository) {
-    permissions.checkWriteRepositoryConfig(repository);
+    JiraPermissions.checkWriteRepositoryConfig(repository);
     getRepositoryStore(repository)
       .set(configuration);
   }
@@ -125,6 +123,5 @@ public class JiraConfigurationStore
   //~--- fields ---------------------------------------------------------------
   /** global configuration store */
   private final ConfigurationStore<JiraGlobalConfiguration> store;
-  private final JiraPermissions permissions;
   private final ConfigurationStoreFactory storeFactory;
 }
