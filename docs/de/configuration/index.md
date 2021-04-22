@@ -1,25 +1,41 @@
 ---
 title: Konfiguration
 ---
-Wie im SCM-Manager 2 üblich, gibt es eine globale und eine repository-spezifische Konfiguration für das Jira-Plugin. Die globale Konfiguration gilt für alle Repositories, die keine spezifische Konfiguration hinterlegt haben. Inhaltlich unterscheiden sich die Konfigurationen lediglich darin, dass in der globalen Konfiguration die repository-spezifische Konfiguration deaktiviert werden kann. 
 
-# Konfigurationsformular
-Für die Kommunikation zwischen dem SCM-Manager und Jira muss zunächst zwingend die Jira Instanz-URL inklusive Kontextpfad eingetragen werden. Zusätzlich werden auch noch Zugangsdaten benötigt, welche einem technischen Jira Benutzer gehören sollten.
-Anschließend lässt sich bereits konfigurieren in welcher Form Jira Tickets verändert / ergänzt werden sollen. Es können dabei über Filter bestimmte Projekte oder die Rollensichtbarkeit eingeschränkt werden.
+Wie im SCM-Manager 2 üblich, gibt es eine globale und eine repository-spezifische Konfiguration für das Jira-Plugin. 
+Die globale Konfiguration gilt für alle Repositories, die keine spezifische Konfiguration hinterlegt haben. 
+Inhaltlich unterscheiden sich die Konfigurationen lediglich darin, dass in der globalen Konfiguration die repository-spezifische Konfiguration deaktiviert werden kann.
 
-## Ticket Status Aktualisierung
-Über die "Status Modifizierungswörter" lassen sich Wörter definieren, die bei Ihrer Erwähnung in der Commit Nachricht zu einer Status Aktualisierung des Jira Tickets führen.
+### Konfigurationsformular
+Für die Kommunikation zwischen dem SCM-Manager und Jira muss zunächst zwingend die Jira URL inklusive Kontextpfad eingetragen werden.
+Wird das Filter Feld leer gelassen, findet SCM-Manager Ticket Ids von allen Jira Projekten.
+Über das Filter Feld lässt sich das einschränken, hier kann eine kommaseparierte Liste von Jira Projektkürzeln eingetragen werden.
+Anschließend lässt sich bereits konfigurieren in welcher Form Jira Tickets verändert / ergänzt werden sollen.
 
-## Kommentare erzeugen
-Die Kommentare werden am Jira Ticket erzeugt, sobald innerhalb einer Commit Nachricht die Ticket-ID erwähnt wurde.
+#### Kommentare erzeugen
+Um Kommentare in Jira zu erzeugen werden Zugangsdaten benötigt, welche einem technischen Jira Benutzer gehören sollten.
+Dieser Benutzer benötigt zudem ausreichende Berechtigungen, um Kommentare an existierenden Tickets zu erstellen.
 
-Beispiel Commit Nachricht: "#492 fix user permissions bug."
+Die Kommentare werden am Jira Ticket erzeugt, sobald innerhalb einer Commit Nachricht, einem Pull Request oder einem Pull Request Kommentar die Ticket-ID erwähnt wurde.
 
-Damit wird ein Kommentar mit dieser Commit Nachricht am Jira Ticket 492 erzeugt und dieses Ticket auf den Status "done" umgesetzt.
+Beispiel Commit Nachricht: "SCM-42 Add awesome new feature"
 
-## Nicht übertragene Kommentare
-Bei einem Verbindungsproblem zwischen dem SCM-Manager und Jira werden die Kommentare in einem internen Speicher aufbewahrt, bis sie erfolgreich übertragen werden konnten. 
-Es gibt dabei die Möglichkeit das automatische erneute Übertragen zu aktivieren oder dies über eine Schaltfläche manuell zu tun.
-Außerdem gibt es die Möglichkeit eine E-Mail-Adresse zu hinterlegen, um benachrichtigt zu werden, sobald Kommentare nicht übermittelt werden konnten.
+Damit wird ein Kommentar mit dieser Commit Nachricht am Jira Ticket SCM-42 erzeugt.
+
+#### Ticket Status Aktualisierung
+Um den Status eines Tickets über die Nachricht eines Commits oder einem Pull Request zu ändern, 
+kann eine Ticket-ID mit einem Jira Statusübergang innerhalb eines Satzes verwendet werden.
+
+Beispiel Commit Nachricht: "Bug SCM-42 is done"
+
+Das Beispiel setzt den Status des Tickets SCM-42 auf "Done".
+Das setzt natürlich voraus, dass es den Statusübergang "Done" an dem Ticket SCM-42 gibt.
+
+Über die "Status Modifizierungswörter" lassen sich Wörter definieren, die anstelle des Jira Statusübergang verwendet werden können.
+Diese Schlüsselwörter kann man in Form einer kommaseparierten Liste angegeben.
+Zum Beispiel könnte man für den Status "Done" folgende Schlüsselwörter angeben: "closes, closing".
+Damit würde der Text "Closes Bug SCM-42" ebenfalls das Ticket SCM-42 auf den Status "Done" setzen.
+
+> **Wichtig:** Der konfigurierte Jira Benutzer benötigt Berechtigungen, um den Status von Tickets zu ändern
 
 ![Jira Konfiguration](assets/config.png)
