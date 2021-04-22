@@ -44,7 +44,6 @@ public abstract class JiraGlobalConfigurationMapper extends BaseMapper {
   @Inject
   private ScmPathInfoStore scmPathInfoStore;
 
-  @Mapping(target = "autoCloseWords", ignore = true)
   @Mapping(target = "attributes", ignore = true)
   public abstract JiraGlobalConfigurationDto map(JiraGlobalConfiguration config);
 
