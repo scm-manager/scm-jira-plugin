@@ -72,8 +72,8 @@ class JiraV2ConfigMigrationUpdateStepTest {
 
     updateStep.doUpdate();
 
-    JiraConfiguration actualConfiguration = storeFactory
-      .withType(JiraConfiguration.class)
+    V2JiraConfiguration actualConfiguration = storeFactory
+      .withType(V2JiraConfiguration.class)
       .withName("jira")
       .forRepository("repo")
       .build()

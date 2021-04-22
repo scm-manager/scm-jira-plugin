@@ -21,28 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package sonia.scm.jira.config;
+package sonia.scm.jira.update;
 
-import sonia.scm.jira.AutoCloseWords;
 
-import java.util.Map;
-import javax.xml.bind.annotation.adapters.XmlAdapter;
+import lombok.Getter;
+import lombok.Setter;
+import sonia.scm.jira.config.JiraGlobalConfiguration;
 
-/**
- * JAXB adapter to match a comma separated list of key value pairs to a map. It an entry in the list has no value, the
- * key is used as value too.
- * 
- * @author Sebastian Sdorra <sebastian.sdorra@triology.de>
- */
-public class XmlStringMapAdapter extends XmlAdapter<String, Map<String,String>> {
-    
-    @Override
-    public Map<String, String> unmarshal(String v) {
-        return AutoCloseWords.parse(v);
-    }
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
-    @Override
-    public String marshal(Map<String, String> v) {
-        return AutoCloseWords.format(v);
-    }
+@Getter
+@Setter
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "jira-global-configuration")
+public class V2JiraGlobalConfiguration extends V2JiraConfiguration {
+  @XmlElement(name = "disable-repository-configuration")
+  private boolean disableRepositoryConfiguration;
+
+  public void copyTo(JiraGlobalConfiguration v3JiraConfig) {
+    super.copyTo(v3JiraConfig);
+    v3JiraConfig.setDisableRepositoryConfiguration(disableRepositoryConfiguration);
+  }
 }

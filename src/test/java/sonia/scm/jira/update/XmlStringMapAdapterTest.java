@@ -21,45 +21,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package sonia.scm.jira;
+package sonia.scm.jira.update;
 
 import com.google.common.collect.Maps;
+import org.junit.jupiter.api.Test;
+
 import java.util.Map;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 /**
- * Unit tests for {@link AutoCloseWords}.
- * 
+ * Unit tests for {@link XmlStringMapAdapter}.
+ *
  * @author Sebastian Sdorra <sebastian.sdorra@triology.de>
  */
-public class AutoCloseWordsTest {
-    
-   /**
-     * Tests {@link AutoCloseWords#format(Map)}.
-     */
-    @Test
-    public void testFormat(){
-        Map<String,String> map = Maps.newLinkedHashMap();
-        map.put("auto close", "auto close");
-        map.put("close", "close");
-        map.put("fixed", "fixed");
-        map.put("fix", "fixed");
-        String value = AutoCloseWords.format(map);
-        assertEquals("auto close, close, fixed, fix=fixed", value);
-    }
+class XmlStringMapAdapterTest {
 
-    /**
-     * Tests {@link AutoCloseWords#parse(String)}.
-     */    
-    @Test
-    public void testParse() {
-        String value = "auto close, close, fixed, fix=fixed";
-        Map<String,String> map = AutoCloseWords.parse(value);
-        assertEquals("auto close", map.get("auto close"));
-        assertEquals("close", map.get("close"));
-        assertEquals("fixed", map.get("fixed"));
-        assertEquals("fixed", map.get("fix"));
-    }
+  private final XmlStringMapAdapter adapter = new XmlStringMapAdapter();
+
+  @Test
+  void shouldMarshal() {
+    Map<String, String> map = Maps.newLinkedHashMap();
+    map.put("auto close", "auto close");
+    map.put("close", "close");
+    map.put("fixed", "fixed");
+    map.put("fix", "fixed");
+    String value = adapter.marshal(map);
+    assertThat(value).isEqualTo("auto close, close, fixed, fix=fixed");
+  }
+
+  @Test
+  void shouldUnmarshal() {
+    String value = "auto close, close, fixed, fix=fixed";
+    Map<String, String> map = adapter.unmarshal(value);
+    assertThat(map)
+      .containsEntry("auto close", "auto close")
+      .containsEntry("close", "close")
+      .containsEntry("fixed", "fixed")
+      .containsEntry("fix", "fixed");
+  }
 
 }

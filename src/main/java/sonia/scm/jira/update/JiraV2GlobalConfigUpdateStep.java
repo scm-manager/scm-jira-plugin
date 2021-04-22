@@ -26,8 +26,6 @@ package sonia.scm.jira.update;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sonia.scm.issuetracker.XmlEncryptionAdapter;
-import sonia.scm.jira.config.JiraGlobalConfiguration;
-import sonia.scm.jira.config.XmlStringMapAdapter;
 import sonia.scm.migration.UpdateStep;
 import sonia.scm.plugin.Extension;
 import sonia.scm.store.ConfigurationStoreFactory;
@@ -63,9 +61,9 @@ public class JiraV2GlobalConfigUpdateStep implements UpdateStep {
     readV1JiraConfiguration()
       .ifPresent(
         v1JiraConfig -> {
-          JiraGlobalConfiguration v2JiraConfig = new JiraGlobalConfiguration();
+          V2JiraGlobalConfiguration v2JiraConfig = new V2JiraGlobalConfiguration();
           v1JiraConfig.copyTo(v2JiraConfig);
-          storeFactory.withType(JiraGlobalConfiguration.class).withName("jira").build().set(v2JiraConfig);
+          storeFactory.withType(V2JiraGlobalConfiguration.class).withName("jira").build().set(v2JiraConfig);
         }
       );
   }
@@ -122,7 +120,7 @@ public class JiraV2GlobalConfigUpdateStep implements UpdateStep {
     @XmlElement(name = "disable-repository-configuration")
     private boolean disableRepositoryConfiguration = false;
 
-    public void copyTo(JiraGlobalConfiguration v2JiraConfig) {
+    public void copyTo(V2JiraGlobalConfiguration v2JiraConfig) {
         v2JiraConfig.setUrl(this.url);
         v2JiraConfig.setAutoClose(this.autoClose);
         v2JiraConfig.setUsername(this.username);

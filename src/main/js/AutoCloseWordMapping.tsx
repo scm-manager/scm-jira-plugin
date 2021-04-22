@@ -64,17 +64,17 @@ const MappingForm: FC<MappingProps> = ({ mapping, remove, update }) => {
       <td>
         <InputField
           className="is-grouped"
-          onChange={ontransitionChange}
-          value={mapping.transition}
-          placeholder={t("scm-jira-plugin.form.autoCloseMapping.transition")}
+          onChange={onKeywordsChange}
+          value={mapping.keywords}
+          placeholder={t("scm-jira-plugin.form.autoCloseMapping.keywords")}
         />
       </td>
       <td>
         <InputField
           className="is-grouped"
-          onChange={onKeywordsChange}
-          value={mapping.keywords}
-          placeholder={t("scm-jira-plugin.form.autoCloseMapping.keywords")}
+          onChange={ontransitionChange}
+          value={mapping.transition}
+          placeholder={t("scm-jira-plugin.form.autoCloseMapping.transition")}
         />
       </td>
       <VCenteredTd>
@@ -150,12 +150,12 @@ const AutoCloseWordMapping: FC<Props> = props => {
           <thead>
             <tr>
               <th>
-                {t("scm-jira-plugin.form.autoCloseMapping.transition")}
-                <Help message={t("scm-jira-plugin.form.autoCloseMapping.transitionHelp")} />
-              </th>
-              <th>
                 {t("scm-jira-plugin.form.autoCloseMapping.keywords")}
                 <Help message={t("scm-jira-plugin.form.autoCloseMapping.keywordsHelp")} />
+              </th>
+              <th>
+                {t("scm-jira-plugin.form.autoCloseMapping.transition")}
+                <Help message={t("scm-jira-plugin.form.autoCloseMapping.transitionHelp")} />
               </th>
               <th/>
             </tr>

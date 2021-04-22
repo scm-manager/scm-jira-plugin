@@ -23,7 +23,6 @@
  */
 package sonia.scm.jira.update;
 
-import sonia.scm.jira.config.JiraConfiguration;
 import sonia.scm.migration.UpdateStep;
 import sonia.scm.plugin.Extension;
 import sonia.scm.store.ConfigurationStoreFactory;
@@ -70,17 +69,17 @@ public class JiraV2ConfigMigrationUpdateStep implements UpdateStep {
       .forEachEntry((key, properties) -> setConfiguration(buildConfig(properties), key));
   }
 
-  private void setConfiguration(JiraConfiguration config, String repositoryId) {
+  private void setConfiguration(V2JiraConfiguration config, String repositoryId) {
     storeFactory
-      .withType(JiraConfiguration.class)
+      .withType(V2JiraConfiguration.class)
       .withName("jira")
       .forRepository(repositoryId)
       .build()
       .set(config);
   }
 
-  private JiraConfiguration buildConfig(V1Properties properties) {
-    JiraConfiguration v2JiraConfig = new JiraConfiguration();
+  private V2JiraConfiguration buildConfig(V1Properties properties) {
+    V2JiraConfiguration v2JiraConfig = new V2JiraConfiguration();
     v2JiraConfig.setUrl(properties.get("jira.url"));
     properties.getBoolean("jira.auto-close").ifPresent(v2JiraConfig::setAutoClose);
     v2JiraConfig.setUsername(properties.get("jira.username"));

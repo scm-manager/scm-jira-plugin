@@ -22,31 +22,26 @@
  * SOFTWARE.
  */
 
-package sonia.scm.jira.config;
+package sonia.scm.jira.update;
 
 import com.google.common.collect.ImmutableMap;
-import lombok.Data;
-import sonia.scm.Validateable;
+import lombok.Getter;
+import lombok.Setter;
 import sonia.scm.issuetracker.XmlEncryptionAdapter;
-import sonia.scm.util.Util;
+import sonia.scm.jira.config.JiraConfiguration;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import java.util.Collections;
 import java.util.Map;
 
-/**
- * Local or per repository jira configuration.
- *
- * @author Sebastian Sdorra
- */
-@Data
+@Getter
+@Setter
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "jira-configuration")
-public class JiraConfiguration implements Validateable {
+public class V2JiraConfiguration {
 
   private static final Map<String,String> DEFAULT_AUTO_CLOSE_WORDS = ImmutableMap.of(
     "fix", "done",
@@ -54,51 +49,31 @@ public class JiraConfiguration implements Validateable {
     "start", "start progress"
   );
 
-  /** jira server url */
   private String url;
-
-  /** filter */
   @XmlElement(name = "filter")
   private String filter;
-
-  /** update jira issues */
   @XmlElement(name = "update-issues")
   private boolean updateIssues;
-
-  /** connection username */
   private String username;
-
-  /** connection password */
   @XmlJavaTypeAdapter(XmlEncryptionAdapter.class)
   private String password;
-
-  /** comment role level */
   @XmlElement(name = "role-level")
   private String roleLevel;
-
-  /** auto close */
   @XmlElement(name = "auto-close")
   private boolean autoClose;
-
-  /** set of auto close words */
   @XmlElement(name = "auto-close-words")
+  @XmlJavaTypeAdapter(XmlStringMapAdapter.class)
   private Map<String,String> autoCloseWords = DEFAULT_AUTO_CLOSE_WORDS;
 
-  /**
-   * Returns {@code true} if the configuration is valid.
-   *
-   *
-   * @return {@code true} if the configuration is valid
-   */
-  @Override
-  public boolean isValid() {
-    return Util.isNotEmpty(url);
+  public void copyTo(JiraConfiguration v3JiraConfig) {
+    v3JiraConfig.setUrl(url);
+    v3JiraConfig.setFilter(filter);
+    v3JiraConfig.setUpdateIssues(updateIssues);
+    v3JiraConfig.setUsername(username);
+    v3JiraConfig.setPassword(password);
+    v3JiraConfig.setRoleLevel(roleLevel);
+    v3JiraConfig.setAutoClose(autoClose);
+    v3JiraConfig.setAutoCloseWords(autoCloseWords);
   }
 
-  public Map<String, String> getAutoCloseWords() {
-    if (autoCloseWords == null) {
-      return Collections.emptyMap();
-    }
-    return autoCloseWords;
-  }
 }
