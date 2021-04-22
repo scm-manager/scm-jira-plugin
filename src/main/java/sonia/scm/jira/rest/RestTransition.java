@@ -30,6 +30,7 @@ import com.google.common.base.MoreObjects;
 
 //~--- JDK imports ------------------------------------------------------------
 
+import javax.annotation.Nullable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -54,9 +55,19 @@ public class RestTransition
    *
    * @param id transition id
    */
-  public RestTransition(String id)
-  {
+  public RestTransition(String id) {
+    this(id, null);
+  }
+
+  /**
+   * Constructs a new {@link RestTransition}.
+   *
+   * @param id transition id
+   * @param name name of transition
+   */
+  public RestTransition(String id, @Nullable String name) {
     this.id = id;
+    this.name = name;
   }
 
   //~--- methods --------------------------------------------------------------

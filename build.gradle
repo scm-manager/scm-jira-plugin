@@ -24,18 +24,19 @@
 
 
 plugins {
-  id 'org.scm-manager.smp' version '0.7.5'
+  id 'org.scm-manager.smp' version '0.8.0'
 }
 
 dependencies {
-  implementation "axis:axis:1.4"
-  plugin "sonia.scm.plugins:scm-mail-plugin:2.1.0"
-  plugin "sonia.scm.plugins:scm-issuetracker-plugin:2.0.0"
+  plugin "sonia.scm.plugins:scm-issuetracker-plugin:3.1.0"
   optionalPlugin "sonia.scm.plugins:scm-commit-message-checker-plugin:1.0.0"
+
+  testImplementation "com.github.sdorra:shiro-unit:1.0.1"
+  testImplementation 'com.github.sdorra:junit-shiro-extension:1.0.1'
 }
 
 scmPlugin {
-  scmVersion = "2.9.0"
+  scmVersion = "2.15.0"
   displayName = "Jira"
   description = "Integrates Atlassian JIRA to SCM-Manager"
   author = "Cloudogu GmbH"
@@ -43,16 +44,7 @@ scmPlugin {
 
   openapi {
     packages = [
-      "sonia.scm.jira",
+      "sonia.scm.jira"
     ]
   }
-
-  sonar {
-    // We don't want to check classes which were generated using jirasoapservice-v2.wsdl
-    property 'sonar.exclusions', 'src/main/java/sonia/scm/jira/soap/**'
-  }
-}
-
-license {
-  exclude '**/soap/*.java'
 }

@@ -22,66 +22,57 @@
  * SOFTWARE.
  */
 import React from "react";
-import { Button, Checkbox, Configuration, InputField, validation } from "@scm-manager/ui-components";
+import { Checkbox, InputField, validation } from "@scm-manager/ui-components";
 import { withTranslation, WithTranslation } from "react-i18next";
-
-type JiraConfiguration = {
-  url: string;
-  disableRepositoryConfiguration: boolean;
-  updateIssues: boolean;
-  autoClose: boolean;
-  autoCloseWords: string;
-  roleLevel: string;
-  commentPrefix: string;
-  filter: string;
-  username: string;
-  password: string;
-  resubmission: boolean;
-  restApiEnabled: boolean;
-  mailAddress: string;
-  commentWrap: string;
-  commentMonospace: boolean;
-};
+import { JiraConfiguration } from "./types";
+import AutoCloseWordMapping from "./AutoCloseWordMapping";
 
 type Props = WithTranslation & {
-  initialConfiguration: Configuration;
+  initialConfiguration: JiraConfiguration;
   readOnly: boolean;
-  onConfigurationChange: (p1: Configuration, p2: boolean) => void;
+  onConfigurationChange: (configuration: JiraConfiguration, valid: boolean) => void;
   includeGlobalConfigItem: boolean;
-  resubmitHandler: () => void;
 };
 
 type State = JiraConfiguration & {
-  mailValid: boolean;
+  urlValid: boolean;
 };
 
 class JiraConfigurationItems extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      mailValid: true,
-      ...props.initialConfiguration
+      ...props.initialConfiguration,
+      urlValid: true
     };
   }
 
-  emailChangeHandler = (value: string, name: string) => {
-    const mailValid = value === "" || validation.isMailValid(value);
+  urlChangeHandler = (value: string) => {
+    const urlValid = value === "" || validation.isUrlValid(value);
     this.setState(
       {
-        mailAddress: value,
-        mailValid: mailValid
+        url: value,
+        urlValid
       },
       this.configurationChangedCallback
     );
   };
 
-  valueChangeHandler = (value: string, name: string) => {
+  valueChangeHandler = (value: string | boolean | Record<string, string>, name?: string) => {
+    if (!name) {
+      return;
+    }
     this.setState(
+      // @ts-ignore hard to type
       {
         [name]: value
       },
       this.configurationChangedCallback
     );
+  };
+
+  autoCloseWordChanged = (mapping: Record<string, string>) => {
+    this.valueChangeHandler(mapping, "autoCloseWords");
   };
 
   configurationChangedCallback = () => {
@@ -94,11 +85,7 @@ class JiraConfigurationItems extends React.Component<Props, State> {
   };
 
   isValid = () => {
-    return this.state.mailValid;
-  };
-
-  resubmit = () => {
-    this.props.resubmitHandler();
+    return this.state.urlValid;
   };
 
   render() {
@@ -112,11 +99,22 @@ class JiraConfigurationItems extends React.Component<Props, State> {
             helpText={t("scm-jira-plugin.form.urlHelp")}
             disabled={readOnly}
             value={this.state.url}
+            errorMessage={t("scm-jira-plugin.form.urlValidationError")}
+            validationError={!this.state.urlValid}
             type="url"
+            onChange={this.urlChangeHandler}
+          />
+        </div>
+        <div className="column is-full">
+          <InputField
+            name="filter"
+            label={t("scm-jira-plugin.form.filter")}
+            helpText={t("scm-jira-plugin.form.filterHelp")}
+            disabled={readOnly}
+            value={this.state.filter}
             onChange={this.valueChangeHandler}
           />
         </div>
-        {this.renderGlobalConfigItem()}
         <div className="column is-full">
           <Checkbox
             name="updateIssues"
@@ -126,117 +124,59 @@ class JiraConfigurationItems extends React.Component<Props, State> {
             disabled={readOnly}
             onChange={this.valueChangeHandler}
           />
-          <Checkbox
-            name="autoClose"
-            label={t("scm-jira-plugin.form.autoClose")}
-            helpText={t("scm-jira-plugin.form.autoCloseHelp")}
-            checked={this.state.autoClose}
-            disabled={readOnly || !this.state.updateIssues}
-            onChange={this.valueChangeHandler}
-          />
         </div>
-        <div className="column is-full">
-          <InputField
-            name="autoCloseWords"
-            label={t("scm-jira-plugin.form.autoCloseWords")}
-            helpText={t("scm-jira-plugin.form.autoCloseWordsHelp")}
-            disabled={readOnly || !this.state.updateIssues || !this.state.autoClose}
-            value={this.state.autoCloseWords}
-            onChange={this.valueChangeHandler}
-          />
-        </div>
-        <div className="column is-half">
-          <InputField
-            name="roleLevel"
-            label={t("scm-jira-plugin.form.roleLevel")}
-            helpText={t("scm-jira-plugin.form.roleLevelHelp")}
-            disabled={readOnly || !this.state.updateIssues}
-            value={this.state.roleLevel}
-            onChange={this.valueChangeHandler}
-          />
-        </div>
-        <div className="column is-half">
-          <InputField
-            name="filter"
-            label={t("scm-jira-plugin.form.filter")}
-            helpText={t("scm-jira-plugin.form.filterHelp")}
-            disabled={readOnly || !this.state.updateIssues}
-            value={this.state.filter}
-            onChange={this.valueChangeHandler}
-          />
-        </div>
-        <div className="column is-half">
-          <InputField
-            name="username"
-            label={t("scm-jira-plugin.form.username")}
-            helpText={t("scm-jira-plugin.form.usernameHelp")}
-            disabled={readOnly || !this.state.updateIssues}
-            value={this.state.username}
-            onChange={this.valueChangeHandler}
-          />
-        </div>
-        <div className="column is-half">
-          <InputField
-            name="password"
-            label={t("scm-jira-plugin.form.password")}
-            helpText={t("scm-jira-plugin.form.passwordHelp")}
-            disabled={readOnly || !this.state.updateIssues}
-            value={this.state.password}
-            type="password"
-            onChange={this.valueChangeHandler}
-          />
-        </div>
-        <div className="column is-full">
-          <Checkbox
-            name="resubmission"
-            label={t("scm-jira-plugin.form.resubmission")}
-            helpText={t("scm-jira-plugin.form.resubmissionHelp")}
-            checked={this.state.resubmission}
-            disabled={readOnly || !this.state.updateIssues}
-            onChange={this.valueChangeHandler}
-          />
-          <Checkbox
-            name="restApiEnabled"
-            label={t("scm-jira-plugin.form.restApiEnabled")}
-            helpText={t("scm-jira-plugin.form.restApiEnabledHelp")}
-            checked={this.state.restApiEnabled}
-            disabled={readOnly}
-            onChange={this.valueChangeHandler}
-          />
-        </div>
-        <div className="column is-half">
-          <InputField
-            name="mailAddress"
-            label={t("scm-jira-plugin.form.mailAddress")}
-            helpText={t("scm-jira-plugin.form.mailAddressHelp")}
-            errorMessage={t("scm-jira-plugin.form.mailAddressError")}
-            validationError={!this.state.mailValid}
-            disabled={readOnly || !this.state.resubmission}
-            value={this.state.mailAddress}
-            onChange={this.emailChangeHandler}
-          />
-        </div>
-        <div className="column is-half">
-          <InputField
-            name="commentWrap"
-            label={t("scm-jira-plugin.form.commentWrap")}
-            helpText={t("scm-jira-plugin.form.commentWrapHelp")}
-            disabled={readOnly}
-            value={this.state.commentWrap}
-            onChange={this.valueChangeHandler}
-          />
-        </div>
-        <div className="column is-full">
-          <Checkbox
-            name="commentMonospace"
-            label={t("scm-jira-plugin.form.commentMonospace")}
-            helpText={t("scm-jira-plugin.form.commentMonospaceHelp")}
-            checked={this.state.commentMonospace}
-            disabled={readOnly}
-            onChange={this.valueChangeHandler}
-          />
-          <Button label={t("scm-jira-plugin.form.resubmit")} action={this.resubmit} />
-        </div>
+        {this.state.updateIssues ? (
+          <>
+            <div className="column is-half">
+              <InputField
+                name="username"
+                label={t("scm-jira-plugin.form.username")}
+                helpText={t("scm-jira-plugin.form.usernameHelp")}
+                disabled={readOnly || !this.state.updateIssues}
+                value={this.state.username}
+                onChange={this.valueChangeHandler}
+              />
+            </div>
+            <div className="column is-half">
+              <InputField
+                name="password"
+                label={t("scm-jira-plugin.form.password")}
+                helpText={t("scm-jira-plugin.form.passwordHelp")}
+                disabled={readOnly || !this.state.updateIssues}
+                value={this.state.password}
+                type="password"
+                onChange={this.valueChangeHandler}
+              />
+            </div>
+            <div className="column is-full">
+              <InputField
+                name="roleLevel"
+                label={t("scm-jira-plugin.form.roleLevel")}
+                helpText={t("scm-jira-plugin.form.roleLevelHelp")}
+                disabled={readOnly || !this.state.updateIssues}
+                value={this.state.roleLevel}
+                onChange={this.valueChangeHandler}
+              />
+            </div>
+            <div className="column is-full">
+              <Checkbox
+                name="autoClose"
+                label={t("scm-jira-plugin.form.autoClose")}
+                helpText={t("scm-jira-plugin.form.autoCloseHelp")}
+                checked={this.state.autoClose}
+                disabled={readOnly || !this.state.updateIssues}
+                onChange={this.valueChangeHandler}
+              />
+            </div>
+            {this.state.autoClose ? (
+              <div className="column is-full">
+                <AutoCloseWordMapping mappings={this.state.autoCloseWords} onChange={this.autoCloseWordChanged} />
+              </div>
+            ) : null}
+          </>
+        ) : null}
+
+        {this.renderGlobalConfigItem()}
       </div>
     );
   }

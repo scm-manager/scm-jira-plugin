@@ -26,7 +26,7 @@ package sonia.scm.jira.update;
 import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import sonia.scm.jira.JiraConfiguration;
+import sonia.scm.jira.config.JiraConfiguration;
 import sonia.scm.store.ConfigurationStoreFactory;
 import sonia.scm.store.InMemoryConfigurationStoreFactory;
 import sonia.scm.update.V1PropertyDaoTestUtil;
@@ -34,7 +34,7 @@ import sonia.scm.update.V1PropertyDaoTestUtil.PropertiesForRepository;
 
 import java.util.Map;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class JiraV2ConfigMigrationUpdateStepTest {
 
@@ -72,8 +72,8 @@ class JiraV2ConfigMigrationUpdateStepTest {
 
     updateStep.doUpdate();
 
-    JiraConfiguration actualConfiguration = storeFactory
-      .withType(JiraConfiguration.class)
+    V2JiraConfiguration actualConfiguration = storeFactory
+      .withType(V2JiraConfiguration.class)
       .withName("jira")
       .forRepository("repo")
       .build()
@@ -82,29 +82,21 @@ class JiraV2ConfigMigrationUpdateStepTest {
     assertThat(actualConfiguration)
       .hasFieldOrPropertyWithValue("url", "http://hitchhiker.com")
       .hasFieldOrPropertyWithValue("autoClose", true)
-      .hasFieldOrPropertyWithValue("commentMonospace", true)
       .hasFieldOrPropertyWithValue("username", "master")
       .hasFieldOrPropertyWithValue("password", "{enc}lsR6NYxeb1agGdOblwQfOkTI40JsrmnK")
-      .hasFieldOrPropertyWithValue("commentPrefix", "POST")
       .hasFieldOrPropertyWithValue("updateIssues", true)
-      .hasFieldOrPropertyWithValue("restApiEnabled", true)
-      .hasFieldOrPropertyWithValue("mailAddress", "dent@hitchhiker,com")
-      .hasFieldOrPropertyWithValue("commentWrap", "(quote)")
       .hasFieldOrPropertyWithValue("filter", "good-ones")
-      .hasFieldOrPropertyWithValue("roleLevel", "vogons")
-      .hasFieldOrPropertyWithValue("resubmission", true)
-    ;
-    assertThat(actualConfiguration.getMappedAutoCloseWord("fix")).isEqualTo("done");
-    assertThat(actualConfiguration.getMappedAutoCloseWord("reopen")).isEqualTo("reopen and start progress");
-    assertThat(actualConfiguration.getMappedAutoCloseWord("start")).isEqualTo("start progress");
+      .hasFieldOrPropertyWithValue("roleLevel", "vogons");
+
+    Map<String, String> autoCloseWords = actualConfiguration.getAutoCloseWords();
+    assertThat(autoCloseWords).containsEntry("fix", "done")
+      .containsEntry("reopen", "reopen and start progress")
+      .containsEntry("start", "start progress");
   }
 
   @Test
   void shouldSkipRepositoriesWithoutJiraConfig() {
-    Map<String, String> mockedValues =
-      ImmutableMap.of(
-        "any", "value"
-      );
+    Map<String, String> mockedValues = ImmutableMap.of("any", "value");
 
     testUtil.mockRepositoryProperties(new PropertiesForRepository("repo", mockedValues));
 

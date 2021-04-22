@@ -24,23 +24,15 @@
 
 package sonia.scm.jira;
 
+import java.io.IOException;
+
 /**
  *
  * @author Sebastian Sdorra
  */
-public class JiraException extends Exception
-{
+public class JiraException extends IOException {
 
-  /** Field description */
   private static final long serialVersionUID = 789942536863663559L;
-
-  //~--- constructors ---------------------------------------------------------
-
-  /**
-   * Constructs ...
-   *
-   */
-  public JiraException() {}
 
   /**
    * Constructs ...
@@ -53,26 +45,4 @@ public class JiraException extends Exception
     super(message);
   }
 
-  /**
-   * Constructs ...
-   *
-   *
-   * @param cause
-   */
-  public JiraException(Throwable cause)
-  {
-    super(cause);
-  }
-
-  /**
-   * Constructs ...
-   *
-   *
-   * @param message
-   * @param cause
-   */
-  public JiraException(String message, Throwable cause)
-  {
-    super(message, cause);
-  }
 }

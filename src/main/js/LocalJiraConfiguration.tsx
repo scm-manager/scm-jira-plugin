@@ -36,7 +36,7 @@ class LocalJiraConfiguration extends React.Component<Props> {
     return (
       <>
         <Subtitle subtitle={t("scm-jira-plugin.local.title")} />
-        <Configuration link={link} t={t} render={props => <LocalJiraConfigurationForm {...props} />} />
+        <Configuration link={link} render={(props: any) => <LocalJiraConfigurationForm {...props} />} />
       </>
     );
   }

@@ -31,13 +31,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import sonia.scm.jira.JiraConfiguration;
-import sonia.scm.jira.JiraGlobalConfiguration;
-import sonia.scm.jira.JiraGlobalContext;
+import sonia.scm.jira.config.JiraConfiguration;
+import sonia.scm.jira.config.JiraConfigurationResolver;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryTestData;
 
-import static org.mockito.Mockito.lenient;
+import java.util.Optional;
+
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static sonia.scm.jira.commitmessagechecker.JiraCommitMessageIssueKeyValidator.JiraCommitMessageIssueKeyValidatorConfig;
 
@@ -47,7 +48,7 @@ class JiraCommitMessageIssueKeyValidatorTest {
   private static final Repository REPOSITORY = RepositoryTestData.createHeartOfGold();
 
   @Mock
-  private JiraGlobalContext jiraGlobalContext;
+  private JiraConfigurationResolver configResolver;
 
   @InjectMocks
   private JiraCommitMessageIssueKeyValidator validator;
@@ -70,25 +71,23 @@ class JiraCommitMessageIssueKeyValidatorTest {
   void shouldFailOnInvalidIssueKey() {
     mockJiraConfig("");
     JiraCommitMessageIssueKeyValidatorConfig config = new JiraCommitMessageIssueKeyValidatorConfig();
+    Context context = new Context(REPOSITORY, "master", config);
     Assertions.assertThrows(InvalidCommitMessageException.class,
-      () -> validator.validate(new Context(REPOSITORY, "master", config), "Trillian added some feature 42 DONE"));
+      () -> validator.validate(context, "Trillian added some feature 42 DONE"));
   }
 
   @Test
   void shouldFailIfIssueKeyDoNotMatchFilter() {
     mockJiraConfig("SCM");
     JiraCommitMessageIssueKeyValidatorConfig config = new JiraCommitMessageIssueKeyValidatorConfig();
+    Context context = new Context(REPOSITORY, "master", config);
     Assertions.assertThrows(InvalidCommitMessageException.class,
-      () -> validator.validate(new Context(REPOSITORY, "master", config), "Trillian added some feature HOG-42 DONE"));
+      () -> validator.validate(context, "Trillian added some feature HOG-42 DONE"));
   }
 
   private void mockJiraConfig(String filter) {
-    JiraGlobalConfiguration jiraGlobalConfiguration = new JiraGlobalConfiguration();
-    jiraGlobalConfiguration.setDisableRepositoryConfiguration(false);
-    jiraGlobalConfiguration.setFilter(filter);
-    when(jiraGlobalContext.getGlobalConfiguration()).thenReturn(jiraGlobalConfiguration);
-    JiraConfiguration jiraConfiguration = new JiraConfiguration();
-    jiraConfiguration.setFilter(filter);
-    lenient().when(jiraGlobalContext.getConfiguration(REPOSITORY)).thenReturn(jiraConfiguration);
+    JiraConfiguration configuration = new JiraConfiguration();
+    configuration.setFilter(filter);
+    when(configResolver.resolve(any())).thenReturn(Optional.of(configuration));
   }
 }

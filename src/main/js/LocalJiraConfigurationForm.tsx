@@ -22,13 +22,13 @@
  * SOFTWARE.
  */
 import React from "react";
-import { Configuration } from "@scm-manager/ui-components";
 import JiraConfigurationForm from "./JiraConfigurationForm";
+import {JiraConfiguration} from "./types";
 
 type Props = {
-  initialConfiguration: Configuration;
+  initialConfiguration: JiraConfiguration;
   readOnly: boolean;
-  onConfigurationChange: (p1: Configuration, p2: boolean) => void;
+  onConfigurationChange: (configuration: JiraConfiguration, valid: boolean) => void;
 };
 
 class LocalJiraConfigurationForm extends React.Component<Props> {
