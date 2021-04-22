@@ -35,6 +35,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.util.HashMap;
 import java.util.Map;
 
 @Getter
@@ -63,7 +64,7 @@ public class V2JiraConfiguration {
   private boolean autoClose;
   @XmlElement(name = "auto-close-words")
   @XmlJavaTypeAdapter(XmlStringMapAdapter.class)
-  private Map<String,String> autoCloseWords = DEFAULT_AUTO_CLOSE_WORDS;
+  private Map<String,String> autoCloseWords = new HashMap<>(DEFAULT_AUTO_CLOSE_WORDS);
 
   public void copyTo(JiraConfiguration v3JiraConfig) {
     v3JiraConfig.setUrl(url);

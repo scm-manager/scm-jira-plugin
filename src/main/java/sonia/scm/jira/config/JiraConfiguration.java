@@ -36,6 +36,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -82,7 +83,7 @@ public class JiraConfiguration implements Validateable {
 
   /** set of auto close words */
   @XmlElement(name = "auto-close-words")
-  private Map<String,String> autoCloseWords = DEFAULT_AUTO_CLOSE_WORDS;
+  private Map<String,String> autoCloseWords = new HashMap<>(DEFAULT_AUTO_CLOSE_WORDS);
 
   /**
    * Returns {@code true} if the configuration is valid.
@@ -99,6 +100,6 @@ public class JiraConfiguration implements Validateable {
     if (autoCloseWords == null) {
       return Collections.emptyMap();
     }
-    return autoCloseWords;
+    return Collections.unmodifiableMap(autoCloseWords);
   }
 }
