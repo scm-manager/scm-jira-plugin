@@ -62,18 +62,23 @@ public class RestApi {
       .request();
 
     if (!response.isSuccessful()) {
-      throw new JiraException("failed to add comment to issue " + issueId);
+      fail("failed to add comment to %s", issueId, response);
     } else {
       LOG.debug("successfully added comment to issue {}", issueId);
     }
   }
 
   public Collection<RestTransition> getTransitions(String issueId) throws IOException {
-    return client.get(transitionsUrl(issueId))
+    AdvancedHttpResponse response = client.get(transitionsUrl(issueId))
       .spanKind("Jira")
       .basicAuth(configuration.getUsername(), configuration.getPassword())
-      .request()
-      .contentFromJson(RestTransitions.class)
+      .request();
+
+    if (!response.isSuccessful()) {
+      fail("failed to retrieve transitions from %s", issueId, response);
+    }
+
+    return response.contentFromJson(RestTransitions.class)
       .getTransitions();
   }
 
@@ -91,10 +96,15 @@ public class RestApi {
       .basicAuth(configuration.getUsername(), configuration.getPassword())
       .jsonContent(new RestDoTransition(transitionId))
       .request();
+
     if (!response.isSuccessful()) {
-      throw new JiraException("failed to change transition on issue ".concat(issueId));
+      fail("failed to change transition on issue %s", issueId, response);
     } else {
       LOG.debug("successfully changed transition on issue {}", issueId);
     }
+  }
+
+  private void fail(String message, String issueId, AdvancedHttpResponse response) throws JiraException {
+    throw new JiraException(String.format(message, issueId) + ", return code " + response.getStatus());
   }
 }
