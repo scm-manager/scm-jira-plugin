@@ -99,8 +99,8 @@ type Mapping = {
 
 const convert = (mappings: Record<string, string>): Mapping[] => {
   return Object.keys(mappings).map(name => ({
-    transition: name,
-    keywords: mappings[name]
+    transition: mappings[name],
+    keywords: name
   }));
 };
 
