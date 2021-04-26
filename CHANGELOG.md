@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+### Fixed
+- Swapping of transition and keywords after save ([#19](https://github.com/scm-manager/scm-jira-plugin/issues/19) and [#20](https://github.com/scm-manager/scm-jira-plugin/pull/20)) 
+
 ## 3.0.0 - 2021-04-22
 ### Fixed
 - Repository specific configuration ([#17](https://github.com/scm-manager/scm-jira-plugin/pull/17))

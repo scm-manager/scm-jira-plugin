@@ -45,7 +45,7 @@ const VCenteredTd = styled.td`
 const MappingForm: FC<MappingProps> = ({ mapping, remove, update }) => {
   const [t] = useTranslation("plugins");
 
-  const ontransitionChange = (value: string) => {
+  const onTransitionChange = (value: string) => {
     update({
       transition: value,
       keywords: mapping.keywords
@@ -72,7 +72,7 @@ const MappingForm: FC<MappingProps> = ({ mapping, remove, update }) => {
       <td>
         <InputField
           className="is-grouped"
-          onChange={ontransitionChange}
+          onChange={onTransitionChange}
           value={mapping.transition}
           placeholder={t("scm-jira-plugin.form.autoCloseMapping.transition")}
         />
@@ -112,13 +112,13 @@ const AutoCloseWordMapping: FC<Props> = props => {
     setMappings(newMappings);
     const record: Record<string, string> = {};
     newMappings.forEach(mapping => {
-      record[mapping.transition] = mapping.keywords;
+      record[mapping.keywords] = mapping.transition;
     });
     props.onChange(record);
   };
 
   const addMapping = () => {
-    onChange([...mappings, { transition: "", keywords: "" }]);
+    onChange([...mappings, { keywords: "", transition: "" }]);
   };
 
   const updateMapping = (index: number) => {
