@@ -41,6 +41,7 @@ scmPlugin {
   description = "Integrates Atlassian JIRA to SCM-Manager"
   author = "Cloudogu GmbH"
   category = "Issue Tracker"
+  avatarUrl = '/images/jira-logo.svg'
 
   openapi {
     packages = [
