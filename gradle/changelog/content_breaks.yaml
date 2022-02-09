@@ -1,0 +1,2 @@
+- type: fixed
+  description: Shrink input fields within table ((#36)[https://github.com/scm-manager/scm-jira-plugin/pull/36])
