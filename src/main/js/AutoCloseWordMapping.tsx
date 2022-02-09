@@ -94,10 +94,6 @@ const MappingForm: FC<MappingProps> = ({ mapping, remove, update }) => {
   );
 };
 
-const AddMappingButton = styled(AddButton)`
-  float: right;
-`;
-
 type Mapping = {
   transition: string;
   keywords: string;
@@ -171,7 +167,7 @@ const AutoCloseWordMapping: FC<Props> = props => {
           </tbody>
         </table>
       )}
-      <AddMappingButton label={t("scm-jira-plugin.form.autoCloseMapping.add")} action={addMapping} />
+      <AddButton className="is-align-self-flex-end" label={t("scm-jira-plugin.form.autoCloseMapping.add")} action={addMapping} />
     </>
   );
 };
