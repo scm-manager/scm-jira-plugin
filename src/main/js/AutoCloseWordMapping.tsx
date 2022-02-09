@@ -37,6 +37,12 @@ type MappingProps = {
   update: (mapping: Mapping) => void;
 };
 
+const ShrinkedInputField = styled(InputField)`
+  &.field.is-grouped > .control {
+    flex-shrink: inherit;
+  }
+`;
+
 const VCenteredTd = styled.td`
   display: table-cell;
   vertical-align: middle !important;
@@ -62,7 +68,7 @@ const MappingForm: FC<MappingProps> = ({ mapping, remove, update }) => {
   return (
     <tr>
       <td>
-        <InputField
+        <ShrinkedInputField
           className="is-grouped"
           onChange={onKeywordsChange}
           value={mapping.keywords}
@@ -70,7 +76,7 @@ const MappingForm: FC<MappingProps> = ({ mapping, remove, update }) => {
         />
       </td>
       <td>
-        <InputField
+        <ShrinkedInputField
           className="is-grouped"
           onChange={onTransitionChange}
           value={mapping.transition}
@@ -142,10 +148,8 @@ const AutoCloseWordMapping: FC<Props> = props => {
         <Help message={t("scm-jira-plugin.form.autoCloseMapping.help")} />
       </h3>
       {!mappings || mappings.length === 0 ? (
-        <Notification type="info">
-          {t("scm-jira-plugin.form.autoCloseMapping.no-mapping")}
-        </Notification>
-        ) : (
+        <Notification type="info">{t("scm-jira-plugin.form.autoCloseMapping.no-mapping")}</Notification>
+      ) : (
         <table className="card-table table is-hoverable is-fullwidth">
           <thead>
             <tr>
@@ -157,7 +161,7 @@ const AutoCloseWordMapping: FC<Props> = props => {
                 {t("scm-jira-plugin.form.autoCloseMapping.transition")}
                 <Help message={t("scm-jira-plugin.form.autoCloseMapping.transitionHelp")} />
               </th>
-              <th/>
+              <th />
             </tr>
           </thead>
           <tbody>
