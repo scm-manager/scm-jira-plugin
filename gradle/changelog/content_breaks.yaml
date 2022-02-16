@@ -1,4 +1,4 @@
 - type: fixed
-  description: Shrink input fields within table ((#36)[https://github.com/scm-manager/scm-jira-plugin/pull/36])
+  description: Shrink input fields within table ([#36](https://github.com/scm-manager/scm-jira-plugin/pull/36))
 - type: fixed
-  description: Floating of 'add mapping'-button ((#36)[https://github.com/scm-manager/scm-jira-plugin/pull/36])
+  description: Floating of 'add mapping'-button ([#36](https://github.com/scm-manager/scm-jira-plugin/pull/36))
