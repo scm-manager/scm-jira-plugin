@@ -37,12 +37,6 @@ type MappingProps = {
   update: (mapping: Mapping) => void;
 };
 
-const ShrinkedInputField = styled(InputField)`
-  &.field.is-grouped > .control {
-    flex-shrink: inherit;
-  }
-`;
-
 const VCenteredTd = styled.td`
   display: table-cell;
   vertical-align: middle !important;
@@ -68,23 +62,23 @@ const MappingForm: FC<MappingProps> = ({ mapping, remove, update }) => {
   return (
     <tr>
       <td>
-        <ShrinkedInputField
-          className="is-grouped"
+        <InputField
+          className="m-0"
           onChange={onKeywordsChange}
           value={mapping.keywords}
           placeholder={t("scm-jira-plugin.form.autoCloseMapping.keywords")}
         />
       </td>
       <td>
-        <ShrinkedInputField
-          className="is-grouped"
+        <InputField
+          className="m-0"
           onChange={onTransitionChange}
           value={mapping.transition}
           placeholder={t("scm-jira-plugin.form.autoCloseMapping.transition")}
         />
       </td>
       <VCenteredTd>
-        <a onClick={remove} className={"pointer"} title={t("scm-jira-plugin.form.autoCloseMapping.remove")}>
+        <a onClick={remove} className="pointer" title={t("scm-jira-plugin.form.autoCloseMapping.remove")}>
           <span className="icon is-small">
             <Icon name="trash" color="inherit" />
           </span>
