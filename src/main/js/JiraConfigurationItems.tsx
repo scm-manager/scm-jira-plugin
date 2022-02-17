@@ -169,7 +169,7 @@ class JiraConfigurationItems extends React.Component<Props, State> {
               />
             </div>
             {this.state.autoClose ? (
-              <div className="column is-full">
+              <div className="column is-full is-flex is-flex-direction-column">
                 <AutoCloseWordMapping mappings={this.state.autoCloseWords} onChange={this.autoCloseWordChanged} />
               </div>
             ) : null}

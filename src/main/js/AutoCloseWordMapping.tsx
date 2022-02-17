@@ -63,7 +63,7 @@ const MappingForm: FC<MappingProps> = ({ mapping, remove, update }) => {
     <tr>
       <td>
         <InputField
-          className="is-grouped"
+          className="m-0"
           onChange={onKeywordsChange}
           value={mapping.keywords}
           placeholder={t("scm-jira-plugin.form.autoCloseMapping.keywords")}
@@ -71,14 +71,14 @@ const MappingForm: FC<MappingProps> = ({ mapping, remove, update }) => {
       </td>
       <td>
         <InputField
-          className="is-grouped"
+          className="m-0"
           onChange={onTransitionChange}
           value={mapping.transition}
           placeholder={t("scm-jira-plugin.form.autoCloseMapping.transition")}
         />
       </td>
       <VCenteredTd>
-        <a onClick={remove} className={"pointer"} title={t("scm-jira-plugin.form.autoCloseMapping.remove")}>
+        <a onClick={remove} className="pointer" title={t("scm-jira-plugin.form.autoCloseMapping.remove")}>
           <span className="icon is-small">
             <Icon name="trash" color="inherit" />
           </span>
@@ -87,10 +87,6 @@ const MappingForm: FC<MappingProps> = ({ mapping, remove, update }) => {
     </tr>
   );
 };
-
-const AddMappingButton = styled(AddButton)`
-  float: right;
-`;
 
 type Mapping = {
   transition: string;
@@ -142,10 +138,8 @@ const AutoCloseWordMapping: FC<Props> = props => {
         <Help message={t("scm-jira-plugin.form.autoCloseMapping.help")} />
       </h3>
       {!mappings || mappings.length === 0 ? (
-        <Notification type="info">
-          {t("scm-jira-plugin.form.autoCloseMapping.no-mapping")}
-        </Notification>
-        ) : (
+        <Notification type="info">{t("scm-jira-plugin.form.autoCloseMapping.no-mapping")}</Notification>
+      ) : (
         <table className="card-table table is-hoverable is-fullwidth">
           <thead>
             <tr>
@@ -157,7 +151,7 @@ const AutoCloseWordMapping: FC<Props> = props => {
                 {t("scm-jira-plugin.form.autoCloseMapping.transition")}
                 <Help message={t("scm-jira-plugin.form.autoCloseMapping.transitionHelp")} />
               </th>
-              <th/>
+              <th />
             </tr>
           </thead>
           <tbody>
@@ -167,7 +161,7 @@ const AutoCloseWordMapping: FC<Props> = props => {
           </tbody>
         </table>
       )}
-      <AddMappingButton label={t("scm-jira-plugin.form.autoCloseMapping.add")} action={addMapping} />
+      <AddButton className="is-align-self-flex-end" label={t("scm-jira-plugin.form.autoCloseMapping.add")} action={addMapping} />
     </>
   );
 };

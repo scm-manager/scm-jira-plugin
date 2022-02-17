@@ -34,7 +34,7 @@
         "keywords": "Keywords",
         "keywordsHelp": "Comma separated list of keywords which are mapped to the Jira transition e.g.: closes, closing",
         "no-mapping": "No mappings defined",
-        "add": "Add mapping",
+        "add": "Add Mapping",
         "remove": "Remove mapping"
       }
     },
