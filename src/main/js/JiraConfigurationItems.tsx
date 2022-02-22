@@ -168,6 +168,16 @@ class JiraConfigurationItems extends React.Component<Props, State> {
                 onChange={this.valueChangeHandler}
               />
             </div>
+            <div className="column is-full">
+              <Checkbox
+                name="disableStateChangeByCommit"
+                label={t("scm-jira-plugin.form.disableStateChangeByCommit")}
+                helpText={t("scm-jira-plugin.form.disableStateChangeByCommitHelp")}
+                checked={this.state.disableStateChangeByCommit}
+                disabled={readOnly || !this.state.updateIssues}
+                onChange={this.valueChangeHandler}
+              />
+            </div>
             {this.state.autoClose ? (
               <div className="column is-full is-flex is-flex-direction-column">
                 <AutoCloseWordMapping mappings={this.state.autoCloseWords} onChange={this.autoCloseWordChanged} />

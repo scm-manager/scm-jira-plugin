@@ -26,6 +26,8 @@
       "roleLevelHelp": "Defines for which Project Role the comments are visible. Note: The name must be a valid jira role name.",
       "autoClose": "Enable Status Modification",
       "autoCloseHelp": "Enable the status modification function. SCM-Manager searches for issue keys and status modification words. If both are found in a message SCM-Manager changes the status of the issue. Note: It is necessary to configure the username and password.",
+      "disableStateChangeByCommit": "Disable issue state changes by commits",
+      "disableStateChangeByCommitHelp": "Disables the state changes by commits. If this is activated, only pull requests will trigger state changes.",
       "autoCloseMapping": {
         "title": "Jira transition mapping",
         "help": "Map keywords to Jira transitions in order to trigger state changes with those keywords.",

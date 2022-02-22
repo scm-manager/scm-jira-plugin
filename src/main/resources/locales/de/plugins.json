@@ -26,6 +26,8 @@
       "roleLevelHelp": "Definiert, welche Projektrollen die Kommentare sehen dürfen. Hinweis: der Rollenname muss eine valide Jira Rolle sein.",
       "autoClose": "Ticket Statusänderungen erlauben",
       "autoCloseHelp": "Aktiviert die Statusänderungsfunktion. Der SCM-Manager sucht nach Ticket Schlüsseln und Status Modifizierungswörtern in Commit Nachrichten. Wenn beides in einer Commit Nachricht gefunden wurde, dann verändert der SCM-Manager den Status des Jira Tickets entsprechend. Hinweis: Der Jira Benutzername und das Jira Passwort müssen unten konfiguriert werden.",
+      "disableStateChangeByCommit": "Deaktiviere Statusänderungen durch Commits",
+      "disableStateChangeByCommitHelp": "Deaktiviert Statusänderungen aufgrund von Commits. Wenn diese Options aktiviert ist, werden Statusänderungen nur noch aufgrund von Pull Requests durchgeführt.",
       "autoCloseMapping": {
         "title": "Jira Statusübergangs Mapping",
         "help": "Ordne Schlüsselwörter einem Jira Statusübergangs zu, um Zustandsänderungen mit diesen Schlüsselwörtern auszulösen.",
