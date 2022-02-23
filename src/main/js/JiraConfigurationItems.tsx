@@ -195,7 +195,7 @@ class JiraConfigurationItems extends React.Component<Props, State> {
     const { t, includeGlobalConfigItem, readOnly } = this.props;
     if (includeGlobalConfigItem) {
       return (
-        <div className="column is-half">
+        <div className="column is-full">
           <Checkbox
             name="disableRepositoryConfiguration"
             label={t("scm-jira-plugin.form.disableRepositoryConfiguration")}
