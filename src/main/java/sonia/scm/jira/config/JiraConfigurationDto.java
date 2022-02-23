@@ -43,6 +43,7 @@ public class JiraConfigurationDto extends HalRepresentation {
   private String roleLevel;
 
   private boolean autoClose;
+  private boolean disableStateChangeByCommit;
   private Map<String,String> autoCloseWords;
 
   @Override
