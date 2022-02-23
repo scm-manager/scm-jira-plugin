@@ -77,6 +77,11 @@ public class JiraStateChanger implements StateChanger {
     return keyWords;
   }
 
+  @Override
+  public boolean isStateChangeActivatedForCommits() {
+    return !configuration.isDisableStateChangeByCommit();
+  }
+
   private Map<String,String> createMapping() {
     Map<String, String> mapping = new HashMap<>();
     for (Map.Entry<String,String> e : configuration.getAutoCloseWords().entrySet()) {

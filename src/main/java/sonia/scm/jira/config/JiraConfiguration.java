@@ -85,6 +85,10 @@ public class JiraConfiguration implements Validateable {
   @XmlElement(name = "auto-close-words")
   private Map<String,String> autoCloseWords = new HashMap<>(DEFAULT_AUTO_CLOSE_WORDS);
 
+  /** disable state change for commits */
+  @XmlElement(name = "disable-state-change-by-commit")
+  private boolean disableStateChangeByCommit;
+
   /**
    * Returns {@code true} if the configuration is valid.
    *

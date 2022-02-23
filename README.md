@@ -13,6 +13,13 @@ This plugin integrates Atlassian JIRA to SCM-Manager.
 
 Find out how this plugin can be used on the [user documentation page](https://scm-manager.org/plugins/scm-jira-plugin/docs).
 
+## Local development
+To test this plugin against a local running Jira server you either need a Jira developer license or you can start a license-free server using the atlassian-plugin-sdk.
+The easiest way to start the license-free server is to check out this [plugin](https://github.com/scm-manager/jira-scm-plugin) and execute `atlas-run` in your terminal.
+After it has downloaded half of the internet, your Jira server should be available at `http://localhost:2990/jira`. Username and password are both `admin`.
+
+Attention: The server is pretty unstable and should be used as little as possible.
+
 ## Build and testing
 
 The plugin can be compiled and packaged with the following tasks:

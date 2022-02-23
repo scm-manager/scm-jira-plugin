@@ -32,7 +32,8 @@ export type JiraConfiguration = HalRepresentation & {
   password: string;
   roleLevel: string;
   autoClose: boolean;
-  autoCloseWords: Record<string,string>;
+  disableStateChangeByCommit: boolean;
+  autoCloseWords: Record<string, string>;
 
   disableRepositoryConfiguration: boolean;
 };

@@ -36,6 +36,9 @@ Diese Schlüsselwörter kann man in Form einer kommaseparierten Liste angegeben.
 Zum Beispiel könnte man für den Status "Done" folgende Schlüsselwörter angeben: "closes, closing".
 Damit würde der Text "Closes Bug SCM-42" ebenfalls das Ticket SCM-42 auf den Status "Done" setzen.
 
+Wenn Statusübergänge nur aufgrund von Pull Requests und nicht aufgrund von Commits durchgeführt werden soll, kann
+zusätzlich die Option "Deaktiviere Statusänderungen durch Commits" aktiviert werden.
+
 > **Wichtig:** Der konfigurierte Jira Benutzer benötigt Berechtigungen, um den Status von Tickets zu ändern.
 
 ![Jira Konfiguration](assets/config.png)

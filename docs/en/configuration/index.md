@@ -36,6 +36,9 @@ These keywords can be specified in the form of a comma-separated list.
 For example, for the status "Done" you could specify the following keywords: "closes, closing".
 Thus, the text "Closes Bug SCM-42" would also set the issues SCM-42 to the status "Done".
 
+If the status should only be updated due to pull requests and not by commits, the additional option "Disable issue
+state changes by commits" can be selected.
+
 > **Important:** The configured Jira user needs permissions to change the status of issues.
 
 ![Jira Configuration](assets/config.png)
