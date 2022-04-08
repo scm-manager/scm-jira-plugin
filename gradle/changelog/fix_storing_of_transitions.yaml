@@ -1,0 +1,2 @@
+- type: fixed
+  description: Fix storing of changed transitions ([#47](https://github.com/scm-manager/scm-jira-plugin/pull/47))
