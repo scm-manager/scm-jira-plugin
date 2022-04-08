@@ -1,6 +1,5 @@
 {
   "autoClose": true,
-  "autoCloseWords": null,
   "mailAddress": null,
   "password": null,
   "restApiEnabled": false,
@@ -13,5 +12,6 @@
   "username": null,
   "commentWrap": "",
   "commentMonospace": false,
-  "disableRepositoryConfiguration": false
+  "disableRepositoryConfiguration": false,
+  "autoCloseWords":{"fix":"done","start":"start issue"}
 }

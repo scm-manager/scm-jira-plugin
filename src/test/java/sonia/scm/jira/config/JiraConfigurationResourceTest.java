@@ -112,6 +112,7 @@ public class JiraConfigurationResourceTest {
     dispatcher.invoke(readRequest, readResponse);
     assertEquals(HttpServletResponse.SC_OK, readResponse.getStatus());
     assertTrue(readResponse.getContentAsString().contains("\"autoClose\":true"));
+    assertTrue(readResponse.getContentAsString().contains("\"start\":\"start issue\""));
   }
 
   @Test

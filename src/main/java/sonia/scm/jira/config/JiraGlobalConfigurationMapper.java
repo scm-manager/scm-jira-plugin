@@ -47,7 +47,6 @@ public abstract class JiraGlobalConfigurationMapper extends BaseMapper {
   @Mapping(target = "attributes", ignore = true)
   public abstract JiraGlobalConfigurationDto map(JiraGlobalConfiguration config);
 
-  @Mapping(target = "autoCloseWords", ignore = true)
   public abstract JiraGlobalConfiguration map(JiraGlobalConfigurationDto dto, @Context JiraConfiguration oldConfiguration);
 
   @AfterMapping
