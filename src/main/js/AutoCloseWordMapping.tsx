@@ -23,7 +23,7 @@
  */
 import React, { FC, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { InputField, AddButton, Icon, Help, Notification } from "@scm-manager/ui-components";
+import { InputField, AddButton, Icon, Help, Notification, Button } from "@scm-manager/ui-components";
 import styled from "styled-components";
 
 type Props = {
@@ -61,28 +61,30 @@ const MappingForm: FC<MappingProps> = ({ mapping, remove, update }) => {
 
   return (
     <tr>
-      <td>
+      <VCenteredTd>
         <InputField
           className="m-0"
           onChange={onKeywordsChange}
           value={mapping.keywords}
           placeholder={t("scm-jira-plugin.form.autoCloseMapping.keywords")}
         />
-      </td>
-      <td>
+      </VCenteredTd>
+      <VCenteredTd>
         <InputField
           className="m-0"
           onChange={onTransitionChange}
           value={mapping.transition}
           placeholder={t("scm-jira-plugin.form.autoCloseMapping.transition")}
         />
-      </td>
+      </VCenteredTd>
       <VCenteredTd>
-        <a onClick={remove} className="pointer" title={t("scm-jira-plugin.form.autoCloseMapping.remove")}>
-          <span className="icon is-small">
-            <Icon name="trash" color="inherit" />
-          </span>
-        </a>
+        <Button
+          color="text"
+          icon="trash"
+          action={remove}
+          title={t("scm-jira-plugin.form.autoCloseMapping.remove")}
+          className="px-2"
+        />
       </VCenteredTd>
     </tr>
   );

@@ -1,0 +1,2 @@
+- type: fixed
+  description: Replace custom styling with link styled button ([#51](https://github.com/scm-manager/scm-jira-plugin/pull/51))
