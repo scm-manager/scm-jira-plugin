@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 3.1.2 - 2022-05-13
+### Fixed
+- Replace custom styling with link styled button ([#51](https://github.com/scm-manager/scm-jira-plugin/pull/51))
+
 ## 3.1.1 - 2022-04-29
 ### Fixed
 - Fix storing of changed transitions ([#47](https://github.com/scm-manager/scm-jira-plugin/pull/47))
