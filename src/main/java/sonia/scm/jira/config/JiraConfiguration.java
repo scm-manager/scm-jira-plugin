@@ -27,8 +27,8 @@ package sonia.scm.jira.config;
 import com.google.common.collect.ImmutableMap;
 import lombok.Data;
 import sonia.scm.Validateable;
-import sonia.scm.issuetracker.XmlEncryptionAdapter;
 import sonia.scm.util.Util;
+import sonia.scm.xml.XmlEncryptionAdapter;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
