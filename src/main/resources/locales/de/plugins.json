@@ -46,7 +46,7 @@
     "configuration": {
       "read,write": {
         "jira": {
-          "displayName": "Globale Jira Konfiguiration ändern",
+          "displayName": "Globale Jira Konfiguration ändern",
           "description": "Darf die globale Jira Konfiguration verändern"
         }
       }
@@ -54,8 +54,8 @@
     "repository": {
       "jira": {
         "*": {
-          "displayName": "Repository-spezifische Jira Konfiguiration ändern",
-          "description": "Darf die repository-spezifischen Jira Konfiguration verändern"
+          "displayName": "Repository-spezifische Jira Konfiguration ändern",
+          "description": "Darf die repository-spezifische Jira Konfiguration verändern"
         }
       }
     }
