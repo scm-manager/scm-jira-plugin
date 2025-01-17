@@ -20,68 +20,33 @@ import com.google.common.base.MoreObjects;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import lombok.Getter;
 
 /**
  * Jira rest api visibility of a comment.
  *
  * @author Sebastian Sdorra
  */
+@Getter
 @XmlRootElement(name = "visibility")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class RestVisibility
-{
-
-  /**
-   * Constructs a new {@link RestVisibility}.
-   */
-  RestVisibility()
-  {
+public class RestVisibility {
+  RestVisibility() {
   }
 
-  /**
-   * Constructs a new {@link RestVisibility}.
-   * 
-   * @param value name of role
-   */
-  public RestVisibility(String value)
-  {
+  private final RestVisibilityType type = RestVisibilityType.ROLE;
+
+  private String value;
+
+  public RestVisibility(String value) {
     this.value = value;
   }
 
   @Override
-  public String toString()
-  {
-    //J-
+  public String toString() {
     return MoreObjects.toStringHelper(this)
-                  .add("type", type)
-                  .add("value", value)
-                  .toString();
-    //J+
+      .add("type", type)
+      .add("value", value)
+      .toString();
   }
-
-  /**
-   * Returns the type of visibility value. The only supported value is currently role.
-   * 
-   * @return type of visibility value
-   */
-  public String getType()
-  {
-    return type;
-  }
-
-  /**
-   * Returns value of visibility. The only supported values are currently role names.
-   * 
-   * @return value of visibility
-   */
-  public String getValue()
-  {
-    return value;
-  }
-  
-  /** type of visibility */
-  private final String type = "role";
-  
-  /** value of visibility */
-  private String value;
 }

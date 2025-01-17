@@ -29,9 +29,9 @@
       "disableStateChangeByCommit": "Deaktiviere Statusänderungen durch Commits",
       "disableStateChangeByCommitHelp": "Deaktiviert Statusänderungen aufgrund von Commits. Wenn diese Options aktiviert ist, werden Statusänderungen nur noch aufgrund von Pull Requests durchgeführt.",
       "autoCloseMapping": {
-        "title": "Jira Statusübergangs Mapping",
-        "help": "Ordne Schlüsselwörter einem Jira Statusübergangs zu, um Zustandsänderungen mit diesen Schlüsselwörtern auszulösen.",
-        "transition": "Jira Statusübergangs",
+        "title": "Jira-Mapping für Statusübergänge",
+        "help": "Ordne Schlüsselwörter einem Jira Statusübergang zu, um Zustandsänderungen mit diesen Schlüsselwörtern auszulösen.",
+        "transition": "Jira Statusübergänge",
         "transitionHelp": "Name des Jira Statusübergangs z.B.: Done",
         "keywords": "Schlüsselwörter",
         "keywordsHelp": "Kommagetrennte Liste von Schlüsselwörtern, die dem Jira Statusübergang zugeordnet werden sollen, z. B.: closes, closing",

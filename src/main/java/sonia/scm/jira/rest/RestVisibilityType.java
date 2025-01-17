@@ -16,37 +16,23 @@
 
 package sonia.scm.jira.rest;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.collect.Lists;
+/**
+ * Visibility type for {@link RestComment} object, not to be confused with the internal flag.
+ * Currently, the only type supported are roles with their values as concrete role names.
+ *
+ * @see RestComment
+ */
+public enum RestVisibilityType {
+  ROLE("role");
 
-import java.util.Iterator;
-import java.util.List;
-
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import lombok.Getter;
-
-@Getter
-@XmlRootElement(name = "comments")
-@XmlAccessorType(XmlAccessType.FIELD)
-public class RestComments implements Iterable<RestComment> {
-
-  RestComments() {
+  RestVisibilityType(String name) {
+    this.name = name;
   }
 
-  private List<RestComment> comments = Lists.newArrayList();
-
-
-  @Override
-  public Iterator<RestComment> iterator() {
-    return comments.iterator();
-  }
+  private final String name;
 
   @Override
   public String toString() {
-    return MoreObjects.toStringHelper(this)
-      .add("comments", comments)
-      .toString();
+    return name;
   }
 }

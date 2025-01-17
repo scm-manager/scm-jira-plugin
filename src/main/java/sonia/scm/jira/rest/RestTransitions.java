@@ -29,62 +29,31 @@ import java.util.List;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import lombok.Getter;
 
 /**
  * Wrapper object jira rest transitions.
  *
  * @author Sebastian Sdorra
  */
+@Getter
 @XmlRootElement(name = "transitions")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class RestTransitions implements Iterable<RestTransition>
-{
- 
-  /**
-   * Constructs a new {@link RestTransitions}.
-   */
-  RestTransitions() {}
+public class RestTransitions implements Iterable<RestTransition> {
+  RestTransitions() {
+  }
 
-  /**
-   * Returns an {@link Iterator} over a list of jira rest transitions.
-   * 
-   * @return {@link Iterator} for transitions
-   */
+  private List<RestTransition> transitions = Lists.newArrayList();
+
   @Override
-  public Iterator<RestTransition> iterator()
-  {
-    return getTransitions().iterator();
+  public Iterator<RestTransition> iterator() {
+    return transitions.iterator();
   }
 
   @Override
-  public String toString()
-  {
-    //J-
+  public String toString() {
     return MoreObjects.toStringHelper(this)
-                  .add("transitions", transitions)
-                  .toString();
-    //J+
+      .add("transitions", transitions)
+      .toString();
   }
-
-  //~--- get methods ----------------------------------------------------------
-
-  /**
-   * Returns a {@link List} jira rest transitions.
-   * 
-   * @return {@link List} jira rest transitions
-   */
-  public List<RestTransition> getTransitions()
-  {
-    if (transitions == null)
-    {
-      transitions = Lists.newArrayList();
-    }
-
-    return transitions;
-  }
-
-  //~--- fields ---------------------------------------------------------------
-
-  /** list of jira rest transitions */
-  private List<RestTransition> transitions;
 }

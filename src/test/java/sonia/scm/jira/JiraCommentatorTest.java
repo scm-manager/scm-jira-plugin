@@ -26,6 +26,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import sonia.scm.jira.config.JiraConfiguration;
 import sonia.scm.jira.rest.RestApi;
 import sonia.scm.jira.rest.RestComment;
+import sonia.scm.jira.rest.RestVisibility;
+import sonia.scm.jira.rest.RestVisibilityType;
+import sonia.scm.jira.rest.property.RestInternalProperty;
 
 import java.io.IOException;
 
@@ -38,7 +41,6 @@ class JiraCommentatorTest {
 
   @Mock
   private RestApi api;
-
 
   private JiraConfiguration configuration;
 
@@ -73,9 +75,15 @@ class JiraCommentatorTest {
 
     RestComment comment = commentAndVerify("SCM-4121", "Awesome Shit");
     assertThat(comment.getVisibility()).isNotNull().satisfies(restVisibility -> {
-      assertThat(restVisibility.getType()).isEqualTo("role");
+      assertThat(restVisibility.getType()).isEqualTo(RestVisibilityType.ROLE);
       assertThat(restVisibility.getValue()).isEqualTo("vogon");
     });
+  }
+
+  @Test
+  void shouldSetInternalPropertyByDefault() throws IOException {
+    RestComment comment = commentAndVerify("SCM-36", "RIP");
+    assertThat(comment.getProperties()).containsExactly(new RestInternalProperty());
   }
 
   private RestComment commentAndVerify(String issueKey, String content) throws IOException {

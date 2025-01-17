@@ -16,8 +16,7 @@
 
 package sonia.scm.jira.rest;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import sonia.scm.jira.JiraException;
 import sonia.scm.jira.config.JiraConfiguration;
 import sonia.scm.net.ahc.AdvancedHttpClient;
@@ -27,9 +26,11 @@ import sonia.scm.util.HttpUtil;
 import java.io.IOException;
 import java.util.Collection;
 
+/**
+ * This class represents an api of a Jira instance.
+ */
+@Slf4j
 public class RestApi {
-
-  private static final Logger LOG = LoggerFactory.getLogger(RestApi.class);
 
   private final AdvancedHttpClient client;
   private final JiraConfiguration configuration;
@@ -41,12 +42,13 @@ public class RestApi {
     this.baseUrl = createBaseUrl(configuration);
   }
 
-  private String createBaseUrl(JiraConfiguration configuration) {
-    return HttpUtil.concatenate(configuration.getUrl(), "rest", "api", "2", "issue");
-  }
-
+  /**
+   * @param issueId Usually an abbreviation and a number; e.g. <tt>RTT-1</tt>
+   * @param comment Prepared {@link RestComment} instance.
+   * @throws IOException In case of unexpected request failures.
+   */
   public void addComment(String issueId, RestComment comment) throws IOException {
-    LOG.info("add comment to issue {}", issueId);
+    log.info("add comment to issue {}", issueId);
     AdvancedHttpResponse response = client.post(commentUrl(issueId))
       .spanKind("Jira")
       .basicAuth(configuration.getUsername(), configuration.getPassword())
@@ -56,11 +58,36 @@ public class RestApi {
     if (!response.isSuccessful()) {
       fail("failed to add comment to %s", issueId, response);
     } else {
-      LOG.debug("successfully added comment to issue {}", issueId);
+      log.debug("successfully added comment to issue {}", issueId);
     }
   }
 
+  /**
+   * @param issueId Usually an abbreviation and a number; e.g. <tt>RTT-1</tt>
+   * @param transitionId <tt>Done</tt>, <tt>in progress</tt>, etc.
+   * @throws IOException In case of unexpected request failures.
+   */
+  public void changeState(String issueId, String transitionId) throws IOException {
+    log.info("attempting to change state of issue {}", issueId);
+    AdvancedHttpResponse response = client.post(transitionsUrl(issueId))
+      .spanKind("Jira")
+      .basicAuth(configuration.getUsername(), configuration.getPassword())
+      .jsonContent(new RestDoTransition(transitionId))
+      .request();
+
+    if (!response.isSuccessful()) {
+      fail("failed to change state of issue %s", issueId, response);
+    } else {
+      log.debug("successfully changed state of issue {} to {}", issueId, transitionId);
+    }
+  }
+
+  /**
+   * @param issueId Usually an abbreviation and a number; e.g. <tt>RTT-1</tt>
+   * @throws IOException In case of unexpected request failures.
+   */
   public Collection<RestTransition> getTransitions(String issueId) throws IOException {
+    log.debug("get transitions for issue {}", issueId);
     AdvancedHttpResponse response = client.get(transitionsUrl(issueId))
       .spanKind("Jira")
       .basicAuth(configuration.getUsername(), configuration.getPassword())
@@ -74,26 +101,16 @@ public class RestApi {
       .getTransitions();
   }
 
+  private String createBaseUrl(JiraConfiguration configuration) {
+    return HttpUtil.concatenate(configuration.getUrl(), "rest", "api", "2", "issue");
+  }
+
   private String commentUrl(String issueId) {
     return HttpUtil.concatenate(baseUrl, issueId, "comment");
   }
 
   private String transitionsUrl(String issueId) {
     return HttpUtil.concatenate(baseUrl, issueId, "transitions");
-  }
-
-  public void changeState(String issueId, String transitionId) throws IOException {
-    AdvancedHttpResponse response = client.post(transitionsUrl(issueId))
-      .spanKind("Jira")
-      .basicAuth(configuration.getUsername(), configuration.getPassword())
-      .jsonContent(new RestDoTransition(transitionId))
-      .request();
-
-    if (!response.isSuccessful()) {
-      fail("failed to change transition on issue %s", issueId, response);
-    } else {
-      LOG.debug("successfully changed transition on issue {}", issueId);
-    }
   }
 
   private void fail(String message, String issueId, AdvancedHttpResponse response) throws JiraException {

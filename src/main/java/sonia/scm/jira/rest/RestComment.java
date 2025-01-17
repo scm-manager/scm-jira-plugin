@@ -20,6 +20,7 @@ package sonia.scm.jira.rest;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
+import sonia.scm.jira.rest.property.RestInternalProperty;
 
 //~--- JDK imports ------------------------------------------------------------
 
@@ -27,98 +28,52 @@ import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import lombok.Getter;
+
 /**
- * Jira rest api comment.
- *
- * @author Sebastian Sdorra
+ * {@link RestComment} represents a comment sent to a Jira instance.<br/>
+ * Note that the properties is realized with a list of {@link RestInternalProperty} instances
+ * so that an array is sent as part of the JSON.
+ * A more abstract and appropriate RestProperty object is not implemented.
  */
+@Getter
 @XmlRootElement(name = "comment")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class RestComment
-{
-  /**
-   * Constructs a new {@link RestComment}.
-   */
-  RestComment() {}
+public class RestComment {
 
-  /**
-   * Constructs a new {@link RestComment}.
-   * 
-   * @param body comment body
-   */
-  public RestComment(String body)
-  {
+  private String body;
+
+  private List<RestInternalProperty> properties = new ArrayList<>();
+
+  private String id;
+
+  private RestVisibility visibility;
+
+  RestComment() {
+  }
+
+  public RestComment(String body) {
     this(body, null);
   }
 
-  /**
-   * Constructs a new {@link RestComment}.
-   * 
-   * @param body comment body
-   * @param role name of role for visibility
-   */
-  public RestComment(String body, String role)
-  {
+  public RestComment(String body, String role) {
     this.body = body;
-    if (!Strings.isNullOrEmpty(role)){
+    this.properties.add(new RestInternalProperty());
+    if (!Strings.isNullOrEmpty(role)) {
       this.visibility = new RestVisibility(role);
     }
   }
-  
-  //~--- methods --------------------------------------------------------------
 
   @Override
-  public String toString()
-  {
-    //J-
+  public String toString() {
     return MoreObjects.toStringHelper(this)
-                  .add("id", id)
-                  .add("body", body)
-                  .add("visibility", visibility)
-                  .toString();
-    //J+
+      .add("id", id)
+      .add("body", body)
+      .add("properties", properties)
+      .add("visibility", visibility)
+      .toString();
   }
-
-  //~--- get methods ----------------------------------------------------------
-
-  /**
-   * Returns body of the comment.
-   *
-   * @return body comment
-   */
-  public String getBody()
-  {
-    return body;
-  }
-
-  /**
-   * Returns the id of the comment.
-   *
-   * @return comment id
-   */
-  public String getId()
-  {
-    return id;
-  }
-
-  /**
-   * Returns visibility of comment.
-   * 
-   * @return visibility of comment
-   */
-  public RestVisibility getVisibility()
-  {
-    return visibility;
-  }
-
-  //~--- fields ---------------------------------------------------------------
-
-  /** comment body */
-  private String body;
-
-  /** id of comment */
-  private String id;
-  
-  /** visibility of comment */
-  private RestVisibility visibility;
 }

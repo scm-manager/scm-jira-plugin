@@ -2,12 +2,12 @@
 title: Configuration
 ---
 
-As usual in SCM Manager 2, there is a global and a repository specific configuration for the Jira plugin.
+As usual in SCM Manager 3, there is a global and a repository specific configuration for the Jira plugin.
 The global configuration applies to all repositories that do not have a specific configuration stored.
 The only difference between the configurations is that the repository-specific configuration can be deactivated in the global configuration.
 
 ### Configuration form
-To connect the SCM-Manager to a Jira instance. the Jira instance url including the context path is required.
+To connect the SCM-Manager to a Jira instance, the Jira instance url including the context path is required.
 If the filter field is left empty, SCM Manager will find issue ids from all Jira projects.
 This can be restricted via the filter field, where a comma-separated list of Jira project abbreviations can be entered.
 
@@ -21,6 +21,10 @@ or a pull request comment.
 Example Commit Message: "SCM-42 Add awesome new feature".
 
 This will generate a comment with this commit message on the Jira issue SCM-42.
+
+This plugin sends comments with an 'internal' flag. This feature is supported by certain projects in Jira Service Management
+and restricts the visibility of these comments on the portal. If this feature is not supported by the project of the ticket, 
+the SCM comments to this ticket are visible to all persons with general access permission.
 
 #### Issue status transitions
 To change the status of an issue via a commit message or a pull request,

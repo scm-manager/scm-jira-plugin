@@ -19,46 +19,18 @@ package sonia.scm.jira.rest;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import lombok.Getter;
 
-/**
- * Wrapper object to handle transition changes.
- *
- * @author Sebastian Sdorra
- */
+@Getter
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class RestDoTransition
-{
-  
-  /**
-   * Constructs a new {@link RestDoTransition}.
-   */
-  RestDoTransition() {}
+public class RestDoTransition {
+  private RestTransition transition;
 
-  /**
-   * Constructs a new {@link RestDoTransition}.
-   * 
-   * @param id transition id
-   */
-  public RestDoTransition(String id)
-  {
+  RestDoTransition() {
+  }
+
+  public RestDoTransition(String id) {
     this.transition = new RestTransition(id);
   }
-
-  //~--- get methods ----------------------------------------------------------
-
-  /**
-   * Returns jira rest transition.
-   * 
-   * @return jira rest transitions
-   */
-  public RestTransition getTransition()
-  {
-    return transition;
-  }
-
-  //~--- fields ---------------------------------------------------------------
-
-  /** wrapped transition */
-  private RestTransition transition;
 }
