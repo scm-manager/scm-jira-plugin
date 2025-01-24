@@ -28,8 +28,9 @@ die Sichtbarkeit der Kommentare im Portal. Falls das Feature nicht unterstützt 
 werden die Kommentare für alle auf das Ticket zugriffsberechtigten Personen angezeigt.
 
 #### Ticket-Statusaktualisierung
-Um den Status eines Tickets über die Nachricht eines Commits oder einem Pull Request zu ändern, 
-kann eine Ticket-ID mit einem Jira-Statusübergang innerhalb eines Satzes verwendet werden.
+Um den Status eines Tickets über die Nachricht eines Commits zu ändern, 
+kann eine Ticket-ID mit einem Jira-Statusübergang innerhalb eines Satzes verwendet werden. 
+Für Pull-Requests wird dieses Feature zurzeit nicht unterstützt.
 
 Beispiel Commit Nachricht: "Bug SCM-42 is done"
 
