@@ -18,7 +18,6 @@ import { ConfigurationBinder as cfgBinder} from "@scm-manager/ui-components";
 import GlobalJiraConfiguration from "./GlobalJiraConfiguration";
 import LocalJiraConfiguration from "./LocalJiraConfiguration";
 import { binder } from "@scm-manager/ui-extensions";
-import React from "react";
 import JiraCommitMessageIssueKeyValidatorConfig from "./JiraCommitMessageIssueKeyValidatorConfig";
 
 cfgBinder.bindGlobal("/jira", "scm-jira-plugin.global.nav-link", "jiraConfig", GlobalJiraConfiguration);

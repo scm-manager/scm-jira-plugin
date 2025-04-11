@@ -15,24 +15,58 @@
  */
 
 import React from "react";
-import { Subtitle, Configuration } from "@scm-manager/ui-components";
+import { Configuration } from "@scm-manager/ui-components";
+import { Subtitle, useDocumentTitle, useDocumentTitleForRepository } from "@scm-manager/ui-core";
 import LocalJiraConfigurationForm from "./LocalJiraConfigurationForm";
-import { withTranslation, WithTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
+import { useRepositoryContext } from "@scm-manager/ui-api";
 
-type Props = WithTranslation & {
+type Props = {
   link: string;
 };
 
-class LocalJiraConfiguration extends React.Component<Props> {
-  render() {
-    const { t, link } = this.props;
-    return (
-      <>
-        <Subtitle subtitle={t("scm-jira-plugin.local.title")} />
-        <Configuration link={link} render={(props: any) => <LocalJiraConfigurationForm {...props} />} />
-      </>
-    );
-  }
+type WithRepositoryProps = Props & {
+  repository: NonNullable<ReturnType<typeof useRepositoryContext>>;
+};
+
+export default function LocalJiraConfiguration({ link }: Props) {
+  const repository = useRepositoryContext();
+
+  return repository ? (
+    <LocalJiraConfigurationWithRepository link={link} repository={repository} />
+  ) : (
+    <LocalJiraConfigurationWithoutRepository link={link} />
+  );
 }
 
-export default withTranslation("plugins")(LocalJiraConfiguration);
+function LocalJiraConfigurationWithRepository({ link, repository }: WithRepositoryProps) {
+  const [t] = useTranslation("plugins");
+
+  useDocumentTitleForRepository(repository, t("scm-jira-plugin.local.title"));
+
+  return (
+    <>
+      <Subtitle subtitle={t("scm-jira-plugin.local.title")} />
+      <Configuration
+        link={link}
+        render={(props: any) => <LocalJiraConfigurationForm {...props} />}
+      />
+    </>
+  );
+}
+
+function LocalJiraConfigurationWithoutRepository({ link }: Props) {
+  const [t] = useTranslation("plugins");
+
+  useDocumentTitle(t("scm-jira-plugin.local.title"));
+
+  return (
+    <>
+      <Subtitle subtitle={t("scm-jira-plugin.local.title")} />
+      <Configuration
+        link={link}
+        render={(props: any) => <LocalJiraConfigurationForm {...props} />}
+      />
+    </>
+  );
+}

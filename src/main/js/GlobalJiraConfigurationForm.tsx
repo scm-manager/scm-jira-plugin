@@ -17,6 +17,8 @@
 import React from "react";
 import JiraConfigurationForm from "./JiraConfigurationForm";
 import { JiraConfiguration } from "./types";
+import { useDocumentTitle } from "@scm-manager/ui-core"
+import {useTranslation} from "react-i18next";
 
 type Props = {
   initialConfiguration: JiraConfiguration;
@@ -24,10 +26,10 @@ type Props = {
   onConfigurationChange: (configuration: JiraConfiguration, valid: boolean) => void;
 };
 
-class GlobalJiraConfigurationForm extends React.Component<Props> {
-  render() {
-    const { readOnly, initialConfiguration, onConfigurationChange } = this.props;
-    return (
+export default function GlobalJiraConfigurationForm({initialConfiguration, readOnly, onConfigurationChange}: Props) {
+  const [t] = useTranslation("plugins");
+  useDocumentTitle(t("scm-jira-plugin.global.title"));
+  return (
       <JiraConfigurationForm
         initialConfiguration={initialConfiguration}
         readOnly={readOnly}
@@ -35,7 +37,4 @@ class GlobalJiraConfigurationForm extends React.Component<Props> {
         onConfigurationChange={onConfigurationChange}
       />
     );
-  }
 }
-
-export default GlobalJiraConfigurationForm;
