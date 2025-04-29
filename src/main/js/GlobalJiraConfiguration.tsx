@@ -14,25 +14,23 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import React from "react";
+import React, { FC } from "react";
 import { Title, Configuration } from "@scm-manager/ui-components";
 import GlobalJiraConfigurationForm from "./GlobalJiraConfigurationForm";
-import { withTranslation, WithTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 
-type Props = WithTranslation & {
+type Props = {
   link: string;
 };
 
-class GlobalJiraConfiguration extends React.Component<Props> {
-  render() {
-    const { t, link } = this.props;
-    return (
-      <>
-        <Title title={t("scm-jira-plugin.global.title")} />
-        <Configuration link={link} render={(props: any) => <GlobalJiraConfigurationForm {...props} />} />
-      </>
-    );
-  }
-}
+const GlobalJiraConfiguration: FC<Props> = ({ link }) => {
+  const [t] = useTranslation("plugins");
+  return (
+    <>
+      <Title title={t("scm-jira-plugin.global.title")} />
+      <Configuration link={link} render={(props: any) => <GlobalJiraConfigurationForm {...props} />} />
+    </>
+  );
+};
 
-export default withTranslation("plugins")(GlobalJiraConfiguration);
+export default GlobalJiraConfiguration;
