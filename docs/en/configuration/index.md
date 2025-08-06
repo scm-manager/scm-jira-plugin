@@ -13,6 +13,7 @@ This can be restricted via the filter field, where a comma-separated list of Jir
 
 #### Create comments
 To create comments in Jira, credentials are required, which should belong to a technical Jira user.
+Either a Jira username and password or an access token can be used.
 This user needs sufficient permissions to create comments on existing issues.
 
 The comments are created on the Jira issue as soon as the issue id is mentioned within a commit message, a pull request,

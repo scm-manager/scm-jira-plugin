@@ -33,6 +33,8 @@ public class JiraConfigurationDto extends HalRepresentation {
   private boolean updateIssues;
   private String username;
   private String password;
+  private String accessToken;
+  private boolean useAccessToken;
   private String roleLevel;
 
   private boolean autoClose;

@@ -14,6 +14,7 @@ Anschließend lässt sich konfigurieren, in welcher Form Jira-Tickets verändert
 
 #### Kommentare erzeugen
 Um Kommentare in Jira zu erzeugen, werden Zugangsdaten benötigt, welche einem technischen Jira-Benutzer gehören sollten.
+Hierfür kann entweder ein Jira-Benutzername und ein Passwort oder ein Access Token verwendet werden.
 Dieser Benutzer benötigt zudem ausreichende Berechtigungen, um Kommentare an existierenden Tickets zu erstellen.
 
 Die Kommentare werden am Jira-Ticket erzeugt, sobald innerhalb einer Commit-Nachricht, einem Pull Request oder einem Pull Request-Kommentar die Ticket-ID erwähnt wurde.
