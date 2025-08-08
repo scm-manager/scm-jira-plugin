@@ -16,6 +16,7 @@
 
 import React from "react";
 import { Checkbox, InputField, validation } from "@scm-manager/ui-components";
+import { RadioGroup } from "@scm-manager/ui-forms";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { JiraConfiguration } from "./types";
 import AutoCloseWordMapping from "./AutoCloseWordMapping";
@@ -36,7 +37,7 @@ class JiraConfigurationItems extends React.Component<Props, State> {
     super(props);
     this.state = {
       ...props.initialConfiguration,
-      urlValid: true
+      urlValid: true,
     };
   }
 
@@ -45,9 +46,9 @@ class JiraConfigurationItems extends React.Component<Props, State> {
     this.setState(
       {
         url: value,
-        urlValid
+        urlValid,
       },
-      this.configurationChangedCallback
+      this.configurationChangedCallback,
     );
   };
 
@@ -58,9 +59,9 @@ class JiraConfigurationItems extends React.Component<Props, State> {
     this.setState(
       // @ts-ignore hard to type
       {
-        [name]: value
+        [name]: value,
       },
-      this.configurationChangedCallback
+      this.configurationChangedCallback,
     );
   };
 
@@ -69,12 +70,7 @@ class JiraConfigurationItems extends React.Component<Props, State> {
   };
 
   configurationChangedCallback = () => {
-    this.props.onConfigurationChange(
-      {
-        ...this.state
-      },
-      this.isValid()
-    );
+    this.props.onConfigurationChange(this.state, this.isValid());
   };
 
   isValid = () => {
@@ -120,27 +116,62 @@ class JiraConfigurationItems extends React.Component<Props, State> {
         </div>
         {this.state.updateIssues ? (
           <>
-            <div className="column is-half">
-              <InputField
-                name="username"
-                label={t("scm-jira-plugin.form.username")}
-                helpText={t("scm-jira-plugin.form.usernameHelp")}
-                disabled={readOnly || !this.state.updateIssues}
-                value={this.state.username}
-                onChange={this.valueChangeHandler}
+            <div className="column is-full">
+              <RadioGroup
+                name="useAccessToken"
+                options={[
+                  {
+                    value: "usernamePassword",
+                    label: t("scm-jira-plugin.form.useUsernamePassword"),
+                    helpText: t("scm-jira-plugin.form.useUsernamePasswordHelp"),
+                  },
+                  {
+                    value: "accessToken",
+                    label: t("scm-jira-plugin.form.useAccessToken"),
+                    helpText: t("scm-jira-plugin.form.useAccessTokenHelp"),
+                  },
+                ]}
+                value={this.state.useAccessToken ? "accessToken" : "usernamePassword"}
+                onValueChange={(value) => this.valueChangeHandler(value === "accessToken", "useAccessToken")}
               />
             </div>
-            <div className="column is-half">
-              <InputField
-                name="password"
-                label={t("scm-jira-plugin.form.password")}
-                helpText={t("scm-jira-plugin.form.passwordHelp")}
-                disabled={readOnly || !this.state.updateIssues}
-                value={this.state.password}
-                type="password"
-                onChange={this.valueChangeHandler}
-              />
-            </div>
+            {this.state.useAccessToken ? (
+              <div className="column is-full">
+                <InputField
+                  name="accessToken"
+                  label={t("scm-jira-plugin.form.accessToken")}
+                  helpText={t("scm-jira-plugin.form.accessTokenHelp")}
+                  disabled={readOnly || !this.state.updateIssues}
+                  value={this.state.accessToken}
+                  type="password"
+                  onChange={this.valueChangeHandler}
+                />
+              </div>
+            ) : (
+              <>
+                <div className="column is-half">
+                  <InputField
+                    name="username"
+                    label={t("scm-jira-plugin.form.username")}
+                    helpText={t("scm-jira-plugin.form.usernameHelp")}
+                    disabled={readOnly || !this.state.updateIssues}
+                    value={this.state.username}
+                    onChange={this.valueChangeHandler}
+                  />
+                </div>
+                <div className="column is-half">
+                  <InputField
+                    name="password"
+                    label={t("scm-jira-plugin.form.password")}
+                    helpText={t("scm-jira-plugin.form.passwordHelp")}
+                    disabled={readOnly || !this.state.updateIssues}
+                    value={this.state.password}
+                    type="password"
+                    onChange={this.valueChangeHandler}
+                  />
+                </div>
+              </>
+            )}
             <div className="column is-full">
               <InputField
                 name="roleLevel"

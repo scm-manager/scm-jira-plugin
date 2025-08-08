@@ -22,6 +22,8 @@ export type JiraConfiguration = HalRepresentation & {
   updateIssues: boolean;
   username: string;
   password: string;
+  accessToken: string;
+  useAccessToken: boolean;
   roleLevel: string;
   autoClose: boolean;
   disableStateChangeByCommit: boolean;

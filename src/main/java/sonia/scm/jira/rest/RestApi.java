@@ -17,10 +17,12 @@
 package sonia.scm.jira.rest;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import sonia.scm.jira.JiraException;
 import sonia.scm.jira.config.JiraConfiguration;
 import sonia.scm.net.ahc.AdvancedHttpClient;
 import sonia.scm.net.ahc.AdvancedHttpResponse;
+import sonia.scm.net.ahc.BaseHttpRequest;
 import sonia.scm.util.HttpUtil;
 
 import java.io.IOException;
@@ -49,9 +51,9 @@ public class RestApi {
    */
   public void addComment(String issueId, RestComment comment) throws IOException {
     log.info("add comment to issue {}", issueId);
-    AdvancedHttpResponse response = client.post(commentUrl(issueId))
+    AdvancedHttpResponse response = authenticate(client.post(commentUrl(issueId))
       .spanKind("Jira")
-      .basicAuth(configuration.getUsername(), configuration.getPassword())
+    )
       .jsonContent(comment)
       .request();
 
@@ -63,15 +65,15 @@ public class RestApi {
   }
 
   /**
-   * @param issueId Usually an abbreviation and a number; e.g. <tt>RTT-1</tt>
+   * @param issueId      Usually an abbreviation and a number; e.g. <tt>RTT-1</tt>
    * @param transitionId <tt>Done</tt>, <tt>in progress</tt>, etc.
    * @throws IOException In case of unexpected request failures.
    */
   public void changeState(String issueId, String transitionId) throws IOException {
     log.info("attempting to change state of issue {}", issueId);
-    AdvancedHttpResponse response = client.post(transitionsUrl(issueId))
+    AdvancedHttpResponse response = authenticate(client.post(transitionsUrl(issueId))
       .spanKind("Jira")
-      .basicAuth(configuration.getUsername(), configuration.getPassword())
+    )
       .jsonContent(new RestDoTransition(transitionId))
       .request();
 
@@ -88,9 +90,9 @@ public class RestApi {
    */
   public Collection<RestTransition> getTransitions(String issueId) throws IOException {
     log.debug("get transitions for issue {}", issueId);
-    AdvancedHttpResponse response = client.get(transitionsUrl(issueId))
+    AdvancedHttpResponse response = authenticate(client.get(transitionsUrl(issueId))
       .spanKind("Jira")
-      .basicAuth(configuration.getUsername(), configuration.getPassword())
+    )
       .request();
 
     if (!response.isSuccessful()) {
@@ -99,6 +101,16 @@ public class RestApi {
 
     return response.contentFromJson(RestTransitions.class)
       .getTransitions();
+  }
+
+  private <R extends BaseHttpRequest<?>> R authenticate(R request) {
+    if (configuration.isUseAccessToken()) {
+      log.trace("Using access token for Jira connection");
+      return (R) request.header("Authorization", "Bearer " + configuration.getAccessToken());
+    } else {
+      log.trace("Using basic auth for Jira connection");
+      return (R) request.basicAuth(configuration.getUsername(), configuration.getPassword());
+    }
   }
 
   private String createBaseUrl(JiraConfiguration configuration) {

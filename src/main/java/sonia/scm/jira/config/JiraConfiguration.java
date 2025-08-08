@@ -65,6 +65,14 @@ public class JiraConfiguration implements Validateable {
   @XmlJavaTypeAdapter(XmlEncryptionAdapter.class)
   private String password;
 
+  /** connection access token */
+  @XmlJavaTypeAdapter(XmlEncryptionAdapter.class)
+  private String accessToken;
+
+  /** flag whether to use the access token or username/password */
+  @XmlElement(name = "use-access-token")
+  private boolean useAccessToken;
+
   /** comment role level */
   @XmlElement(name = "role-level")
   private String roleLevel;
