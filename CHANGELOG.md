@@ -4,6 +4,39 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 3.4.3 - 2025-08-08
+### Fixed
+- Support for access tokens for authentication (for versions 3.9.x of SCM-Manager or newer)
+
+## 3.4.2 - 2025-08-08
+### Fixed
+- Support for access tokens for authentication (for versions 3.7.x of SCM-Manager)
+
+## 3.4.1 - 2025-08-04
+### Fixed
+- Document titles for configuration pages from core
+
+## 3.4.0 - 2025-04-11
+### Added
+- Descriptive document titles
+
+## 3.3.1 - 2025-01-24
+### Fixed
+- Line breaks in Jira comments
+- Typo in german translations for permissions
+
+## 3.3.0 - 2025-01-22
+### Changed
+- Comments in Jira are marked as 'internal'
+
+## 3.2.0 - 2024-09-23
+### Changed
+- Changeover to AGPL-3.0-only license
+
+## 3.1.5 - 2023-04-12
+### Fixed
+- Missing encryption in the audit log
+
 ## 3.1.4 - 2022-11-22
 ### Fixed
 - Committer and pushed by labels ([#56](https://github.com/scm-manager/scm-jira-plugin/pull/56))

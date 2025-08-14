@@ -2,39 +2,45 @@
   "scm-jira-plugin": {
     "global": {
       "nav-link": "Jira",
-      "title": "Globale Jira Konfiguration"
+      "title": "Globale Jira-Konfiguration"
     },
     "local": {
       "nav-link": "Jira",
-      "title": "Jira Konfiguration"
+      "title": "Jira-Konfiguration"
     },
     "form": {
       "url": "URL",
-      "urlHelp": "URL der Jira Installation (mit Kontextpfad).",
+      "urlHelp": "URL der Jira-Installation (mit Kontextpfad).",
       "urlValidationError": "Die URL ist ungültig",
-      "disableRepositoryConfiguration": "Jira Konfiguration nicht für einzelne Repositories erlauben",
-      "disableRepositoryConfigurationHelp": "Repository Owner dürfen Jira nicht individuell konfigurieren. Der SCM-Manager Server muss nach dieser Änderung neu gestartet werden.",
-      "updateJiraIssues": "Jira Tickets aktualisieren",
-      "updateJiraIssuesHelp": "Aktiviert die automatische Ticket Update Funktion. Der SCM-Manager sucht nach Ticket Schlüsseln in Commit Nachrichten. Wenn ein Ticket Schlüssel gefunden wurde, aktualisiert der SCM-Manager das Ticket mit einem Kommentar. Hinweis: Der Jira Benutzername und das Jira Passwort müssen unten konfiguriert werden.",
-      "username": "Jira Benutzername",
-      "usernameHelp": "Jira Benutzername für die Verbindung zu der Jira Instanz.",
-      "password": "Jira Passwort",
-      "passwordHelp": "Jira Passwort für die Verbindung zu der Jira Instanz.",
+      "disableRepositoryConfiguration": "Jira-Konfiguration nicht für einzelne Repositories erlauben",
+      "disableRepositoryConfigurationHelp": "Repository Owner dürfen Jira nicht individuell konfigurieren. Der SCM-Manager-Server muss nach dieser Änderung neu gestartet werden.",
+      "updateJiraIssues": "Jira-Tickets aktualisieren",
+      "updateJiraIssuesHelp": "Aktiviert die automatische Ticket-Updatefunktion. Der SCM-Manager sucht nach Ticketschlüsseln in Commit-Nachrichten. Wenn ein Ticketschlüssel gefunden wurde, aktualisiert der SCM-Manager das Ticket mit einem Kommentar. Hinweis: Der Benutzername und das Passwort oder ein Access Token müssen unten konfiguriert werden.",
+      "useAccessToken": "Access Token für die Verbindung nutzen",
+      "useAccessTokenHelp": "Wählen Sie diese Option, wenn Sie ein Jira Access Token für die Verbindung zu der Jira-Instanz anstelle von Benutzername und Passwort verwenden möchten.",
+      "useUsernamePassword": "Benutzername und Passwort für die Verbindung nutzen",
+      "useUsernamePasswordHelp": "Wählen Sie diese Option, wenn Sie Benutzername und Passwort für die Verbindung zu der Jira-Instanz verwenden möchten.",
+      "username": "Jira-Benutzername",
+      "usernameHelp": "Jira-Benutzername für die Verbindung zu der Jira-Instanz.",
+      "password": "Jira-Passwort",
+      "passwordHelp": "Jira-Passwort für die Verbindung zu der Jira-Instanz.",
+      "accessToken": "Access Token",
+      "accessTokenHelp": "Access Token für die Verbindung zu der Jira-Instanz als Alternative zu Benutzername und Passwort.",
       "filter": "Project Filter",
-      "filterHelp": "Filtert nach Jira Project Schlüsseln. Mehrere Project Filter können mit \",\". z.B.: SCM,TST,ASD angegeben werden.",
+      "filterHelp": "Filtert nach Jira-Projektschlüsseln. Mehrere Projektfilter können mit \",\". z.B.: SCM,TST,ASD angegeben werden.",
       "roleLevel": "Rollensichtbarkeit",
-      "roleLevelHelp": "Definiert, welche Projektrollen die Kommentare sehen dürfen. Hinweis: der Rollenname muss eine valide Jira Rolle sein.",
-      "autoClose": "Ticket Statusänderungen erlauben",
-      "autoCloseHelp": "Aktiviert die Statusänderungsfunktion. Der SCM-Manager sucht nach Ticket Schlüsseln und Status Modifizierungswörtern in Commit Nachrichten. Wenn beides in einer Commit Nachricht gefunden wurde, dann verändert der SCM-Manager den Status des Jira Tickets entsprechend. Hinweis: Der Jira Benutzername und das Jira Passwort müssen unten konfiguriert werden.",
+      "roleLevelHelp": "Definiert, welche Projektrollen die Kommentare sehen dürfen. Hinweis: Der Rollenname muss eine valide Jira-Rolle sein.",
+      "autoClose": "Ticket-Statusänderungen erlauben",
+      "autoCloseHelp": "Aktiviert die Statusänderungsfunktion. Der SCM-Manager sucht nach Ticketschlüsseln und Status-Modifizierungswörtern in Commit-Nachrichten. Wenn beides in einer Commit-Nachricht gefunden wurde, dann verändert der SCM-Manager den Status des Jira-Tickets entsprechend. Hinweis: Der Jira Benutzername und das Jira Passwort müssen unten konfiguriert werden.",
       "disableStateChangeByCommit": "Deaktiviere Statusänderungen durch Commits",
       "disableStateChangeByCommitHelp": "Deaktiviert Statusänderungen aufgrund von Commits. Wenn diese Options aktiviert ist, werden Statusänderungen nur noch aufgrund von Pull Requests durchgeführt.",
       "autoCloseMapping": {
-        "title": "Jira Statusübergangs Mapping",
-        "help": "Ordne Schlüsselwörter einem Jira Statusübergangs zu, um Zustandsänderungen mit diesen Schlüsselwörtern auszulösen.",
-        "transition": "Jira Statusübergangs",
-        "transitionHelp": "Name des Jira Statusübergangs z.B.: Done",
+        "title": "Jira-Mapping für Statusübergänge",
+        "help": "Ordne Schlüsselwörter einem Jira-Statusübergang zu, um Zustandsänderungen mit diesen Schlüsselwörtern auszulösen.",
+        "transition": "Jira-Statusübergänge",
+        "transitionHelp": "Name des Jira-Statusübergangs z.B.: Done",
         "keywords": "Schlüsselwörter",
-        "keywordsHelp": "Kommagetrennte Liste von Schlüsselwörtern, die dem Jira Statusübergang zugeordnet werden sollen, z. B.: closes, closing",
+        "keywordsHelp": "Kommagetrennte Liste von Schlüsselwörtern, die dem Jira-Statusübergang zugeordnet werden sollen, z. B.: closes, closing",
         "no-mapping": "Keine Mappings definiert",
         "add": "Mapping hinzufügen",
         "remove": "Mapping entfernen"
@@ -46,16 +52,16 @@
     "configuration": {
       "read,write": {
         "jira": {
-          "displayName": "Globale Jira Konfiguiration ändern",
-          "description": "Darf die globale Jira Konfiguration verändern"
+          "displayName": "Globale Jira-Konfiguration ändern",
+          "description": "Darf die globale Jira-Konfiguration verändern"
         }
       }
     },
     "repository": {
       "jira": {
         "*": {
-          "displayName": "Repository-spezifische Jira Konfiguiration ändern",
-          "description": "Darf die repository-spezifischen Jira Konfiguration verändern"
+          "displayName": "Repository-spezifische Jira-Konfiguration ändern",
+          "description": "Darf die repository-spezifische Jira-Konfiguration verändern"
         }
       }
     }
@@ -63,24 +69,24 @@
   "verbs": {
     "repository": {
       "jira": {
-        "displayName": "Jira Konfiguration ändern",
-        "description": "Darf die Jira Konfiguration verändern"
+        "displayName": "Jira-Konfiguration ändern",
+        "description": "Darf die Jira-Konfiguration verändern"
       }
     }
   },
   "validation": {
     "JiraCommitMessageIssueKeyValidator": {
-      "name": "Jira Ticket Schlüssel Validator",
+      "name": "Jira-Ticket-Schlüsselvalidator",
       "branches": "{{ branches }}",
       "allBranches": "<Alle Branches>",
-      "description": "Nutzt das definierte Ticket Schlüssel Format aus dem Jira Plugin",
+      "description": "Nutzt das definierte Ticket-Schlüsselformat aus dem Jira-Plugin",
       "defaultErrorMessage": "<Standard-Fehlermeldung>"
     }
   },
   "validator": {
     "JiraCommitMessageIssueKeyValidator": {
-      "name": "Jira Ticket Schlüssel Validator",
-      "description": "Validiert alle Commits auf gültige Jira Ticket Schlüssel.",
+      "name": "Jira-Ticket-Schlüsselvalidator",
+      "description": "Validiert alle Commits auf gültige Jira-Ticketschlüssel.",
       "branches": {
         "label": "Branches",
         "helpText": "Komma-separierte Liste der zu validierenden Branches. Leer lassen um alle Branches zu validieren.\nBeispiel: master,feature/*"

@@ -14,29 +14,25 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-package sonia.scm.jira;
+package sonia.scm.jira.rest;
 
-import sonia.scm.issuetracker.IssueMatcher;
-import sonia.scm.jira.config.JiraConfiguration;
+/**
+ * Visibility type for {@link RestComment} object, not to be confused with the internal flag.
+ * Currently, the only type supported are roles with their values as concrete role names.
+ *
+ * @see RestComment
+ */
+public enum RestVisibilityType {
+  ROLE("role");
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-public class JiraIssueMatcher implements IssueMatcher {
-
-  private final Pattern keyPattern;
-
-  JiraIssueMatcher(JiraConfiguration configuration) {
-    this.keyPattern = IssueKeys.createPattern(configuration);
+  RestVisibilityType(String name) {
+    this.name = name;
   }
 
-  @Override
-  public Pattern getKeyPattern() {
-    return keyPattern;
-  }
+  private final String name;
 
   @Override
-  public String getKey(Matcher matcher) {
-    return matcher.group();
+  public String toString() {
+    return name;
   }
 }

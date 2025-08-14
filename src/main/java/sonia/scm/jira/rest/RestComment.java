@@ -1,25 +1,17 @@
 /*
- * MIT License
+ * Copyright (c) 2020 - present Cloudogu GmbH
  *
- * Copyright (c) 2020-present Cloudogu GmbH and Contributors
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License as published by the Free
+ * Software Foundation, version 3.
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more
+ * details.
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
 package sonia.scm.jira.rest;
@@ -28,105 +20,60 @@ package sonia.scm.jira.rest;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
+import sonia.scm.jira.rest.property.RestInternalProperty;
 
 //~--- JDK imports ------------------------------------------------------------
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlRootElement;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import lombok.Getter;
 
 /**
- * Jira rest api comment.
- *
- * @author Sebastian Sdorra
+ * {@link RestComment} represents a comment sent to a Jira instance.<br/>
+ * Note that the properties is realized with a list of {@link RestInternalProperty} instances
+ * so that an array is sent as part of the JSON.
+ * A more abstract and appropriate RestProperty object is not implemented.
  */
+@Getter
 @XmlRootElement(name = "comment")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class RestComment
-{
-  /**
-   * Constructs a new {@link RestComment}.
-   */
-  RestComment() {}
+public class RestComment {
 
-  /**
-   * Constructs a new {@link RestComment}.
-   * 
-   * @param body comment body
-   */
-  public RestComment(String body)
-  {
+  private String body;
+
+  private List<RestInternalProperty> properties = new ArrayList<>();
+
+  private String id;
+
+  private RestVisibility visibility;
+
+  RestComment() {
+  }
+
+  public RestComment(String body) {
     this(body, null);
   }
 
-  /**
-   * Constructs a new {@link RestComment}.
-   * 
-   * @param body comment body
-   * @param role name of role for visibility
-   */
-  public RestComment(String body, String role)
-  {
+  public RestComment(String body, String role) {
     this.body = body;
-    if (!Strings.isNullOrEmpty(role)){
+    this.properties.add(new RestInternalProperty());
+    if (!Strings.isNullOrEmpty(role)) {
       this.visibility = new RestVisibility(role);
     }
   }
-  
-  //~--- methods --------------------------------------------------------------
 
   @Override
-  public String toString()
-  {
-    //J-
+  public String toString() {
     return MoreObjects.toStringHelper(this)
-                  .add("id", id)
-                  .add("body", body)
-                  .add("visibility", visibility)
-                  .toString();
-    //J+
+      .add("id", id)
+      .add("body", body)
+      .add("properties", properties)
+      .add("visibility", visibility)
+      .toString();
   }
-
-  //~--- get methods ----------------------------------------------------------
-
-  /**
-   * Returns body of the comment.
-   *
-   * @return body comment
-   */
-  public String getBody()
-  {
-    return body;
-  }
-
-  /**
-   * Returns the id of the comment.
-   *
-   * @return comment id
-   */
-  public String getId()
-  {
-    return id;
-  }
-
-  /**
-   * Returns visibility of comment.
-   * 
-   * @return visibility of comment
-   */
-  public RestVisibility getVisibility()
-  {
-    return visibility;
-  }
-
-  //~--- fields ---------------------------------------------------------------
-
-  /** comment body */
-  private String body;
-
-  /** id of comment */
-  private String id;
-  
-  /** visibility of comment */
-  private RestVisibility visibility;
 }

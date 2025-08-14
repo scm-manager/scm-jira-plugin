@@ -14,45 +14,35 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-package sonia.scm.jira.rest;
+package sonia.scm.jira.rest.property;
 
 import com.google.common.base.MoreObjects;
-
-//~--- JDK imports ------------------------------------------------------------
-
-import javax.annotation.Nullable;
-
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 @Getter
-@XmlRootElement(name = "transition")
+@EqualsAndHashCode
+@XmlRootElement(name = "value")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class RestTransition {
+public class RestInternalPropertyValue {
 
-  RestTransition() {
+  public RestInternalPropertyValue() {
+    this("true");
   }
 
-  private String id;
-
-  private String name;
-
-  public RestTransition(String id) {
-    this(id, null);
+  public RestInternalPropertyValue(String value) {
+    this.internal = value;
   }
 
-  public RestTransition(String id, @Nullable String name) {
-    this.id = id;
-    this.name = name;
-  }
+  private String internal;
 
   @Override
   public String toString() {
     return MoreObjects.toStringHelper(this)
-      .add("id", id)
-      .add("name", name)
+      .add("internal", internal)
       .toString();
   }
 }
