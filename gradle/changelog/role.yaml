@@ -1,2 +1,0 @@
-- type: fixed
-  description: Call to Jira to create comment now uses correct case for 'type' field in 'visibility'
