@@ -34,7 +34,11 @@ public class RestVisibility {
   RestVisibility() {
   }
 
-  private final RestVisibilityType type = RestVisibilityType.ROLE;
+  /**
+   * The type has to be either 'role' or 'group' and MUST NOT be serialized in JSON to all-caps or something else.
+   * Other values would lead to a 400 status code from Jira.
+   */
+  private final String type = "role";
 
   private String value;
 
