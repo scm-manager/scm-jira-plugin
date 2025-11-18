@@ -15,7 +15,17 @@ Find out how this plugin can be used on the [user documentation page](https://sc
 
 ## Local development
 To test this plugin against a local running Jira server you either need a Jira developer license or you can start a license-free server using the atlassian-plugin-sdk.
-The easiest way to start the license-free server is to check out this [plugin](https://github.com/scm-manager/jira-scm-plugin) and execute `atlas-run` in your terminal.
+
+If you are willing to create a [trial license](https://my.atlassian.com/products/), you can use the `docker-compose.yml` to start a simple local Jira server.
+After startup, use the following configuration:
+
+- **Hostname:** db
+- **Port:** 5432
+- **Database/Username/Password:** jira
+
+You can get your trial license from the link above.
+
+The other way is to start the license-free server by checking out this [plugin](https://github.com/scm-manager/jira-scm-plugin) and executing `atlas-run` in your terminal.
 After it has downloaded half of the internet, your Jira server should be available at `http://localhost:2990/jira`. Username and password are both `admin`.
 
 Attention: The server is pretty unstable and should be used as little as possible.
