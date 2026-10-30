@@ -15,9 +15,10 @@
  */
 
 import React, { FC } from "react";
-import { Title, Configuration } from "@scm-manager/ui-components";
-import GlobalJiraConfigurationForm from "./GlobalJiraConfigurationForm";
 import { useTranslation } from "react-i18next";
+import { Configuration } from "@scm-manager/ui-components";
+import { Title } from "@scm-manager/ui-core";
+import GlobalJiraConfigurationForm from "./GlobalJiraConfigurationForm";
 
 type Props = {
   link: string;
@@ -25,6 +26,7 @@ type Props = {
 
 const GlobalJiraConfiguration: FC<Props> = ({ link }) => {
   const [t] = useTranslation("plugins");
+
   return (
     <>
       <Title title={t("scm-jira-plugin.global.title")} />

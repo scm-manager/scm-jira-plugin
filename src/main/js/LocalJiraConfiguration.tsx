@@ -16,16 +16,14 @@
 
 import React, { FC } from "react";
 import { useTranslation } from "react-i18next";
+import { useRequiredIndexLink } from "@scm-manager/ui-api";
 import { Configuration } from "@scm-manager/ui-components";
 import { Subtitle } from "@scm-manager/ui-core";
 import LocalJiraConfigurationForm from "./LocalJiraConfigurationForm";
 
-type Props = {
-  link: string;
-};
-
-const LocalJiraConfiguration: FC<Props> = ({ link }) => {
+const LocalJiraConfiguration: FC = () => {
   const [t] = useTranslation("plugins");
+  const link = useRequiredIndexLink("redmineConfig");
 
   return (
     <>

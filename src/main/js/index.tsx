@@ -20,7 +20,7 @@ import LocalJiraConfiguration from "./LocalJiraConfiguration";
 import { binder } from "@scm-manager/ui-extensions";
 import JiraCommitMessageIssueKeyValidatorConfig from "./JiraCommitMessageIssueKeyValidatorConfig";
 
-cfgBinder.bindGlobal("/jira", "scm-jira-plugin.global.nav-link", "jiraConfig", GlobalJiraConfiguration);
+cfgBinder.bindAdminSetting("/jira", "scm-jira-plugin.global.nav-link", "jiraConfig", GlobalJiraConfiguration);
 cfgBinder.bindRepositorySetting("/jira", "scm-jira-plugin.local.nav-link", "jiraConfig", LocalJiraConfiguration);
 
 binder.bind("commitMessageChecker.validator.JiraCommitMessageIssueKeyValidator", JiraCommitMessageIssueKeyValidatorConfig);

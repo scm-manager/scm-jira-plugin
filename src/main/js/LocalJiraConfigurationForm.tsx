@@ -14,9 +14,9 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import React from "react";
+import React, { FC } from "react";
 import JiraConfigurationForm from "./JiraConfigurationForm";
-import {JiraConfiguration} from "./types";
+import { JiraConfiguration } from "./types";
 
 type Props = {
   initialConfiguration: JiraConfiguration;
@@ -24,18 +24,15 @@ type Props = {
   onConfigurationChange: (configuration: JiraConfiguration, valid: boolean) => void;
 };
 
-class LocalJiraConfigurationForm extends React.Component<Props> {
-  render() {
-    const { readOnly, initialConfiguration, onConfigurationChange } = this.props;
-    return (
-      <JiraConfigurationForm
-        initialConfiguration={initialConfiguration}
-        readOnly={readOnly}
-        includeGlobalConfigItem={false}
-        onConfigurationChange={onConfigurationChange}
-      />
-    );
-  }
-}
+const LocalJiraConfigurationForm: FC<Props> = ({ initialConfiguration, readOnly, onConfigurationChange }) => {
+  return (
+    <JiraConfigurationForm
+      initialConfiguration={initialConfiguration}
+      readOnly={readOnly}
+      includeGlobalConfigItem={false}
+      onConfigurationChange={onConfigurationChange}
+    />
+  );
+};
 
 export default LocalJiraConfigurationForm;

@@ -15,9 +15,9 @@
  */
 
 import React from "react";
-import { Checkbox, InputField, validation } from "@scm-manager/ui-components";
-import { RadioGroup } from "@scm-manager/ui-forms";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { Checkbox, InputField, validation } from "@scm-manager/ui-components";
+import { RadioGroup } from "@scm-manager/ui-core";
 import { JiraConfiguration } from "./types";
 import AutoCloseWordMapping from "./AutoCloseWordMapping";
 

@@ -16,7 +16,7 @@
 
 import React, { FC, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { InputField, AddButton, Icon, Help, Notification, Button } from "@scm-manager/ui-components";
+import { InputField, AddButton, Help, Notification, Button } from "@scm-manager/ui-components";
 import styled from "styled-components";
 
 type Props = {
